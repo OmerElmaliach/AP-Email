@@ -1,0 +1,14 @@
+FROM gcc:latest
+
+RUN apt-get update && apt-get install -y cmake
+
+COPY . /Ap_Email/src
+WORKDIR /Ap_Email/src
+
+RUN mkdir build
+WORKDIR /Ap_Email/src/build
+
+RUN cmake .. && make
+
+# Run the tests
+CMD ["./runTests"]
