@@ -1,11 +1,18 @@
 #include <gtest/gtest.h>
-#include "datatypes/imenu"
+#include "datatypes/imenu.h"
 
-class DummyMenu : protected IMenu
+class ICommand {
+    
+};
+
+class DummyMenu : protected IMenu<int>
 {
 public:
-    void registerCommand(int n, ICommand& cmd) {}
-    void executeCommand(int n) {}
+    void run() override {}
+    void registerCommand(int& n, ICommand& cmd) override {}
+    void executeCommand(int& n) override {}
+    bool isRunning() override { return true; }
+    void exit() override {}
 };
 
 // Should pass if an IMenu object was created.
