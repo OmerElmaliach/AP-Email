@@ -1,8 +1,12 @@
 #include <gtest/gtest.h>
+#include "datatypes/imenu.h"
 
-// Should pass if test.cpp was compiled using the docker script.
-TEST(DockerTest, CompileFile) {
-    EXPECT_STREQ("DOCKERTEST", "DOCKERTEST");
+// Should pass if an IMenu object was created.
+TEST(IMenuTest, objectCreation) {
+    IMenu menu = new IMenu();
+    std::cout << "IMenu created\n";
+    delete menu;
+    std::cout << "IMenu destroyed\n";
 }
 
 int main(int argc, char **argv) {
