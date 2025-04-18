@@ -1,9 +1,16 @@
 #include <gtest/gtest.h>
-#include "datatypes/imenu.h"
+#include "datatypes/imenu"
+
+class DummyMenu : protected IMenu
+{
+public:
+    void registerCommand(int n, ICommand& cmd) {}
+    void executeCommand(int n) {}
+};
 
 // Should pass if an IMenu object was created.
 TEST(IMenuTest, objectCreation) {
-    IMenu menu = new IMenu();
+    DummyMenu* menu = new DummyMenu();
     std::cout << "IMenu created\n";
     delete menu;
     std::cout << "IMenu destroyed\n";
