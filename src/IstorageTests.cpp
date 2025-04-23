@@ -105,6 +105,21 @@ TEST_F(IntStorageTest, CanStoreAndRetrieveIntegers) {
     EXPECT_EQ(testData, result.value());
 }
 
+// Test: remove method
+TEST_F(StringStorageTest, Remove_DeletesData) {
+    string testData = "Hello, world!";
+    storage_->save(testData);
+    
+    storage_->remove();
+    
+    auto result = storage_->load();
+    EXPECT_FALSE(result.has_value());
+}
+// Test: remove method when no data exists
+TEST_F(StringStorageTest, Remove_NoDataDoesNotThrow) {
+    EXPECT_NO_THROW(storage_->remove());
+}
+
 // Main function to run all tests
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
