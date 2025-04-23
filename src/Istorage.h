@@ -18,5 +18,5 @@ public:
     virtual bool exists() const = 0;
 
     // Remove data from storage
-    virtual void remove() = 0;
+    virtual void remove(const T& data) = 0;
 };
