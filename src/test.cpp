@@ -1,13 +1,7 @@
 #include <gtest/gtest.h>
 #include "datatypes/cli.cpp"
+#include "datatypes/icommand.cpp"
 using namespace std;
-
-class ICommand {
-public:
-    char* runCommand() {
-        return "TEST";
-    }
-};
 
 
 // Should pass if run() function was executed.
@@ -78,6 +72,7 @@ TEST(CLITest, registerCommand) {
     EXPECT_NO_THROW(cmdMenu.registerCommand(1, ic));
     EXPECT_NO_THROW(cmdMenu.registerCommand(2, ic));
     EXPECT_NO_THROW(cmdMenu.registerCommand(1, ic)); // Handles duplications.
+    EXPECT_THROW(cmdMenu.registerCommand("TEST", ic));
     delete ic;
     delete cmdMenu;
 }
@@ -87,7 +82,7 @@ TEST(CLITest, executeCommand) {
     CLI* cmdMenu = new CLI();
     ICommand* ic = new ICommand();
     cmdMenu.registerCommand(1, ic);
-    EXPECT_EQ(cmdMenu.executeCommand(1), "TEST");
+    EXPECT_EQ(cmdMenu.executeCommand(1, NULL), "TEST");
     delete ic;
     delete cmdMenu;
 }
