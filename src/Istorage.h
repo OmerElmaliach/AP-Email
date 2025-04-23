@@ -16,4 +16,7 @@ public:
     
     // Check if data exists in storage
     virtual bool exists() const = 0;
+
+    // Remove data from storage
+    virtual void remove() = 0;
 };
