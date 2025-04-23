@@ -2,7 +2,7 @@
 #include <vector>
 #include <optional>
 
-using std;
+using namespace std;
 template <typename T>
 class IStorage {
 public:
