@@ -4,6 +4,7 @@
 #include <bits/stdc++.h>
 #include "imenu.h"
 #include "bloomFilterStorage.h"
+#include "icommand.h"
 using namespace std;
 
 class CLI : public IMenu<int, string>{
