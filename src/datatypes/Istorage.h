@@ -11,7 +11,7 @@ public:
     // Save data to storage
     virtual bool save(const T& data) = 0;
     
-    // Load data from storage
+    // Load data from storage. Void call loads the whole file
     virtual optional<T> load() = 0;
     
     // Check if data exists in storage
