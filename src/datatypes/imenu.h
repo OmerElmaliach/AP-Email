@@ -24,7 +24,7 @@ protected:
      * @param t Input to trigger a command.
      * @param command Command to be executed.
      */
-    virtual void registerCommand(T& t, ICommand& command) = 0;
+    virtual void registerCommand(T& t, ICommand* command) = 0;
 
     
     /**
