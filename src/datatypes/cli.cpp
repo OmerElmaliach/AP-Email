@@ -9,13 +9,15 @@ using namespace std;
 
 class CLI : public IMenu<int, string>{
 private:
+    bloomFilterStorage* m_Stor;
+
     /**
      * @brief Helper function, returns true if input string is in proper format for bloom filter settings input, otherwise false.
      * 
      * @param input String input to be checked.
      */
     bool checkInput(string input) {
-        static regex bloomInputRegex("(\\d+\\s+)+");
+        static regex bloomInputRegex("^\\d+(\\s+\\d+)+$");
         return regex_match(input, bloomInputRegex);
     }
 
@@ -45,61 +47,6 @@ private:
         }
 
         return vec;
-    }
-
-
-public:
-    /**
-     * @brief CLI Builder function, defines the menu's state and the ICommands associated with command numbers.
-     */
-    CLI() {
-        // Initialize the commands with the associated numbers to perform them.
-        int addInput = 1, checkNum = 2;
-        ICommand* addCmd = new AddURL();
-        ICommand* checkCmd = new CheckURL();
-        registerCommand(addInput, addCmd);
-        registerCommand(checkNum, checkCmd);
-
-        // Menu has not started running yet.
-        m_menuState = false;
-
-        // Initialize storage.
-        m_Stor = new bloomFilterStorage();
-    }
-
-
-    /**
-     * @brief Initializes the inteface of the menu and handles input.
-     */
-    void run() override {
-        m_menuState = true;
-        while (isRunning()) {
-            string input;
-            if (!m_Stor.exists()) {
-                // Storage files do not not exist for bloom filter input.
-                do {
-                    // Loop until input is in the proper format.
-                    cin >> input;
-                } while(!checkInput(input));
-
-                vector<string> str_vec = split(input, ' ');
-                vector<int> input_vec;
-                for (string sub : str_vec) {
-                    input_vec.push_back(stoi(sub));
-                }
-                // Save the bloom input settings.
-                m_Stor.save(input_vec);
-            }
-
-            do {
-                // Loop until input is in the proper format for performing commands.
-                cin >> input;
-            } while(!checkRegex(input));
-            vector<string> str_vec = split(input, ' ');
-            int cmd = stoi(str_vec[0]);
-            // Execute the command associated with num in map.
-            executeCommand(cmd, str_vec[1]);
-        }
     }
 
 
@@ -143,5 +90,58 @@ public:
      */
     void exit() override {
         m_menuState = false;
+    }
+
+public:
+    /**
+     * @brief CLI Builder function, defines the menu's state and the ICommands associated with command numbers.
+     */
+    CLI() {
+        // Initialize the commands with the associated numbers to perform them.
+        int addInput = 1, checkNum = 2;
+        ICommand* addCmd = new AddURL();
+        ICommand* checkCmd = new CheckURL();
+        registerCommand(addInput, addCmd);
+        registerCommand(checkNum, checkCmd);
+
+        // Menu has not started running yet.
+        m_menuState = false;
+
+        // Initialize storage.
+        m_Stor = new bloomFilterStorage();
+    }
+
+
+    /**
+     * @brief Initializes the inteface of the menu and handles input.
+     */
+    void run() override {
+        // Menu state is permenantly true since no exit protocol defined.
+        m_menuState = true;
+        while (isRunning()) {
+            string input;
+            if (!m_Stor->exists()) {
+                // Storage files do not not exist for bloom filter input.
+                do {
+                    // Loop until input is in the proper format.
+                    getline(cin, input);
+                } while(!checkInput(input));
+                vector<string> str_vec = split(input, ' ');
+                vector<int> input_vec;
+                for (string sub : str_vec) {
+                    input_vec.push_back(stoi(sub));
+                }
+                // Save the bloom input settings.
+                m_Stor->save(input_vec);
+            }
+            do {
+                // Loop until input is in the proper format for performing commands.
+                getline(cin, input);
+            } while(!checkRegex(input));
+            vector<string> str_vec = split(input, ' ');
+            int cmd = stoi(str_vec[0]);
+            // Execute the command associated with num in map.
+            executeCommand(cmd, str_vec[1]);
+        }
     }
 };
