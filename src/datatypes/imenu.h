@@ -1,3 +1,6 @@
+#ifndef IMENU_H
+#define IMENU_H
+
 #include <map>
 #include "icommand.h"
 #include "Istorage.h"
@@ -46,3 +49,5 @@ protected:
      */
     virtual void exit() = 0;
 };
+
+#endif
