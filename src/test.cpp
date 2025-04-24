@@ -6,9 +6,29 @@
 #include <Istorage.h>
 #include <fileStorage.h>
 
-// Should pass if test.cpp was compiled using the docker script.
-TEST(DockerTest, CompileFile) {
-    EXPECT_STREQ("DOCKERTEST", "DOCKERTEST");
+#include "datatypes/imenu.h"
+
+
+class ICommand {
+    
+};
+
+class DummyMenu : protected IMenu<int>
+{
+public:
+    void run() override {}
+    void registerCommand(int& n, ICommand& cmd) override {}
+    void executeCommand(int& n) override {}
+    bool isRunning() override { return true; }
+    void exit() override {}
+};
+
+// Should pass if an IMenu object was created.
+TEST(IMenuTest, objectCreation) {
+    DummyMenu* menu = new DummyMenu();
+    std::cout << "IMenu created\n";
+    delete menu;
+    std::cout << "IMenu destroyed\n";
 }
 
 using namespace std;
