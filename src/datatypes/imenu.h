@@ -11,7 +11,6 @@ template<class T, class S>
 class IMenu {
 protected:
     std::map<T, ICommand*> m_cmdMap;
-    IStorage* m_Stor;
     bool m_menuState; // True if running, otherwise false.
 
 
