@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
+#include <string>
+#include <bits/stdc++.h>
 #include "datatypes/cli.cpp"
-#include "datatypes/icommand.cpp"
+#include "datatypes/icommand.h"
 using namespace std;
 
 
@@ -62,6 +64,18 @@ TEST(CLITest, checkRegexWrongFormat) {
     EXPECT_FALSE(cmdMenu.checkRegex("1 example.c"));
     EXPECT_FALSE(cmdMenu.checkRegex("1 http://exa_mple.com"));
     delete cmdMenu;
+}
+
+// Test for the split function for strings.
+TEST(CLITest, checkSplitString) {
+    CLI* cmdMenu = new CLI();
+    string str = "This is a basic string";
+    vector<string> res = cmdMenu.split(str, " ");
+    EXPECT_EQ("This", res[0]);
+    EXPECT_EQ("is", res[1]);
+    EXPECT_EQ("a", res[2]);
+    EXPECT_EQ("basic", res[3]);
+    EXPECT_EQ("string", res[4]);
 }
 
 
