@@ -4,6 +4,7 @@
 #include <optional>
 #include <memory>
 #include <Istorage.h>
+#include <fileStorage.h>
 
 // Should pass if test.cpp was compiled using the docker script.
 TEST(DockerTest, CompileFile) {

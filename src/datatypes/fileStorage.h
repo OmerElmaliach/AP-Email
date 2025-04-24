@@ -6,7 +6,7 @@
 using namespace std;
 template <typename T>
 
-class FileStorage : public IStorage<T> {
+class fileStorage : public IStorage<T> {
 private:
     mutable fstream fileStream;
     const string filePath;
