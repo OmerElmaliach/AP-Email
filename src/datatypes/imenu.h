@@ -1,12 +1,14 @@
 #include <map>
 #include "icommand.h"
+#include "Istorage.h"
 using namespace std;
 
 // IMenu abstract class.
-template<class T>
+template<class T, class S>
 class IMenu {
 protected:
-    std::map<T, ICommand> m_cmdMap;
+    std::map<T, ICommand*> m_cmdMap;
+    IStorage* m_Stor;
     bool m_menuState; // True if running, otherwise false.
 
 
@@ -30,7 +32,7 @@ protected:
      * 
      * @param t Input to trigger a command.
      */
-    virtual void executeCommand(T& t) = 0;
+    virtual void executeCommand(T& t, S& s) = 0;
 
 
     /**
