@@ -14,91 +14,112 @@ TEST(DockerTest, CompileFile) {
 
 using namespace std;
 
-// Concrete implementation for testing
+// Test fixture for bloomFilterStorage tests
+class BloomFilterStorageTest : public ::testing::Test {
+protected:
+    bloomFilterStorage* storage;
 
+    void SetUp() override {
+        storage = new bloomFilterStorage();
+    }
 
-// Define test types
-bloomFilterStorage storage = new bloomFilterStorage();
+    void TearDown() override {
+        delete storage;
+    }
+};
 
 // Test: save method
-TEST_F(bloomFilterStorage storage, Save_ReturnsTrueOnSuccess) {
+TEST_F(BloomFilterStorageTest, Save_ReturnsTrueOnSuccess) {
     string testData = "Hello, world!";
-    storage.save(testData);
-    result = storage.getUrls().load();
-    EXPECT_EQ(result, testData);
+    EXPECT_TRUE(storage->save(testData));
+    
+    auto result = storage->loadUrls();
+    ASSERT_TRUE(result.has_value());
+    EXPECT_EQ(result.value(), testData);
 }
 
 // Test: load method with no data
-TEST_F(bloomFilterStorage storage, Load_ReturnsDataWhenDataExists) {
-    auto result = storage.load();
-    EXPECT_EQ(result, storage&);
+TEST_F(BloomFilterStorageTest, Load_ReturnsNoValueWhenNoData) {
+    auto result = storage->loadUrls();
+    EXPECT_FALSE(result.has_value());
 }
 
 // Test: load method with data
-TEST_F(bloomFilterStorage storage, Load_ReturnsDataWhenDataExists) {
+TEST_F(BloomFilterStorageTest, Load_ReturnsDataWhenDataExists) {
     string testData = "Hello, world!";
-    storage.save(testData);
+    storage->save(testData);
     
-    auto result = storage.load();
+    auto result = storage->loadUrls();
     ASSERT_TRUE(result.has_value());
     EXPECT_EQ(testData, result.value());
 }
 
 // Test: exists method with no data
-TEST_F(bloomFilterStorage storage, Exists_ReturnsFalseWhenNoData) {
-    bool result = storage.exists();
+TEST_F(BloomFilterStorageTest, Exists_ReturnsFalseWhenNoData) {
+    // Remove any existing data first
+    storage->remove();
+    bool result = storage->exists();
     EXPECT_FALSE(result);
 }
 
 // Test: exists method with data
-TEST_F(bloomFilterStorage storage, Exists_ReturnsTrueWhenDataExists) {
+TEST_F(BloomFilterStorageTest, Exists_ReturnsTrueWhenDataExists) {
     string testData = "Hello, world!";
-    storage.save(testData);
+    storage->save(testData);
     
-    bool result = storage.exists();
+    bool result = storage->exists();
     EXPECT_TRUE(result);
 }
 
-// look at this and see if implementation really overwrites instead of appending
-
 // Test: overwrite data
-TEST_F(bloomFilterStorage storage, Save_OverwritesExistingData) {
+TEST_F(BloomFilterStorageTest, Save_OverwritesExistingData) {
     string testData1 = "Hello, world!";
     string testData2 = "Goodbye, world!";
     
-    storage.save(testData1);
-    storage.save(testData2);
+    storage->save(testData1);
+    storage->save(testData2);
     
-    auto result = storage.load();
+    auto result = storage->loadUrls();
     ASSERT_TRUE(result.has_value());
     EXPECT_EQ(testData2, result.value());
 }
 
 // Test with integers
-TEST_F(bloomFilterStorage storage, CanStoreAndRetrieveIntegers) {
-    int testData = 42;
-    storage.save(testData);
+TEST_F(BloomFilterStorageTest, CanStoreAndRetrieveIntegers) {
+    vector<int> testData = {42, 43, 44};
+    storage->save(testData);
     
-    auto result = storage.load();
+    auto result = storage->loadInput();
     ASSERT_TRUE(result.has_value());
     EXPECT_EQ(testData, result.value());
 }
 
 // Test: remove method
-TEST_F(bloomFilterStorage storage, Remove_DeletesData) {
+TEST_F(BloomFilterStorageTest, Remove_DeletesData) {
     string testData = "Hello, world!";
-    storage.save(testData);
+    storage->save(testData);
     
-    storage.remove(testData);
+    storage->remove();
     
-    auto result = storage.loadUrls();
+    auto result = storage->loadUrls();
     EXPECT_FALSE(result.has_value());
 }
+
 // Test: remove method when no data exists
-TEST_F(bloomFilterStorage storage, Remove_NoDataDoesNotThrow) {
-    EXPECT_NO_THROW(storage.remove());
+TEST_F(BloomFilterStorageTest, Remove_NoDataDoesNotThrow) {
+    EXPECT_NO_THROW(storage->remove());
 }
 
+// Test: remove specific data
+TEST_F(BloomFilterStorageTest, Remove_SpecificData) {
+    string testData1 = "Hello, world!";
+    storage->save(testData1);
+    
+    storage->remove(testData1);
+    
+    auto result = storage->loadUrls();
+    EXPECT_FALSE(result.has_value());
+}
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
