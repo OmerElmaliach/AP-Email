@@ -3,33 +3,13 @@
 #include <vector>
 #include <optional>
 #include <memory>
-#include <Istorage.h>
-#include <fileStorage.h>
-#include <bloomFilterStorage.h>
+#include "datatypes/Istorage.h"
+#include "datatypes/fileStorage.h"
+#include "datatypes/bloomFilterStorage.h"
 
-#include "datatypes/imenu.h"
-
-
-class ICommand {
-    
-};
-
-class DummyMenu : protected IMenu<int>
-{
-public:
-    void run() override {}
-    void registerCommand(int& n, ICommand& cmd) override {}
-    void executeCommand(int& n) override {}
-    bool isRunning() override { return true; }
-    void exit() override {}
-};
-
-// Should pass if an IMenu object was created.
-TEST(IMenuTest, objectCreation) {
-    DummyMenu* menu = new DummyMenu();
-    std::cout << "IMenu created\n";
-    delete menu;
-    std::cout << "IMenu destroyed\n";
+// Should pass if test.cpp was compiled using the docker script.
+TEST(DockerTest, CompileFile) {
+    EXPECT_STREQ("DOCKERTEST", "DOCKERTEST");
 }
 
 using namespace std;
@@ -41,7 +21,7 @@ using namespace std;
 bloomFilterStorage storage = new bloomFilterStorage();
 
 // Test: save method
-TEST_F(storage, Save_ReturnsTrueOnSuccess) {
+TEST_F(bloomFilterStorage storage, Save_ReturnsTrueOnSuccess) {
     string testData = "Hello, world!";
     storage.save(testData);
     result = storage.getUrls().load();
@@ -49,13 +29,13 @@ TEST_F(storage, Save_ReturnsTrueOnSuccess) {
 }
 
 // Test: load method with no data
-TEST_F(storage, Load_ReturnsDataWhenDataExists) {
+TEST_F(bloomFilterStorage storage, Load_ReturnsDataWhenDataExists) {
     auto result = storage.load();
     EXPECT_EQ(result, storage&);
 }
 
 // Test: load method with data
-TEST_F(storage, Load_ReturnsDataWhenDataExists) {
+TEST_F(bloomFilterStorage storage, Load_ReturnsDataWhenDataExists) {
     string testData = "Hello, world!";
     storage.save(testData);
     
@@ -65,13 +45,13 @@ TEST_F(storage, Load_ReturnsDataWhenDataExists) {
 }
 
 // Test: exists method with no data
-TEST_F(storage, Exists_ReturnsFalseWhenNoData) {
+TEST_F(bloomFilterStorage storage, Exists_ReturnsFalseWhenNoData) {
     bool result = storage.exists();
     EXPECT_FALSE(result);
 }
 
 // Test: exists method with data
-TEST_F(storage, Exists_ReturnsTrueWhenDataExists) {
+TEST_F(bloomFilterStorage storage, Exists_ReturnsTrueWhenDataExists) {
     string testData = "Hello, world!";
     storage.save(testData);
     
@@ -82,7 +62,7 @@ TEST_F(storage, Exists_ReturnsTrueWhenDataExists) {
 // look at this and see if implementation really overwrites instead of appending
 
 // Test: overwrite data
-TEST_F(storage, Save_OverwritesExistingData) {
+TEST_F(bloomFilterStorage storage, Save_OverwritesExistingData) {
     string testData1 = "Hello, world!";
     string testData2 = "Goodbye, world!";
     
@@ -95,7 +75,7 @@ TEST_F(storage, Save_OverwritesExistingData) {
 }
 
 // Test with integers
-TEST_F(storage, CanStoreAndRetrieveIntegers) {
+TEST_F(bloomFilterStorage storage, CanStoreAndRetrieveIntegers) {
     int testData = 42;
     storage.save(testData);
     
@@ -105,7 +85,7 @@ TEST_F(storage, CanStoreAndRetrieveIntegers) {
 }
 
 // Test: remove method
-TEST_F(storage, Remove_DeletesData) {
+TEST_F(bloomFilterStorage storage, Remove_DeletesData) {
     string testData = "Hello, world!";
     storage.save(testData);
     
@@ -115,7 +95,7 @@ TEST_F(storage, Remove_DeletesData) {
     EXPECT_FALSE(result.has_value());
 }
 // Test: remove method when no data exists
-TEST_F(storage, Remove_NoDataDoesNotThrow) {
+TEST_F(bloomFilterStorage storage, Remove_NoDataDoesNotThrow) {
     EXPECT_NO_THROW(storage.remove());
 }
 
