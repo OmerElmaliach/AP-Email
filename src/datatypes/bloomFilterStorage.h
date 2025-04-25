@@ -35,9 +35,9 @@ public:
     bool save(const string& data);
     bool save(int* data);
 
-    optional<vector<int>> loadInput() const;
-    optional<string> loadUrls() const;
-    optional<int*> loadFilter() const;
+    std::optional<vector<int>> loadInput() const;
+    std::optional<string> loadUrls() const;
+    std::optional<int*> loadFilter() const;
 
     bool exists() const;
 

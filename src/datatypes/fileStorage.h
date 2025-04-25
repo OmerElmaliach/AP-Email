@@ -3,9 +3,10 @@
 
 #include "Istorage.h"
 #include <fstream>
-#include <filesystem>
-#include <stdexcept>
 #include <string>
+#include <optional>
+#include <cstdio> // For remove function as alternative to filesystem
+#include <sys/stat.h> // For stat function to check if file exists
 
 using namespace std;
 
@@ -21,12 +22,15 @@ private:
     // Helper function to deserialize an object from the file
     T loadFromFile() const;
 
+    // Helper function to create directory if it doesn't exist
+    void createDirectory(const string& path) const;
+
 public:
     explicit fileStorage(const string& fileName);
     
     bool save(const T& object) override;
     
-    optional<T> load() const override;
+    std::optional<T> load() const override;
     
     void remove() override;
     void remove(const T& data) override;
@@ -35,10 +39,20 @@ public:
 };
 
 template <typename T>
+void fileStorage<T>::createDirectory(const string& path) const {
+    // Create directory using system-specific calls
+    #ifdef _WIN32
+    system(("mkdir " + path).c_str());
+    #else
+    system(("mkdir -p " + path).c_str());
+    #endif
+}
+
+template <typename T>
 fileStorage<T>::fileStorage(const string& fileName)
     : filePath("../data/" + fileName) {
     // Ensure the ../data directory exists
-    filesystem::create_directories("../data");
+    createDirectory("../data");
 }
 
 template <typename T>
@@ -74,21 +88,22 @@ bool fileStorage<T>::save(const T& object) {
 }
 
 template <typename T>
-optional<T> fileStorage<T>::load() const {
+std::optional<T> fileStorage<T>::load() const {
     if (!exists()) {
-        return nullopt;
+        return std::nullopt;
     }
     try {
         return loadFromFile();
     } catch (const exception& e) {
-        return nullopt;
+        return std::nullopt;
     }
 }
 
 template <typename T>
 void fileStorage<T>::remove() {
     if (exists()) {
-        filesystem::remove(filePath);
+        // Use standard C function to remove file
+        std::remove(filePath.c_str());
     }
 }
 
@@ -103,7 +118,7 @@ void fileStorage<T>::remove(const T& data) {
     // collections of data differently.
     
     if (exists()) {
-        auto current = load();
+        auto current = this->load();
         if (current.has_value() && current.value() == data) {
             remove();
         }
@@ -112,7 +127,9 @@ void fileStorage<T>::remove(const T& data) {
 
 template <typename T>
 bool fileStorage<T>::exists() const {
-    return filesystem::exists(filePath);
+    // Use standard C function to check if file exists
+    struct stat buffer;
+    return (stat(filePath.c_str(), &buffer) == 0);
 }
 
 #endif
