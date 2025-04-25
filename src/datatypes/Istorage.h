@@ -1,3 +1,6 @@
+#ifndef ISTORAGE_H
+#define ISTORAGE_H
+
 #include <string>
 #include <vector>
 #include <optional>
@@ -20,3 +23,5 @@ public:
     // Remove data from storage
     virtual void remove(const T& data) = 0;
 };
+
+#endif

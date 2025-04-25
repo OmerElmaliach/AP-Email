@@ -14,7 +14,7 @@ class bloomFilterStorage : public IStorage {
         fileStorage<vector<int>> input;
         fileStorage<string> urls;
         fileStorage<int*> filter;
-
+            
     public:
         bloomFilterStorage() {
             this.input = new fileStorage<vector<int>>("input.txt");
@@ -31,6 +31,31 @@ class bloomFilterStorage : public IStorage {
             delete urls;
             delete filter;
         }
+    // Getters
+        fileStorage<vector<int>>& getInput() {
+            return input;
+        }
+
+        fileStorage<string>& getUrls() {
+            return urls;
+        }
+
+        fileStorage<int*>& getFilter() {
+            return filter;
+        }
+
+        // Setters
+        void setInput(const fileStorage<vector<int>>& newInput) {
+            input = newInput;
+        }
+
+        void setUrls(const fileStorage<string>& newUrls) {
+            urls = newUrls;
+        }
+
+        void setFilter(const fileStorage<int*>& newFilter) {
+            filter = newFilter;
+        }
         void save(const <vector<int>> data) override {
             input.save(data);
         }
@@ -39,6 +64,9 @@ class bloomFilterStorage : public IStorage {
         }
         void save(const char* data) override {
             filter.save(data);
+        }
+        bloomFilterStorage load() override {
+            return new bloomFilterStorage(input.load(), urls.load(), filter.load());
         }
         vector loadInput() {
             return input.load();
@@ -53,7 +81,7 @@ class bloomFilterStorage : public IStorage {
             return new bloomFilterStorage(input.load(), urls.load(), filter.load());
         }
         bool exists() const override {
-            return input.exists() && urls.exists() && filter.exists();
+            return input.exists() || urls.exists() || filter.exists();
         }
         void remove(const <vector<int>> data) override {
             input.remove(data);
