@@ -3,13 +3,13 @@
 
 #include <vector>
 #include <string>
+#include <optional>
 #include "Istorage.h"
 #include "fileStorage.h"
 
 using namespace std;
 
-template <typename T>
-class bloomFilterStorage : public IStorage {
+class bloomFilterStorage {
 private:
     fileStorage<vector<int>>* input;
     fileStorage<string>* urls;
@@ -17,25 +17,36 @@ private:
 
 public:
     bloomFilterStorage();
-    bloomFilterStorage(const vector<int>& input, const string& urls, const int* filter);
+    bloomFilterStorage(const vector<int>& inputData, const string& urlsData, int* filterData);
     ~bloomFilterStorage();
 
-    void save(const vector<int> data) override;
-    void save(const string& data) override;
-    void save(const char* data) override;
+    // Getters
+    fileStorage<vector<int>>& getInput();
+    fileStorage<string>& getUrls();
+    fileStorage<int*>& getFilter();
 
-    vector<int> loadInput();
-    string loadUrls();
-    int* loadFilter();
+    // Setters
+    void setInput(const fileStorage<vector<int>>& newInput);
+    void setUrls(const fileStorage<string>& newUrls);
+    void setFilter(const fileStorage<int*>& newFilter);
 
-    bloomFilterStorage& load();
+    // Storage operations
+    bool save(const vector<int>& data);
+    bool save(const string& data);
+    bool save(int* data);
 
-    bool exists() const override;
+    optional<vector<int>> loadInput() const;
+    optional<string> loadUrls() const;
+    optional<int*> loadFilter() const;
 
-    void remove(const vector<int> data) override;
-    void remove(const string& data) override;
-    void remove(const int* data) override;
-    void remove() override;
+    bool exists() const;
+
+    void remove();  // Remove all data
+    
+    // Remove specific data
+    void remove(const vector<int>& data);
+    void remove(const string& data);
+    void remove(int* data);
 };
 
 #endif
