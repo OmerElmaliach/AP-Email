@@ -28,7 +28,7 @@ public:
     string loadUrls();
     int* loadFilter();
 
-    bloomFilterStorage* load();
+    bloomFilterStorage& load();
 
     bool exists() const override;
 

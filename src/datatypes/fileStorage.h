@@ -1,3 +1,6 @@
+#ifndef FILESTORAGE_H
+#define FILESTORAGE_H
+
 #include "Istorage.h"
 #include <fstream>
 #include <filesystem>
@@ -29,3 +32,5 @@ public:
 
     bool exists() const override;
 };
+
+#endif
