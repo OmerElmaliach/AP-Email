@@ -16,7 +16,7 @@ public:
     virtual bool save(const T& data) = 0;
     
     // Load data from storage. Returns std::optional containing data if exists
-    virtual optional<T> load() const = 0;
+    virtual std::optional<T> load() const = 0;
     
     // Check if data exists in storage
     virtual bool exists() const = 0;

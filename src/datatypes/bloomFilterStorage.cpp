@@ -1,8 +1,6 @@
 #include "bloomFilterStorage.h"
 #include "fileStorage.h"
 #include <fstream>
-#include <filesystem>
-#include <stdexcept>
 #include <string>
 #include <vector>
 #include <optional>
@@ -46,18 +44,18 @@ fileStorage<int*>& bloomFilterStorage::getFilter() {
 
 // Setters
 void bloomFilterStorage::setInput(const fileStorage<vector<int>>& newInput) {
-    delete input;
-    input->save(newInput.load().value_or(vector<int>())); // Save the new input data
+    delete input; // Free the old storage
+    input->save(newInput.load().value()); // Save the new input data
 }
 
 void bloomFilterStorage::setUrls(const fileStorage<string>& newUrls) {
-    delete urls;
-    urls->save(newUrls.load().value_or(string())); // Save the new URLs data
+    delete urls; // Free the old storage
+    urls->save(newUrls.load().value()); // Save the new URLs data
 }
 
 void bloomFilterStorage::setFilter(const fileStorage<int*>& newFilter) {
-    delete filter;
-    filter->save(newFilter.load().value_or(nullptr)); // Save the new filter data
+    delete filter; // Free the old storage
+    filter->save(newFilter.load().value()); // Save the new filter data 
 }
 
 // Storage operations
@@ -73,15 +71,15 @@ bool bloomFilterStorage::save(int* data) {
     return filter->save(data);
 }
 
-optional<vector<int>> bloomFilterStorage::loadInput() const {
+std::optional<vector<int>> bloomFilterStorage::loadInput() const {
     return input->load();
 }
 
-optional<string> bloomFilterStorage::loadUrls() const {
+std::optional<string> bloomFilterStorage::loadUrls() const {
     return urls->load();
 }
 
-optional<int*> bloomFilterStorage::loadFilter() const {
+std::optional<int*> bloomFilterStorage::loadFilter() const {
     return filter->load();
 }
 
