@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include "datatypes/app.h"
 #include <string>
 #include <vector>
 #include <optional>
@@ -24,11 +25,11 @@ public:
 };
 
 // Should pass if an IMenu object was created.
-TEST(IMenuTest, objectCreation) {
-    DummyMenu* menu = new DummyMenu();
-    std::cout << "IMenu created\n";
-    delete menu;
-    std::cout << "IMenu destroyed\n";
+TEST(AppTest, objectCreation) {
+    App* app = new App();
+    std::cout << "App created\n";
+    delete app;
+    std::cout << "App destroyed\n";
 }
 
 using namespace std;
