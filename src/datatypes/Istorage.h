@@ -6,22 +6,29 @@
 #include <optional>
 
 using namespace std;
-template <typename T>
+
 class IStorage {
 public:
     virtual ~IStorage() = default;
     
     // Save data to storage
-    virtual bool save(const T& data) = 0;
+    virtual void save(const string& data) = 0;
     
     // Load data from storage. Void call loads the whole file
-    virtual optional<T> load() = 0;
+    virtual optional<string> load() = 0;
+
+    virtual optional<string> load(const string& data) = 0;
     
     // Check if data exists in storage
     virtual bool exists() const = 0;
 
+    virtual bool exists(const string& data) const = 0;
+
     // Remove data from storage
-    virtual void remove(const T& data) = 0;
+    virtual void remove(const string& data) = 0;
+
+    // Remove all data from storage
+    virtual void remove() = 0;
 };
 
 #endif
