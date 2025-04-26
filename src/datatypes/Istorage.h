@@ -13,7 +13,7 @@ public:
     virtual ~IStorage() = default;
     
     // Save data to storage
-    virtual bool save(const T& data) = 0;
+    virtual void save(const T& data) = 0;
     
     // Load data from storage. Returns std::optional containing data if exists
     virtual std::optional<T> load() const = 0;

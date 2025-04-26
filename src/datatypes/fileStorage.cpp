@@ -35,7 +35,7 @@ private:
     }
 
 public:
-    explicit FileStorage(const string& fileName)
+    explicit fileStorage(const string& fileName)
         : filePath("../data/" + fileName) {
         // Ensure the ../data directory exists
         filesystem::create_directories("../data");
