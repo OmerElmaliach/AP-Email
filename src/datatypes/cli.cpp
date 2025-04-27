@@ -122,7 +122,7 @@ public:
      */
     void run() override {
         // Menu state is permenantly true since no exit protocol defined.
-        m_menuState = false;
+        m_menuState = true;
         while (isRunning()) {
             string input;
             if (m_Stor->LoadInput().empty() || m_Stor->LoadFilterArray().empty()) {
