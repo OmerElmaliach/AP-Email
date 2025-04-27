@@ -11,7 +11,6 @@
 #include "MyHash.h"
 #include "BloomFilter.h"
 #include "bloomFilterStorage.h"
-#include "CheckURLCommand.h"
 
 /**
  * @class CheckURLCommand
