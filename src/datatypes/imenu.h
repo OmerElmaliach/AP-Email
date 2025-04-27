@@ -1,12 +1,16 @@
+#ifndef IMENU_H
+#define IMENU_H
+
 #include <map>
-#include "icommand.h"
+#include "Icommand.h"
+#include "Istorage.h"
 using namespace std;
 
 // IMenu abstract class.
-template<class T>
+template<class T, class S>
 class IMenu {
 protected:
-    std::map<T, ICommand> m_cmdMap;
+    std::map<T, Icommand*> m_cmdMap;
     bool m_menuState; // True if running, otherwise false.
 
 
@@ -22,7 +26,7 @@ protected:
      * @param t Input to trigger a command.
      * @param command Command to be executed.
      */
-    virtual void registerCommand(T& t, ICommand& command) = 0;
+    virtual void registerCommand(T& t, Icommand* command) = 0;
 
     
     /**
@@ -30,7 +34,7 @@ protected:
      * 
      * @param t Input to trigger a command.
      */
-    virtual void executeCommand(T& t) = 0;
+    virtual void executeCommand(T& t, S& s) = 0;
 
 
     /**
@@ -44,3 +48,5 @@ protected:
      */
     virtual void exit() = 0;
 };
+
+#endif
