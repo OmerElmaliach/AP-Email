@@ -1,7 +1,9 @@
-#include "bloomFilterStorage.h"
 #include "fileStorage.h"
 #include "bloomFilterStorage.h"
 #include <fstream>
+#include <filesystem>
+#include <stdexcept>
+#include "Istorage.h"
 #include <string>
 #include <vector>
 #include <optional>
@@ -39,7 +41,7 @@ void bloomFilterStorage::save(const string& data) {
 }
 
 void bloomFilterStorage::save(const vector<int> data) {
-    input->save(convertVectorIntToString(data));
+    input->save(data);
 }
 
 void bloomFilterStorage::save(const vector<char> data) {

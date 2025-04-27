@@ -1,7 +1,7 @@
 FROM gcc:latest
 
 # Define cpp files to be compiled.
-ARG FILES="main.cpp datatypes/app.cpp datatypes/bloomFilterStorage.cpp datatypes/fileStorage.cpp"
+ARG FILES="main.cpp datatypes/app.cpp datatypes/bloomFilterStorage.cpp datatypes/fileStorage.cpp datatypes/CheckURLCommand.cpp datatypes/AddURLCommand.cpp datatypes/cli.cpp datatypes/MyHash.cpp"
 
 # Copy all files in src directory and make it the working directory.
 COPY . /Ap_Email/src
