@@ -260,6 +260,46 @@ TEST_F(bloomFilterStorageTest, Remove_NoDataDoesNotThrow) {
     EXPECT_NO_THROW(storage->remove());
 }
 
+
+// Test: load method for specific data when several datas saved
+TEST_F(bloomFilterStorageTest, Load_ReturnsDataWhenSeveralDatasSaved) {
+    vector<int> testData1 = {1, 2, 3};
+    vector<int> testData2 = {4, 5, 6};
+    storage->save(testData1);
+    storage->save(testData2);
+    vector<int> expected = {1, 2, 3, 4, 5, 6};
+    
+    auto result = storage->loadInput();
+    ASSERT_FALSE(result.empty());
+    EXPECT_EQ(result, expected);
+}
+
+// Test: exist method for specific data when several datas saved
+TEST_F(bloomFilterStorageTest, Exists_ReturnsTrueWhenSeveralDatasSaved) {
+    vector<int> testData1 = {1, 2, 3};
+    vector<int> testData2 = {4, 5, 6};
+    storage->save(testData1);
+    storage->save(testData2);
+    
+    bool result = storage->exists(testData1);
+    EXPECT_TRUE(result);
+}
+
+// Test: remove method for specific data when several datas saved
+TEST_F(bloomFilterStorageTest, Remove_DeletesDataWhenSeveralDatasSaved) {
+    vector<int> testData1 = {1, 2, 3};
+    vector<int> testData2 = {4, 5, 6};
+    storage->save(testData1);
+    storage->save(testData2);
+    
+    storage->remove(testData2);
+    
+    auto result = storage->loadInput();
+    EXPECT_EQ(result, testData1);
+    EXPECT_FALSE(result == testData2);
+}
+
+
 // Test: remove specific data
 TEST_F(fileStorageTest tester, Remove_SpecificData) {
     string testData1 = "Hello, world!";
@@ -270,6 +310,7 @@ TEST_F(fileStorageTest tester, Remove_SpecificData) {
     auto result = tester.getURLS().load();
     EXPECT_FALSE(result.has_value());
 }
+
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
