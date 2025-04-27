@@ -1,72 +1,130 @@
 #include "fileStorage.h"
+#include "bloomFilterStorage.h"
 #include <fstream>
 #include <filesystem>
 #include <stdexcept>
 #include "Istorage.h"
 #include <string>
 #include <vector>
+#include <optional>
+#include <memory>
+#include <sstream>
+
 
 using namespace std;
-template <typename T>
 
-class bloomFilterStorage : public IStorage {
-    private:
-        fileStorage<vector<int>> input;
-        fileStorage<string> urls;
-        fileStorage<int*> filter;
+    bloomFilterStorage::bloomFilterStorage() : fileStorage("bloomFilterStorage.txt") {
+        input = new fileStorage("input.txt");
+        urls = new fileStorage("urls.txt");
+        filter = new fileStorage("filter.txt");
+    }
+    bloomFilterStorage::bloomFilterStorage(const vector<int>& inputData, const string& urlsData, const vector<char> filterData)
+        : fileStorage("bloomFilterStorage.txt") {
+        input = new fileStorage("input.txt");
+        urls = new fileStorage("urls.txt");
+        filter = new fileStorage("filter.txt");
 
-    public:
-        bloomFilterStorage() {
-            this.input = new fileStorage<vector<int>>("input.txt");
-            this.urls = new fileStorage<string>("urls.txt");
-            this.filter = new fileStorage<int*>("filter.txt");
+        input->save(convertVectorIntToString(inputData));
+        urls->save(urlsData);
+        filter->save(convertVectorCharToString(filterData));
+    }
+    bloomFilterStorage::~bloomFilterStorage() {
+        delete input;
+        delete urls;
+        delete filter;
+    }
+    void bloomFilterStorage::save(const string& data) {
+        urls->save(data);
+    }
+    void bloomFilterStorage::save(const vector<int> data) {
+        input->save(convertVectorIntToString(data));
+    }
+    void bloomFilterStorage::save(const vector<char> data) {
+        filter->save(convertVectorCharToString(data));
+    }
+    vector<int> bloomFilterStorage::loadInput() {
+        string data = input->load().value_or("");
+        return convertStringToIntVector(data);
+    }
+    string bloomFilterStorage::loadUrls() {
+        return urls->load().value_or("");
+    }
+    vector<char> bloomFilterStorage::loadFilterArray() {
+        string data = filter->load().value_or("");
+        return convertStringToCharVector(data);
+    }
+    bloomFilterStorage& bloomFilterStorage::loadBloomFilter() {
+        return *this;
+    }
+    bool bloomFilterStorage::exists() const {
+        return input->exists() || urls->exists() || filter->exists();
+    }
+    bool bloomFilterStorage::exists(const string& data) const {
+        return urls->exists(data);
+    }
+    bool bloomFilterStorage::exists(const vector<int> data) {
+        return input->exists(convertVectorIntToString(data));
+    }
+    bool bloomFilterStorage::exists(const vector<char> data) {
+        return filter->exists(convertVectorCharToString(data));
+    }
+    void bloomFilterStorage::remove(const string& data) {
+        urls->remove(data);
+    }
+    void bloomFilterStorage::remove(const vector<int> data) {
+        input->remove(convertVectorIntToString(data));
+    }
+    void bloomFilterStorage::remove(const vector<char> data) {
+        filter->remove(convertVectorCharToString(data));
+    }
+    void bloomFilterStorage::remove() {
+        input->remove();
+        urls->remove();
+        filter->remove();
+    }
+    string bloomFilterStorage::convertVectorCharToString(const vector<char>& data) const {
+        string result;
+        for (const auto& val : data) {
+            if (!result.empty()) {
+                result += ",";
+            }
+            result += to_string(val);
         }
-        bloomFilterStorage(const <vector<int>>& input, const string& urls, const int* filter) {
-            this.input = new fileStorage<vector<int>>("input.txt");
-            this.urls = new fileStorage<string>("urls.txt");
-            this.filter = new fileStorage<int*>("filter.txt");
+        return result;
+    }
+
+    string bloomFilterStorage::convertVectorIntToString(const vector<int>& data) const {
+        string result;
+        for (const auto& val : data) {
+            if (!result.empty()) {
+                result += ",";
+            }
+            result += to_string(val);
         }
-        ~bloomFilterStorage() {
-            delete input;
-            delete urls;
-            delete filter;
+        return result;
+    }
+
+    vector<int> bloomFilterStorage::convertStringToIntVector(const string& data) const {
+        vector<int> result;
+        stringstream ss(data);
+        string item;
+        while (getline(ss, item, ',')) {
+            result.push_back(stoi(item));
         }
-        void save(const <vector<int>> data) override {
-            input.save(data);
+        return result;
+    }
+
+    vector<char> bloomFilterStorage::convertStringToCharVector(const string& data) const {
+        vector<char> result;
+        stringstream ss(data);
+        string item;
+        while (getline(ss, item, ',')) {
+            result.push_back(stoi(item));
         }
-        void save(const string& data) override {
-            urls.save(data);
-        }
-        void save(const char* data) override {
-            filter.save(data);
-        }
-        vector loadInput() {
-            return input.load();
-        }
-        string loadUrls() {
-            return urls.load();
-        }
-        int* loadFilter() {
-            return filter.load();
-        }
-        bloomFilterStorage load() {
-            return new bloomFilterStorage(input.load(), urls.load(), filter.load());
-        }
-        bool exists() const override {
-            return input.exists() && urls.exists() && filter.exists();
-        }
-        void remove(const <vector<int>> data) override {
-            input.remove(data);
-        }
-        void remove(const string& data) override {
-            urls.remove(data);
-        }
-        void remove(const int* data) override {
-            filter.remove(data);
-        }
-        void remove() override {
-            input.remove();
-            urls.remove();
-            filter.remove();
-        }
-    };
+        return result;
+    }
+    
+
+    
+    
+;
