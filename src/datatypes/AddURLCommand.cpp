@@ -34,8 +34,13 @@ public:
         vector<int> hashes = m_storage.loadInput();
         // cell one has trash value (the array size)
         std::size_t length = hashes.size();
+        
+        //set array size to correct size, first arg of input      
+        m_bloomFilter.setArraySize(hashes[0]);
+
         //for eatch cell build the myhash and pass it to the blood
         MyHash myHash(hashes[0]);
+
 
         for (size_t i = 1; i < length; i++)
         {   

@@ -21,7 +21,7 @@ private:
 public:    
 
     // constr a bloom filter with hash and size of int 
-    BloomFilter(Hash hash, std::size_t vectorSize);
+    BloomFilter(Hash hash, std::size_t vectorSize = 16);
 
     //set a new hash for the bloom filter
     void setHash( Hash hash);
@@ -34,6 +34,8 @@ public:
     
     //set all chars in vector to zero 
     void resetBitArray(); 
+    // set the size of the array
+    void setArraySize(int size);
 
 };
 
@@ -44,8 +46,9 @@ public:
     m_hash(hash),                      // Initialize m_hash
     m_charVector(vectorSize, 0)         // Initialize bitArray with size and false values
     {}
-
     
+   
+
   //set a new hash for the bloom filter
   template <typename T, typename Hash>
   void BloomFilter<T, Hash>::setHash(Hash hash){
@@ -80,6 +83,14 @@ public:
     void BloomFilter<T, Hash>::resetBitArray(){
         std::fill(m_charVector.begin(), m_charVector.end(), 0);
     } 
+
+    // set the size of the array
+    template <typename T, typename Hash>
+    void  BloomFilter<T, Hash>::setArraySize(int newSize){
+        m_vectorSize = newSize;
+        m_charVector.resize(m_vectorSize, 0);
+
+    }
 
 
 
