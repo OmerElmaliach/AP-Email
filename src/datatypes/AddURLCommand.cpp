@@ -11,22 +11,13 @@
 
 using namespace std;
 
-class AddURLCommand : public Icommand{
-private:
-    // the class incharge of IO with the system
-    bloomFilterStorage& m_storage;
-    
-    std::string m_URL;
-
-    BloomFilter<std::string, MyHash>& m_bloomFilter;
-
-public:
     //constructor
-    AddURLCommand(bloomFilterStorage& storage, const std::string& URL, BloomFilter<std::string, MyHash>& bloomFilter):
+    AddURLCommand::AddURLCommand(bloomFilterStorage& storage, const std::string& URL, BloomFilter<std::string, MyHash>& bloomFilter):
                 m_storage(storage), m_URL(URL), m_bloomFilter(bloomFilter){}
 
+
     // will add the URL to url's file, run it through the bloomfilter and save the array in the array's file
-    void executeCommand() override {
+    void AddURLCommand::executeCommand()  {
         //save URL in its file
         m_storage.save(m_URL);
         
@@ -34,13 +25,12 @@ public:
         vector<int> hashes = m_storage.loadInput();
         // cell one has trash value (the array size)
         std::size_t length = hashes.size();
-        
+
         //set array size to correct size, first arg of input      
         m_bloomFilter.setArraySize(hashes[0]);
 
         //for eatch cell build the myhash and pass it to the blood
         MyHash myHash(hashes[0]);
-
 
         for (size_t i = 1; i < length; i++)
         {   
@@ -52,18 +42,16 @@ public:
         }
 
         //in the end we get the final result 
-        vector<char> bitArrayToSave = m_bloomFilter.getArray();
+        vector<char> bitArrayToSave = m_bloomFilter.getFiltered();
         m_storage.save(bitArrayToSave); //TODO: Gabi- this needs to be a char vec, ok?  
         //all is saved yay! reset the bloomFilter array to all 0's and were done
-        m_storage.resetBitArray(); // TODO: this function:P        
-
+        m_bloomFilter.resetBitArray();   
 
     }
 
 
 
 
-};
 
 
 
