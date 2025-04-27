@@ -28,11 +28,13 @@ using namespace std;
         std::size_t length = hashes.size();
         //for eatch cell build the myhash and pass it to the bloom
         MyHash myHash(hashes[0]);
+        cout << "TESTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT 1";
 
         for (size_t i = 1; i < length; i++)
         {   
+            myHash.setRounds(hashes[i]);
             //were making a new hash with myhash and sending it to the bloom
-            m_bloomFilter.setHash(myHash.setRounds(hashes[i]));
+            m_bloomFilter.setHash(myHash);
             //the bloom uses this hash to filter the key, in out care the URL
             m_bloomFilter.filter(m_URL);
             //we keep doing that for every hash
@@ -40,7 +42,9 @@ using namespace std;
 
         //in the end we get the final result 
         vector<char> bitArrayToCheck = m_bloomFilter.getFiltered();
-        
+
+        cout << "TESTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT 2";
+
         if (m_storage.exists(bitArrayToCheck))
         {
             cout << "true ";

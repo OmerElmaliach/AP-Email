@@ -9,18 +9,24 @@
 #include "BloomFilter.h"
 #include "AddURLCommand.h"
 
+
+#include <iostream>
+
 using namespace std;
 
     //constructor
     AddURLCommand::AddURLCommand(bloomFilterStorage& storage, const std::string& URL, BloomFilter<std::string, MyHash>& bloomFilter):
-                m_storage(storage), m_URL(URL), m_bloomFilter(bloomFilter){}
+                m_storage(storage), m_URL(URL), m_bloomFilter(bloomFilter){
+                    cout << "i liiiive ADD";
+                }
 
 
     // will add the URL to url's file, run it through the bloomfilter and save the array in the array's file
     void AddURLCommand::executeCommand()  {
         //save URL in its file
         m_storage.save(m_URL);
-        
+        cout << "TESTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT ADD";
+
         //get hash function numbers
         vector<int> hashes = m_storage.loadInput();
         // cell one has trash value (the array size)
@@ -34,8 +40,9 @@ using namespace std;
 
         for (size_t i = 1; i < length; i++)
         {   
+            myHash.setRounds(hashes[i]);
             //were making a new hash with myhash and sending it to the bloom
-            m_bloomFilter.setHash(myHash.setRounds(hashes[i]));
+            m_bloomFilter.setHash(myHash);
             //the blood uses this hash to filter the key, in out care the URL
             m_bloomFilter.filter(m_URL);
             //we keep doing that for every hash
