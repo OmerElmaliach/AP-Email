@@ -1,0 +1,18 @@
+FROM gcc:latest
+
+# Define cpp files to be compiled.
+ARG FILES="main.cpp datatypes/app.cpp datatypes/bloomFilterStorage.cpp datatypes/fileStorage.cpp"
+
+# Copy all files in src directory and make it the working directory.
+COPY . /Ap_Email/src
+WORKDIR /Ap_Email/src
+
+# Compile all cpp files.
+RUN g++ ${FILES} -o /Ap_Email/main
+WORKDIR /Ap_Email
+
+# Create data directory.
+RUN mkdir /Ap_Email/data
+
+# Run main.
+CMD ["./main"]
