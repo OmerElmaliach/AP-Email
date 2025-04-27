@@ -27,6 +27,18 @@ fileStorage::fileStorage(const string& fileName)
     }
 }
 
+// Helper function to serialize an object to the file in a truncated manner
+// (overwrites the file content)
+void fileStorage::saveTruncToFile(const string& object) {
+    fileStream.open(filePath, ios::out | ios::trunc);
+    if (!fileStream) {
+        throw runtime_error("Failed to open file for saving.");
+    }
+    
+    fileStream << object;
+    fileStream.close();
+}
+
 // Helper function to serialize an object to the file
 void fileStorage::saveToFile(const string& object) {
     // First check if the file is empty
@@ -75,6 +87,12 @@ void fileStorage::save(const string& data) {
     // Simply append the data to the file
     saveToFile(data);
 }
+
+void fileStorage::save(const vector<int>& data) {
+    // Simply append the data to the file
+    saveTruncToFile(convertVectorToString(data));
+}
+
 
 optional<string> fileStorage::load() {
     if (!exists()) {
