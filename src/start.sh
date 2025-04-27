@@ -15,4 +15,4 @@ cd src
 docker run -v "$prev_pwd/data:/Ap_Email/data" docker-main
 
 # Delete the image previously created.
-docker image rm -f docker-maina
+docker image rm -f docker-main
