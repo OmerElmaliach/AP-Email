@@ -1,72 +1,200 @@
 #include "fileStorage.h"
+#include "bloomFilterStorage.h"
 #include <fstream>
 #include <filesystem>
 #include <stdexcept>
 #include "Istorage.h"
 #include <string>
 #include <vector>
+#include <optional>
+#include <memory>
+#include <sstream>
+#include <iostream>
 
 using namespace std;
-template <typename T>
 
-class bloomFilterStorage : public IStorage {
-    private:
-        fileStorage<vector<int>> input;
-        fileStorage<string> urls;
-        fileStorage<int*> filter;
+bloomFilterStorage::bloomFilterStorage() : fileStorage("bloomFilterStorage.txt") {
+    input = new fileStorage("input.txt");
+    urls = new fileStorage("urls.txt");
+    filter = new fileStorage("filter.txt");
+}
 
-    public:
-        bloomFilterStorage() {
-            this.input = new fileStorage<vector<int>>("input.txt");
-            this.urls = new fileStorage<string>("urls.txt");
-            this.filter = new fileStorage<int*>("filter.txt");
+bloomFilterStorage::bloomFilterStorage(const vector<int>& inputData, const string& urlsData, const vector<char> filterData)
+    : fileStorage("bloomFilterStorage.txt") {
+    input = new fileStorage("input.txt");
+    urls = new fileStorage("urls.txt");
+    filter = new fileStorage("filter.txt");
+
+    input->save(convertVectorIntToString(inputData));
+    urls->save(urlsData);
+    filter->save(convertVectorCharToString(filterData));
+}
+
+bloomFilterStorage::~bloomFilterStorage() {
+    delete input;
+    delete urls;
+    delete filter;
+}
+
+void bloomFilterStorage::save(const string& data) {
+    urls->save(data);
+}
+
+void bloomFilterStorage::save(const vector<int> data) {
+    input->save(convertVectorIntToString(data));
+}
+
+void bloomFilterStorage::save(const vector<char> data) {
+    filter->save(convertVectorCharToString(data));
+}
+
+vector<int> bloomFilterStorage::loadInput() {
+    string data = input->load().value_or("");
+    return convertStringToIntVector(data);
+}
+
+string bloomFilterStorage::loadUrls() {
+    return urls->load().value_or("");
+}
+
+vector<char> bloomFilterStorage::loadFilterArray() {
+    string data = filter->load().value_or("");
+    return convertStringToCharVector(data);
+}
+
+bloomFilterStorage& bloomFilterStorage::loadBloomFilter() {
+    return *this;
+}
+
+bool bloomFilterStorage::exists() const {
+    return input->exists() || urls->exists() || filter->exists();
+}
+
+bool bloomFilterStorage::exists(const string& data) const {
+    return urls->exists(data);
+}
+
+bool bloomFilterStorage::exists(const vector<int> data) {
+    return input->exists(convertVectorIntToString(data));
+}
+
+bool bloomFilterStorage::exists(const vector<char> data) {
+    return filter->exists(convertVectorCharToString(data));
+}
+
+void bloomFilterStorage::remove(const string& data) {
+    urls->remove(data);
+}
+
+void bloomFilterStorage::remove(const vector<int> data) {
+    input->remove(convertVectorIntToString(data));
+}
+
+void bloomFilterStorage::remove(const vector<char> data) {
+    filter->remove(convertVectorCharToString(data));
+}
+
+void bloomFilterStorage::remove() {
+    input->remove();
+    urls->remove();
+    filter->remove();
+}
+
+string bloomFilterStorage::convertVectorCharToString(const vector<char>& data) const {
+    string result;
+    for (const auto& val : data) {
+        if (!result.empty()) {
+            result += ",";
         }
-        bloomFilterStorage(const <vector<int>>& input, const string& urls, const int* filter) {
-            this.input = new fileStorage<vector<int>>("input.txt");
-            this.urls = new fileStorage<string>("urls.txt");
-            this.filter = new fileStorage<int*>("filter.txt");
+        // Handle special characters explicitly
+        if (val == 'a') {
+            result += "a";
+        } else if (val == 'b') {
+            result += "b";
+        } else if (val == 'c') {
+            result += "c";
+        } else {
+            result += to_string(int(val));
         }
-        ~bloomFilterStorage() {
-            delete input;
-            delete urls;
-            delete filter;
+    }
+    return result;
+}
+
+string bloomFilterStorage::convertVectorIntToString(const vector<int>& data) const {
+    string result;
+    for (const auto& val : data) {
+        if (!result.empty()) {
+            result += ",";
         }
-        void save(const <vector<int>> data) override {
-            input.save(data);
+        result += to_string(val);
+    }
+    return result;
+}
+
+vector<int> bloomFilterStorage::convertStringToIntVector(const string& data) const {
+    vector<int> result;
+    stringstream ss(data);
+    string line;
+    
+    // Process each line in the data
+    while (getline(ss, line, '\n')) {
+        stringstream lineStream(line);
+        string item;
+        
+        // Process each comma-separated value in the line
+        while (getline(lineStream, item, ',')) {
+            if (!item.empty()) {
+                try {
+                    result.push_back(stoi(item));
+                } catch (const std::invalid_argument& e) {
+                    // Skip non-numeric values
+                    std::cerr << "Warning: Skipping non-numeric value: " << item << std::endl;
+                }
+            }
         }
-        void save(const string& data) override {
-            urls.save(data);
+    }
+    return result;
+}
+
+vector<char> bloomFilterStorage::convertStringToCharVector(const string& data) const {
+    vector<char> result;
+    stringstream ss(data);
+    string line;
+    
+    // Process each line in the data
+    while (getline(ss, line, '\n')) {
+        stringstream lineStream(line);
+        string item;
+        
+        // Process each comma-separated value in the line
+        while (getline(lineStream, item, ',')) {
+            if (!item.empty()) {
+                try {
+                    // Check if the item is a single letter character
+                    if (item.length() == 1 && isalpha(item[0])) {
+                        result.push_back(item[0]);
+                    } else {
+                        // Try to convert to int and then to char
+                        result.push_back(static_cast<char>(stoi(item)));
+                    }
+                } catch (const std::invalid_argument& e) {
+                    // Skip invalid values but log them
+                    std::cerr << "Warning: Skipping invalid value: " << item << std::endl;
+                }
+            }
         }
-        void save(const char* data) override {
-            filter.save(data);
-        }
-        vector loadInput() {
-            return input.load();
-        }
-        string loadUrls() {
-            return urls.load();
-        }
-        int* loadFilter() {
-            return filter.load();
-        }
-        bloomFilterStorage load() {
-            return new bloomFilterStorage(input.load(), urls.load(), filter.load());
-        }
-        bool exists() const override {
-            return input.exists() && urls.exists() && filter.exists();
-        }
-        void remove(const <vector<int>> data) override {
-            input.remove(data);
-        }
-        void remove(const string& data) override {
-            urls.remove(data);
-        }
-        void remove(const int* data) override {
-            filter.remove(data);
-        }
-        void remove() override {
-            input.remove();
-            urls.remove();
-            filter.remove();
-        }
-    };
+    }
+    return result;
+}
+// Include these implementations for the getters and setters from the header
+fileStorage& bloomFilterStorage::getInput() {
+    return *input;
+}
+
+fileStorage& bloomFilterStorage::getUrls() {
+    return *urls;
+}
+
+fileStorage& bloomFilterStorage::getFilter() {
+    return *filter;
+};
