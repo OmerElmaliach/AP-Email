@@ -1,5 +1,5 @@
 # DEFINE FILES TO COMPILE TO TESTS.
-set(FILES "test.cpp" "datatypes/fileStorage.cpp")  
+set(FILES "test.cpp" "datatypes/fileStorage.cpp" "datatypes/bloomFilterStorage.cpp")  
 
 cmake_minimum_required(VERSION 3.14)
 project(AP_Email)

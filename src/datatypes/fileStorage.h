@@ -5,6 +5,7 @@
 #include <fstream>
 #include <filesystem>
 #include <stdexcept>
+#include <vector>
 
 using namespace std;
 
@@ -16,8 +17,8 @@ private:
     // Helper function to serialize an object to the file
     void saveToFile(const string& object);
 
-    // Helper function to deserialize an object from the file
-    string loadFromFile();
+    // Helper function to read all entries from the file
+    vector<string> loadAllFromFile();
 
 protected:
     // Helper function to convert int* to string
@@ -27,7 +28,6 @@ protected:
     string convertVectorToString(const vector<int>& data) const;
 
 public:
-
     explicit fileStorage(const string& fileName);
 
     void save(const string& data) override;
@@ -43,7 +43,6 @@ public:
     bool exists() const override;
 
     bool exists(const string& data) const override;
-
 };
 
 #endif
