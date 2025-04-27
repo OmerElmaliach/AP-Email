@@ -6,14 +6,14 @@
 #include "BloomFilter.h"
 #include "imenu.h"
 #include "bloomFilterStorage.h"
-#include "icommand.h"
+#include "Icommand.h"
+#include "AddURLCommand.h"
+#include "CheckURLCommand.h"
 using namespace std;
 
 class CLI : public IMenu<int, string> {
 private:
-    bloomFilterStorage* m_Stor;
-    hash<std::string> m_stringHasher; 
-    BloomFilter<string, hash<std::string>> m_bloomFilter(m_stringHasher);
+    bloomFilterStorage m_Stor;
 
     /**
      * @brief Helper function, returns true if input string is in proper format for bloom filter settings input, otherwise false.
@@ -60,7 +60,7 @@ private:
      * @param input Number input to trigger the command.
      * @param command Command to be executed.
      */
-    void registerCommand(int& input, ICommand* command) override {
+    void registerCommand(int& input, Icommand* command) override {
         if (m_cmdMap.find(input) == m_cmdMap.end()) {
             // Command number was not found in map, can insert.
             m_cmdMap.insert({input, command});
@@ -76,7 +76,7 @@ private:
     void executeCommand(int& input, string& str) override {
         if (m_cmdMap.find(input) != m_cmdMap.end()) {
             // Command number was found in map, can perform command.
-            m_cmdMap[input]->execute(m_Stor, str, m_bloomFilter);
+            m_cmdMap[input]->executeCommand(str);
         }
     }
 
@@ -102,18 +102,19 @@ public:
      * @brief CLI Builder function, defines the menu's state and the ICommands associated with command numbers.
      */
     CLI() {
+        // Define hash function
+        MyHash m_stringHasher(1);
+        BloomFilter<string, MyHash> m_bloomFilter(m_stringHasher);
+
         // Initialize the commands with the associated numbers to perform them.
         int addInput = 1, checkNum = 2;
-        ICommand* addCmd = new AddURL();
-        ICommand* checkCmd = new CheckURL();
+        Icommand* addCmd = new AddURLCommand(m_Stor, m_bloomFilter);
+        Icommand* checkCmd = new CheckURLCommand(m_Stor, m_bloomFilter);
         registerCommand(addInput, addCmd);
         registerCommand(checkNum, checkCmd);
 
         // Menu has not started running yet.
         m_menuState = false;
-
-        // Initialize storage.
-        m_Stor = new bloomFilterStorage();
     }
 
 
@@ -125,7 +126,7 @@ public:
         m_menuState = true;
         while (isRunning()) {
             string input;
-            if (m_Stor->LoadInput().empty() || m_Stor->LoadFilterArray().empty()) {
+            if (m_Stor.loadInput().empty() || m_Stor.loadFilterArray().empty()) {
                 // Storage files do not not exist for bloom filter input.
                 do {
                     // Loop until input is in the proper format.
@@ -137,7 +138,7 @@ public:
                     input_vec.push_back(stoi(sub));
                 }
                 // Save the bloom input settings.
-                m_Stor->save(input_vec);
+                m_Stor.save(input_vec);
             }
             do {
                 // Loop until input is in the proper format for performing commands.
