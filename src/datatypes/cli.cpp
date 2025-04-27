@@ -104,8 +104,6 @@ public:
      * @brief CLI Builder function, defines the menu's state and the ICommands associated with command numbers.
      */
     CLI() : m_stringHasher(1), m_bloomFilter(m_stringHasher) {
-        // Define hash function
-
         // Initialize the commands with the associated numbers to perform them.
         int addInput = 1, checkNum = 2;
         Icommand* addCmd = new AddURLCommand(m_Stor, m_bloomFilter);
@@ -126,7 +124,7 @@ public:
         m_menuState = true;
         while (isRunning()) {
             string input;
-            if (m_Stor.loadInput().empty() || m_Stor.loadFilterArray().empty()) {
+            if (m_Stor.loadInput().empty() && m_Stor.loadFilterArray().empty()) {
                 // Storage files do not not exist for bloom filter input.
                 do {
                     // Loop until input is in the proper format.
