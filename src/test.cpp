@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+
 #include "datatypes/app.h"
 #include <string>
 #include <vector>
@@ -13,16 +14,6 @@
 
 class ICommand {
     
-};
-
-class DummyMenu : protected IMenu<int>
-{
-public:
-    void run() override {}
-    void registerCommand(int& n, ICommand& cmd) override {}
-    void executeCommand(int& n) override {}
-    bool isRunning() override { return true; }
-    void exit() override {}
 };
 
 // Should pass if an IMenu object was created.

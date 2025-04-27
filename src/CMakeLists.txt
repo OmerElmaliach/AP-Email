@@ -1,5 +1,4 @@
 # DEFINE FILES TO COMPILE TO TESTS.
-set(FILES "test.cpp" "datatypes/fileStorage.cpp" "datatypes/bloomFilterStorage.cpp")  
 
 cmake_minimum_required(VERSION 3.14)
 project(AP_Email)
@@ -16,7 +15,11 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-add_executable(runTests ${FILES})
+add_executable(runTests
+    test.cpp
+    datatypes/cli.cpp
+    datatypes/bloomFIlterStorage.cpp
+)
 
 target_link_libraries(runTests gtest_main)
 
