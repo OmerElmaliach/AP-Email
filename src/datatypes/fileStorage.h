@@ -39,7 +39,8 @@ public:
     void remove(const string& data) override;
 
     void remove() override;
-
+    void remove(const T& data) override;
+    
     bool exists() const override;
 
     bool exists(const string& data) const override;
