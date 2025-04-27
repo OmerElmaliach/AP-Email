@@ -137,13 +137,13 @@ TEST_F(bloomFilterStorageTest, Save_ReturnsTrueOnSuccess) {
     EXPECT_EQ(result, testData);
 }
 
-// Test: save method with int array
+// Test: save method with char vector
 TEST_F(bloomFilterStorageTest, SaveIntArray_ReturnsTrueOnSuccess) {
-    int testData[] = {1, 2, 3};
+    vector<char> testData = {1, 2, 3};
     storage->save(testData);
     auto result = storage->loadFilterArray();
-    ASSERT_FALSE(result == nullptr);
-    EXPECT_EQ(result[0], testData[0]);
+    ASSERT_FALSE(result.empty());
+    EXPECT_EQ(result, testData);
 }
 
 // Test: save method with string
@@ -185,9 +185,9 @@ TEST_F(bloomFilterStorageTest, Exists_ReturnsTrueWhenDataExists) {
     EXPECT_TRUE(result);
 }
 
-// Test: exists method with int array data
+// Test: exists method with char vector data
 TEST_F(bloomFilterStorageTest, Exists_ReturnsTrueWhenIntArrayExists) {
-    int testData[] = {1, 2, 3};
+    vector<char> testData = {3, 2, 3};
     storage->save(testData);
     bool result = storage->exists(testData);
     EXPECT_TRUE(result);
@@ -212,15 +212,15 @@ TEST_F(bloomFilterStorageTest, Remove_DeletesData) {
     EXPECT_TRUE(result.empty());
 }
 
-// Test: remove method with int array data
+// Test: remove method with char vector data
 TEST_F(bloomFilterStorageTest, RemoveIntArray_DeletesData) {
-    int testData[] = {1, 2, 3};
+    vector<int> testData = {1, 'a', 3};
     storage->save(testData);
     
     storage->remove(testData);
     
-    auto result = storage->loadFilterArray();
-    EXPECT_TRUE(result == nullptr);
+    auto result = storage->loadInput();
+    EXPECT_TRUE(result.empty());
 }
 
 // Test: remove method with string data
