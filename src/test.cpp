@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include "datatypes/app.h"
 #include <string>
 #include <vector>
 #include <optional>
@@ -7,9 +8,29 @@
 #include "datatypes/fileStorage.h"
 #include "datatypes/bloomFilterStorage.h"
 
-// Should pass if test.cpp was compiled using the docker script.
-TEST(DockerTest, CompileFile) {
-    EXPECT_STREQ("DOCKERTEST", "DOCKERTEST");
+#include "datatypes/imenu.h"
+
+
+class ICommand {
+    
+};
+
+class DummyMenu : protected IMenu<int>
+{
+public:
+    void run() override {}
+    void registerCommand(int& n, ICommand& cmd) override {}
+    void executeCommand(int& n) override {}
+    bool isRunning() override { return true; }
+    void exit() override {}
+};
+
+// Should pass if an IMenu object was created.
+TEST(AppTest, objectCreation) {
+    App* app = new App();
+    std::cout << "App created\n";
+    delete app;
+    std::cout << "App destroyed\n";
 }
 
 using namespace std;
@@ -239,6 +260,7 @@ TEST_F(bloomFilterStorageTest, Remove_NoDataDoesNotThrow) {
     EXPECT_NO_THROW(storage->remove());
 }
 
+
 // Test: load method for specific data when several datas saved
 TEST_F(bloomFilterStorageTest, Load_ReturnsDataWhenSeveralDatasSaved) {
     vector<int> testData1 = {1, 2, 3};
@@ -275,6 +297,18 @@ TEST_F(bloomFilterStorageTest, Remove_DeletesDataWhenSeveralDatasSaved) {
     auto result = storage->loadInput();
     EXPECT_EQ(result, testData1);
     EXPECT_FALSE(result == testData2);
+}
+
+
+// Test: remove specific data
+TEST_F(fileStorageTest tester, Remove_SpecificData) {
+    string testData1 = "Hello, world!";
+    tester.getURLS().save(testData1);
+    
+    tester.getURLS().remove(testData1);
+    
+    auto result = tester.getURLS().load();
+    EXPECT_FALSE(result.has_value());
 }
 
 
