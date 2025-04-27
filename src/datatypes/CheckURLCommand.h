@@ -30,15 +30,13 @@ private:
     // the class incharge of IO with the system
     bloomFilterStorage& m_storage;
     
-    std::string m_URL;
-
     BloomFilter<std::string, MyHash>& m_bloomFilter;
 
 public:
     //constructor
-    CheckURLCommand(bloomFilterStorage& storage, const std::string& URL, BloomFilter<std::string, MyHash>& bloomFilter);
+    CheckURLCommand(bloomFilterStorage& storage, BloomFilter<std::string, MyHash>& bloomFilter);
 
-    void executeCommand() override;
+    void executeCommand(const std::string& URL) override;
 
 };
 

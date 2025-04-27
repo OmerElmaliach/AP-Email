@@ -15,17 +15,14 @@
 using namespace std;
 
     //constructor
-    AddURLCommand::AddURLCommand(bloomFilterStorage& storage, const std::string& URL, BloomFilter<std::string, MyHash>& bloomFilter):
-                m_storage(storage), m_URL(URL), m_bloomFilter(bloomFilter){
-                    cout << "i liiiive ADD";
-                }
+    AddURLCommand::AddURLCommand(bloomFilterStorage& storage, BloomFilter<std::string, MyHash>& bloomFilter):
+                m_storage(storage), m_bloomFilter(bloomFilter){}
 
 
     // will add the URL to url's file, run it through the bloomfilter and save the array in the array's file
-    void AddURLCommand::executeCommand()  {
+    void AddURLCommand::executeCommand( const std::string& URL)  {
         //save URL in its file
-        m_storage.save(m_URL);
-        cout << "TESTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT ADD";
+        m_storage.save(URL);
 
         //get hash function numbers
         vector<int> hashes = m_storage.loadInput();
@@ -44,7 +41,7 @@ using namespace std;
             //were making a new hash with myhash and sending it to the bloom
             m_bloomFilter.setHash(myHash);
             //the blood uses this hash to filter the key, in out care the URL
-            m_bloomFilter.filter(m_URL);
+            m_bloomFilter.filter(URL);
             //we keep doing that for every hash
         }
 
