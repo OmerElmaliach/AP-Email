@@ -1,9 +1,10 @@
 #include <gtest/gtest.h>
 #include "datatypes/MyHash.h"  // Make sure to include your MyHash header file
-
 // Test the constructor and default behavior (number of rounds).
+
+
 TEST(MyHashTest, ConstructorWorks) {
-    MyHash<std::string> hasher(3);
+    MyHash hasher(3);
     std::string key = "hello";
     std::size_t h1 = hasher(key);
 
@@ -12,7 +13,7 @@ TEST(MyHashTest, ConstructorWorks) {
 }
 
 TEST(MyHashTest, SetRoundsChangesHashingBehavior) {
-    MyHash<std::string> hasher(1);  // Start with 1 round
+    MyHash hasher(1);  // Start with 1 round
     std::string key = "hello";
     std::size_t h1 = hasher(key);
 
@@ -25,7 +26,7 @@ TEST(MyHashTest, SetRoundsChangesHashingBehavior) {
 }
 
 TEST(MyHashTest, HashConsistencyWithSameRounds) {
-    MyHash<std::string> hasher(2);  // 2 rounds of hashing
+    MyHash hasher(2);  // 2 rounds of hashing
     std::string key = "hello.com";
 
     // Hash should be consistent for the same input
@@ -36,7 +37,7 @@ TEST(MyHashTest, HashConsistencyWithSameRounds) {
 }
 
 TEST(MyHashTest, DifferentInputsProduceDifferentHashes) {
-    MyHash<std::string> hasher(2);  // 2 rounds of hashing
+    MyHash hasher(2);  // 2 rounds of hashing
     std::string key1 = "hello.com";
     std::string key2 = "hello22.com";
 
@@ -45,8 +46,8 @@ TEST(MyHashTest, DifferentInputsProduceDifferentHashes) {
 }
 
 TEST(MyHashTest, MultipleRoundsImpactHash) {
-    MyHash<std::string> hasher1(1);  // 1 round of hashing
-    MyHash<std::string> hasher2(5);  // 5 rounds of hashing
+    MyHash hasher1(1);  // 1 round of hashing
+    MyHash hasher2(5);  // 5 rounds of hashing
     std::string key = "www.hello.com";
 
     std::size_t h1 = hasher1(key);
@@ -57,7 +58,7 @@ TEST(MyHashTest, MultipleRoundsImpactHash) {
 }
 
 TEST(MyHashTest, SetRoundsResetsHashingBehavior) {
-    MyHash<std::string> hasher(3);  // 3 rounds of hashing
+    MyHash hasher(3);  // 3 rounds of hashing
     std::string key = "hello";
 
     // Get initial hash value
@@ -73,8 +74,8 @@ TEST(MyHashTest, SetRoundsResetsHashingBehavior) {
 
 // Test for comparing MyHash after setRounds() with a new MyHash initialized with the same rounds
 TEST(MyHashTest, SetRoundsEqualsNewHashWithSameRounds) {
-    MyHash<std::string> hasher1(3);  // Initialize with 3 rounds
-    MyHash<std::string> hasher2(1);  // Initialize with 1 round
+    MyHash hasher1(3);  // Initialize with 3 rounds
+    MyHash hasher2(1);  // Initialize with 1 round
     std::string key = "hello";
 
     // Hash the key with hasher1 and hasher2
@@ -93,14 +94,19 @@ TEST(MyHashTest, SetRoundsEqualsNewHashWithSameRounds) {
 
 // Test for comparing MyHash to manually performing std::hash multiple times
 TEST(MyHashTest, CompareToManualStdHash) {
-    MyHash<std::string> hasher(3);  // 3 rounds of hashing
+    MyHash hasher(3);  // 3 rounds of hashing
     std::string key = "hello";
     
     // Perform manual std::hashing multiple times
     std::hash<std::string> baseHash;
     std::size_t manualHash = baseHash(key);
+
+    std::hash<std::string> hashFunc;
+
     for (int i = 1; i < 3; ++i) {
-        manualHash = std::hash<std::size_t>{}(manualHash);  // rehash manually
+
+        std::string manualHashStr = std::to_string(manualHash);
+        manualHash = hashFunc(manualHashStr);  // rehash manually
     }
 
     // Get the hash from MyHash
