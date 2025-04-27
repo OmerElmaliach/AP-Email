@@ -11,8 +11,5 @@ WORKDIR /Ap_Email/src
 RUN g++ ${FILES} -o /Ap_Email/main
 WORKDIR /Ap_Email
 
-# Create data directory.
-RUN mkdir /Ap_Email/data
-
 # Run main.
 CMD ["./main"]

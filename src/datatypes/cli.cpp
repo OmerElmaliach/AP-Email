@@ -14,6 +14,8 @@ using namespace std;
 class CLI : public IMenu<int, string> {
 private:
     bloomFilterStorage m_Stor;
+    MyHash m_stringHasher;
+    BloomFilter<string, MyHash> m_bloomFilter;
 
     /**
      * @brief Helper function, returns true if input string is in proper format for bloom filter settings input, otherwise false.
@@ -101,10 +103,8 @@ public:
     /**
      * @brief CLI Builder function, defines the menu's state and the ICommands associated with command numbers.
      */
-    CLI() {
+    CLI() : m_stringHasher(1), m_bloomFilter(m_stringHasher) {
         // Define hash function
-        MyHash m_stringHasher(1);
-        BloomFilter<string, MyHash> m_bloomFilter(m_stringHasher);
 
         // Initialize the commands with the associated numbers to perform them.
         int addInput = 1, checkNum = 2;
