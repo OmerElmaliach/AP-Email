@@ -19,3 +19,4 @@ FetchContent_MakeAvailable(googletest)
 add_executable(runTests ${FILES})
 
 target_link_libraries(runTests gtest_main)
+
