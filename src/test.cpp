@@ -43,6 +43,15 @@ TEST(CLITest, checkInputFirstLineNumbers) {
     delete cmdMenu;
 }
 
+// Check zero outputs.
+TEST(CLITest, checkInputZeroes) {
+    CLI* cmdMenu = new CLI();
+    EXPECT_FALSE(cmdMenu->checkInput("0"));
+    EXPECT_FALSE(cmdMenu->checkInput("8 0 0"));
+    EXPECT_FALSE(cmdMenu->checkInput("0 0 0 0 0"));
+    delete cmdMenu;
+}
+
 // Format tests {Number} {URL}
 TEST(CLITest, checkRegexWrongFormat) {
     CLI* cmdMenu = new CLI();
