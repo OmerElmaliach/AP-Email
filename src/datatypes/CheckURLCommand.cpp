@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <iostream>
 
-#include "MyHash"
+#include "MyHash.h"
 #include "Istorage.h"
 #include "Icommand.h"
 #include "bloomFilterStorage.h"
@@ -12,22 +12,13 @@
 
 using namespace std;
 
-class CheckURLCommand : public Icommand{
-private:
-    // the class incharge of IO with the system
-    bloomFilterStorage& m_storage;
-    
-    std::string m_URL;
 
-    BloomFilter<std::string, MyHash>& m_bloomFilter;
-
-public:
     //constructor
-    CheckURLCommand(bloomFilterStorage& storage, const std::string& URL, BloomFilter<std::string, MyHash>& bloomFilter):
+    CheckURLCommand::CheckURLCommand(bloomFilterStorage& storage, const std::string& URL, BloomFilter<std::string, MyHash>& bloomFilter):
                 m_storage(storage), m_URL(URL), m_bloomFilter(bloomFilter){}
 
     // will add the URL to url's file, run it through the bloomfilter and save the array in the array's file
-    void executeCommand() override {
+    void CheckURLCommand::executeCommand()  {
         
         //convert to bloom to see if similer arrray is in the array file
 
@@ -48,14 +39,13 @@ public:
         }
 
         //in the end we get the final result 
-        vector<char> bitArrayToCheck = m_bloomFilter.getArray();
+        vector<char> bitArrayToCheck = m_bloomFilter.getFiltered();
         
-        //TODO: Gabi- i need to check if this char vec is in the array file, bool func
         if (m_storage.exists(bitArrayToCheck))
         {
             cout << "true ";
              //final test if in the URL file
-            if ( m_storage. exists(m_URL))
+            if ( m_storage.exists(m_URL))
             {
                 cout << "true" << endl;
             }else{
@@ -70,7 +60,7 @@ public:
         //were done reset the bloomFilter array to all 0's and return
         m_bloomFilter.resetBitArray();   
     }
-};
+
 
 
 

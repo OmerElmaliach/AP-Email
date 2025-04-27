@@ -37,7 +37,7 @@ public:
     //constructor
     AddURLCommand(bloomFilterStorage& storage, std::string& URL, BloomFilter<std::string, MyHash>& bloomFilter);
 
-    void executeCommand();
+    void executeCommand() override;
 
 };
 
