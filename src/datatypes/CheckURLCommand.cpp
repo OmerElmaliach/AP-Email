@@ -8,6 +8,7 @@
 #include "Icommand.h"
 #include "bloomFilterStorage.h"
 #include "BloomFilter.h"
+#include "CheckURLCommand.h"
 
 using namespace std;
 
