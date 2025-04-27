@@ -35,6 +35,7 @@ The system follows the structure outlined in the provided UML diagram:
 ## Setup & Running
 
 **Prerequisites:** Docker must be installed and running.
+
 **Using script:**
 
 If you have the `start.sh` script, you can run it directly:
@@ -42,8 +43,8 @@ If you have the `start.sh` script, you can run it directly:
 ```bash
 chmod +x start.sh
 ./start.sh
-
-****Alternative: using a docker image directly:****
+```
+**Alternative: using a docker image directly:**
 1.  **Build the Docker Image:**
     Open a terminal in the project's root directory (where `DockerMain` is located) and run:
     ```bash
