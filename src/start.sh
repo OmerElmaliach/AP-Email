@@ -12,7 +12,7 @@ mkdir -p ./data
 cd src
 
 # Run and create a volume for data storage.
-docker run -v "$prev_pwd/data:/Ap_Email/data" docker-main
+docker run -it -v "$prev_pwd/data:/Ap_Email/data" docker-main
 
 # Delete the image previously created.
 docker image rm -f docker-main
