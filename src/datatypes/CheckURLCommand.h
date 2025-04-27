@@ -36,7 +36,7 @@ private:
 
 public:
     //constructor
-    CheckURLCommand(bloomFilterStorage& storage, std::string& URL, BloomFilter<std::string, MyHash>& bloomFilter);
+    CheckURLCommand(bloomFilterStorage& storage, const std::string& URL, BloomFilter<std::string, MyHash>& bloomFilter);
 
     void executeCommand() override;
 
