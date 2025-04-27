@@ -9,44 +9,55 @@
 
 using namespace std;
 
-class bloomFilterStorage {
+class bloomFilterStorage : public fileStorage {
 private:
-    fileStorage<vector<int>>* input;
-    fileStorage<string>* urls;
-    fileStorage<int*>* filter;
+    fileStorage* input;
+    fileStorage* urls;
+    fileStorage* filter;
+
+    // Helper function to convert int* to string
+    string convertVectorCharToString(const vector<char>& data) const;
+    // Helper function to convert vector<int> to string
+    string convertVectorIntToString(const vector<int>& data) const;
+    // Helper function to convert string to vector<char>
+    vector<char> convertStringToCharVector(const string& data) const;
+    // Helper function to convert string to vector<int>
+    vector<int> convertStringToIntVector(const string& data) const;
+
 
 public:
-    bloomFilterStorage();
-    bloomFilterStorage(const vector<int>& inputData, const string& urlsData, int* filterData);
+    explicit bloomFilterStorage();
+    explicit bloomFilterStorage(const vector<int>& input, const string& urls, const vector<char> filter);
     ~bloomFilterStorage();
 
+    void save(const string& data) override;
+    void save(const vector<int> data);
+    void save(const vector<char> data);
+
+    vector<int> loadInput();
+    string loadUrls();
+    vector<char> loadFilterArray();
+
+    bloomFilterStorage& loadBloomFilter();
+
+    bool exists() const override;
+    bool exists(const string& data) const override;
+    bool exists(const vector<int> data);
+    bool exists(const vector<char> data);
+
+    void remove(const string& data) override;
+    void remove(const vector<int> data);
+    void remove(const vector<char> data);
+    void remove() override;
+
     // Getters
-    fileStorage<vector<int>>& getInput();
-    fileStorage<string>& getUrls();
-    fileStorage<int*>& getFilter();
-
+    fileStorage& getInput();
+    fileStorage& getUrls();
+    fileStorage& getFilter();
     // Setters
-    void setInput(const fileStorage<vector<int>>& newInput);
-    void setUrls(const fileStorage<string>& newUrls);
-    void setFilter(const fileStorage<int*>& newFilter);
-
-    // Storage operations
-    bool save(const vector<int>& data);
-    bool save(const string& data);
-    bool save(int* data);
-
-    std::optional<vector<int>> loadInput() const;
-    std::optional<string> loadUrls() const;
-    std::optional<int*> loadFilter() const;
-
-    bool exists() const;
-
-    void remove();  // Remove all data
-    
-    // Remove specific data
-    void remove(const vector<int>& data);
-    void remove(const string& data);
-    void remove(int* data);
+    void setInput(const fileStorage& newInput);
+    void setUrls(const fileStorage& newUrls);
+    void setFilter(const fileStorage& newFilter);
 };
 
 #endif

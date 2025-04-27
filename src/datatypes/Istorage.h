@@ -7,23 +7,28 @@
 
 using namespace std;
 
-template <typename T>
 class IStorage {
 public:
     virtual ~IStorage() = default;
     
     // Save data to storage
-    virtual void save(const T& data) = 0;
+    virtual void save(const string& data) = 0;
     
-    // Load data from storage. Returns std::optional containing data if exists
-    virtual std::optional<T> load() const = 0;
+    // Load data from storage. Void call loads the whole file
+    virtual optional<string> load() = 0;
+
+    virtual optional<string> load(const string& data) = 0;
     
     // Check if data exists in storage
     virtual bool exists() const = 0;
 
-    // Remove data from storage - either all data or specific data
-    virtual void remove() = 0;                  // Remove all data
-    virtual void remove(const T& data) = 0;     // Remove specific data
+    virtual bool exists(const string& data) const = 0;
+
+    // Remove data from storage
+    virtual void remove(const string& data) = 0;
+
+    // Remove all data from storage
+    virtual void remove() = 0;
 };
 
 #endif
