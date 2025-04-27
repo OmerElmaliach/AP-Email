@@ -8,34 +8,55 @@
 
 using namespace std;
 
-template <typename T>
-class bloomFilterStorage : public IStorage {
+class bloomFilterStorage : public fileStorage {
 private:
-    fileStorage<vector<int>>* input;
-    fileStorage<string>* urls;
-    fileStorage<int*>* filter;
+    fileStorage* input;
+    fileStorage* urls;
+    fileStorage* filter;
+
+    // Helper function to convert int* to string
+    string convertIntToString(const int* data) const;
+    // Helper function to convert vector<int> to string
+    string convertVectorToString(const vector<int>& data) const;
+    // Helper function to convert string to int*
+    int* convertStringToInt(const string& data) const;
+    // Helper function to convert string to vector<int>
+    vector<int> convertStringToVector(const string& data) const;
+
 
 public:
-    bloomFilterStorage();
-    bloomFilterStorage(const vector<int>& input, const string& urls, const int* filter);
+    explicit bloomFilterStorage();
+    explicit bloomFilterStorage(const vector<int>& input, const string& urls, const int* filter);
     ~bloomFilterStorage();
 
-    void save(const vector<int> data) override;
     void save(const string& data) override;
-    void save(const char* data) override;
+    void save(const vector<int> data);
+    void save(const int* data);
 
     vector<int> loadInput();
     string loadUrls();
-    int* loadFilter();
+    int* loadFilterArray();
 
-    bloomFilterStorage& load();
+    bloomFilterStorage& loadBloomFilter();
 
     bool exists() const override;
+    bool exists(const string& data) const override;
+    bool exists(const vector<int> data);
+    bool exists(const int* data);
 
-    void remove(const vector<int> data) override;
     void remove(const string& data) override;
-    void remove(const int* data) override;
+    void remove(const vector<int> data);
+    void remove(const int* data);
     void remove() override;
+
+    // Getters
+    fileStorage& getInput();
+    fileStorage& getUrls();
+    fileStorage& getFilter();
+    // Setters
+    void setInput(const fileStorage& newInput);
+    void setUrls(const fileStorage& newUrls);
+    void setFilter(const fileStorage& newFilter);
 };
 
 #endif

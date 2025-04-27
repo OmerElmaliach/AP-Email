@@ -1,3 +1,5 @@
+// fileStorage.cpp
+
 #include "Istorage.h"
 #include <fstream>
 #include <filesystem>
@@ -8,13 +10,14 @@
 #include <vector>
 #include <optional>
 #include <memory>
+#include <sstream>
 
 using namespace std;
 using namespace std::filesystem;
 
 fileStorage::fileStorage(const string& fileName)
-    : filePath("../data/" + fileName) {  // Initialize the member variable using initializer list
-    // Ensure the ../data directory exists (not the full path including filename)
+    : filePath("../data/" + fileName) {
+    // Ensure the ../data directory exists
     filesystem::create_directories("../data");
     
     // Create an empty file if it doesn't exist already
@@ -26,37 +29,39 @@ fileStorage::fileStorage(const string& fileName)
 
 // Helper function to serialize an object to the file
 void fileStorage::saveToFile(const string& object) {
-    fileStream.open(filePath, ios::out | ios::binary | ios::trunc);
+    // Open in append mode to add the new entry
+    fileStream.open(filePath, ios::out | ios::app);
     if (!fileStream) {
         throw runtime_error("Failed to open file for saving.");
     }
-    fileStream.write(object.c_str(), object.size());
+    
+    // Write the object followed by a newline
+    fileStream << object << endl;
     fileStream.close();
 }
 
-// Helper function to deserialize an object from the file
-string fileStorage::loadFromFile() {
-    fileStream.open(filePath, ios::in | ios::binary);
+// Helper function to read all entries from the file
+vector<string> fileStorage::loadAllFromFile() {
+    vector<string> entries;
+    
+    fileStream.open(filePath, ios::in);
     if (!fileStream) {
         throw runtime_error("Failed to open file for loading.");
     }
     
-    // Get file size
-    fileStream.seekg(0, ios::end);
-    streamsize size = fileStream.tellg();
-    fileStream.seekg(0, ios::beg);
-    
-    // Read the entire file content
-    string content(size, ' ');
-    if (size > 0) {
-        fileStream.read(&content[0], size);
+    string line;
+    while (getline(fileStream, line)) {
+        if (!line.empty()) {
+            entries.push_back(line);
+        }
     }
     
     fileStream.close();
-    return content;
+    return entries;
 }
 
 void fileStorage::save(const string& data) {
+    // Simply append the data to the file
     saveToFile(data);
 }
 
@@ -64,8 +69,25 @@ optional<string> fileStorage::load() {
     if (!exists()) {
         return nullopt;
     }
+    
     try {
-        return loadFromFile();
+        vector<string> entries = loadAllFromFile();
+        
+        // If there are no entries, return nullopt
+        if (entries.empty()) {
+            return nullopt;
+        }
+        
+        // Join all entries with newlines and return
+        stringstream result;
+        for (size_t i = 0; i < entries.size(); ++i) {
+            if (i > 0) {
+                result << "\n";
+            }
+            result << entries[i];
+        }
+        
+        return result.str();
     } catch (const exception& e) {
         return nullopt;
     }
@@ -75,16 +97,54 @@ optional<string> fileStorage::load(const string& data) {
     if (!exists()) {
         return nullopt;
     }
+    
     try {
-        string data = loadFromFile();
-        return data;
+        vector<string> entries = loadAllFromFile();
+        
+        // Look for the specific entry
+        for (const auto& entry : entries) {
+            if (entry == data) {
+                return entry;
+            }
+        }
+        
+        // Not found
+        return nullopt;
     } catch (const exception& e) {
         return nullopt;
     }
 }
 
 void fileStorage::remove(const string& data) {
-    remove(); // For simplicity, we're just removing the whole file
+    if (!exists()) {
+        return;
+    }
+    
+    try {
+        vector<string> entries = loadAllFromFile();
+        
+        // Create a new vector without the entry to remove
+        vector<string> newEntries;
+        for (const auto& entry : entries) {
+            if (entry != data) {
+                newEntries.push_back(entry);
+            }
+        }
+        
+        // Write back the remaining entries
+        fileStream.open(filePath, ios::out | ios::trunc);
+        if (!fileStream) {
+            throw runtime_error("Failed to open file for writing.");
+        }
+        
+        for (const auto& entry : newEntries) {
+            fileStream << entry << endl;
+        }
+        
+        fileStream.close();
+    } catch (const exception& e) {
+        // Handle the exception
+    }
 }
 
 void fileStorage::remove() {
@@ -103,24 +163,21 @@ bool fileStorage::exists(const string& data) const {
     }
     
     try {
-        fileStream.open(filePath, ios::in | ios::binary);
+        fileStream.open(filePath, ios::in);
         if (!fileStream) {
             return false;
         }
         
-        // Get file size
-        fileStream.seekg(0, ios::end);
-        streamsize size = fileStream.tellg();
-        fileStream.seekg(0, ios::beg);
-        
-        // Read the entire file content
-        string content(size, ' ');
-        if (size > 0) {
-            fileStream.read(&content[0], size);
+        string line;
+        while (getline(fileStream, line)) {
+            if (line == data) {
+                fileStream.close();
+                return true;
+            }
         }
         
         fileStream.close();
-        return content == data;
+        return false;
     } catch (const exception& e) {
         return false;
     }

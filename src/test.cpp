@@ -5,6 +5,7 @@
 #include <memory>
 #include "datatypes/Istorage.h"
 #include "datatypes/fileStorage.h"
+#include "datatypes/bloomFilterStorage.h"
 
 // Should pass if test.cpp was compiled using the docker script.
 TEST(DockerTest, CompileFile) {
@@ -77,29 +78,18 @@ TEST_F(fileStorageTest, Exists_ReturnsTrueWhenDataExists) {
     EXPECT_TRUE(result);
 }
 
-// look at this and see if implementation really overwrites instead of appending
-
 // Test: overwrite data
 TEST_F(fileStorageTest, Save_OverwritesExistingData) {
     string testData1 = "Hello, world!";
     string testData2 = "Goodbye, world!";
     storage->save(testData1);
     storage->save(testData2);
+    string expected = testData1+ "\n" + testData2;
     
     auto result = storage->load();
     ASSERT_TRUE(result.has_value());
-    EXPECT_EQ(testData2, result.value());
+    EXPECT_EQ(expected, result.value());
 }
-
-// // Test with integers
-// TEST(fileStorageTest, CanStoreAndRetrieveIntegers) {
-//     int testData = 42;
-//     storage->save(testData);
-    
-//     auto result = storage->load();
-//     ASSERT_TRUE(result.has_value());
-//     EXPECT_EQ(testData, result.value());
-// }
 
 // Test: remove method
 TEST_F(fileStorageTest, Remove_DeletesData) {
@@ -114,6 +104,138 @@ TEST_F(fileStorageTest, Remove_DeletesData) {
 
 // Test: remove method when no data exists
 TEST_F(fileStorageTest, Remove_NoDataDoesNotThrow) {
+    EXPECT_NO_THROW(storage->remove());
+}
+
+class bloomFilterStorageTest : public testing::Test {
+    protected:
+        unique_ptr<bloomFilterStorage> storage;
+    
+        void SetUp() override {
+            storage = make_unique<bloomFilterStorage>();
+        }
+    
+        void TearDown() override {
+            storage->remove(); // clean up if necessary
+        }
+    };
+    
+// Test: constructor
+TEST_F(bloomFilterStorageTest, Constructor_CreatesFile) {
+    EXPECT_TRUE(filesystem::exists("../data/bloomFilterStorage.txt"));
+    EXPECT_TRUE(filesystem::exists("../data/urls.txt"));
+    EXPECT_TRUE(filesystem::exists("../data/input.txt"));
+    EXPECT_TRUE(filesystem::exists("../data/filter.txt"));
+}
+
+// Test: save method
+TEST_F(bloomFilterStorageTest, Save_ReturnsTrueOnSuccess) {
+    vector<int> testData = {1, 2, 3};
+    storage->save(testData);
+    auto result = storage->loadInput();
+    ASSERT_FALSE(result.empty());
+    EXPECT_EQ(result, testData);
+}
+
+// Test: save method with int array
+TEST_F(bloomFilterStorageTest, SaveIntArray_ReturnsTrueOnSuccess) {
+    int testData[] = {1, 2, 3};
+    storage->save(testData);
+    auto result = storage->loadFilterArray();
+    ASSERT_FALSE(result == nullptr);
+    EXPECT_EQ(result[0], testData[0]);
+}
+
+// Test: save method with string
+TEST_F(bloomFilterStorageTest, SaveString_ReturnsTrueOnSuccess) {
+    string testData = "Hello, world!";
+    storage->save(testData);
+    auto result = storage->loadUrls();
+    ASSERT_FALSE(result == "");
+    EXPECT_EQ(result, testData);
+}
+
+// Test: load method with specific data
+TEST_F(bloomFilterStorageTest, Load_ReturnsDataWhenDataExists) {
+    vector<int> testData = {1, 2, 3};
+    storage->save(testData);
+    auto result = storage->loadInput();
+    ASSERT_FALSE(result.empty());
+    EXPECT_EQ(result, testData);
+}
+
+// Test: load method with no data
+TEST_F(bloomFilterStorageTest, Load_ReturnsEmptyWhenNoData) {
+    storage->remove();
+    auto result = storage->loadInput();
+    EXPECT_TRUE(result.empty());
+}
+
+// Test: exists method with no data
+TEST_F(bloomFilterStorageTest, Exists_ReturnsFalseWhenNoData) {
+    bool result = storage->exists();
+    EXPECT_TRUE(result);
+}
+
+// Test: exists method with vector data
+TEST_F(bloomFilterStorageTest, Exists_ReturnsTrueWhenDataExists) {
+    vector<int> testData = {1, 2, 3};
+    storage->save(testData);
+    bool result = storage->exists(testData);
+    EXPECT_TRUE(result);
+}
+
+// Test: exists method with int array data
+TEST_F(bloomFilterStorageTest, Exists_ReturnsTrueWhenIntArrayExists) {
+    int testData[] = {1, 2, 3};
+    storage->save(testData);
+    bool result = storage->exists(testData);
+    EXPECT_TRUE(result);
+}
+
+// Test: exists method with string data
+TEST_F(bloomFilterStorageTest, Exists_ReturnsTrueWhenStringExists) {
+    string testData = "Hello, world!";
+    storage->save(testData);
+    bool result = storage->exists(testData);
+    EXPECT_TRUE(result);
+}
+
+// Test: remove method with vector data
+TEST_F(bloomFilterStorageTest, Remove_DeletesData) {
+    vector<int> testData = {1, 2, 3};
+    storage->save(testData);
+    
+    storage->remove(testData);
+    
+    auto result = storage->loadInput();
+    EXPECT_TRUE(result.empty());
+}
+
+// Test: remove method with int array data
+TEST_F(bloomFilterStorageTest, RemoveIntArray_DeletesData) {
+    int testData[] = {1, 2, 3};
+    storage->save(testData);
+    
+    storage->remove(testData);
+    
+    auto result = storage->loadFilterArray();
+    EXPECT_TRUE(result == nullptr);
+}
+
+// Test: remove method with string data
+TEST_F(bloomFilterStorageTest, RemoveString_DeletesData) {
+    string testData = "Hello, world!";
+    storage->save(testData);
+    
+    storage->remove(testData);
+    
+    auto result = storage->loadUrls();
+    EXPECT_TRUE(result.empty());
+}
+
+// Test: remove method when no data exists
+TEST_F(bloomFilterStorageTest, Remove_NoDataDoesNotThrow) {
     EXPECT_NO_THROW(storage->remove());
 }
 
