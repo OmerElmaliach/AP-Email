@@ -49,6 +49,9 @@ TEST(CLITest, checkInputZeroes) {
     EXPECT_FALSE(cmdMenu->checkInput("0"));
     EXPECT_FALSE(cmdMenu->checkInput("8 0 0"));
     EXPECT_FALSE(cmdMenu->checkInput("0 0 0 0 0"));
+    EXPECT_FALSE(cmdMenu->checkInput("00"));
+    EXPECT_FALSE(cmdMenu->checkInput("00 00 00 00"));
+    EXPECT_FALSE(cmdMenu->checkInput("0 00"));
     delete cmdMenu;
 }
 
