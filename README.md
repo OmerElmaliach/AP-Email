@@ -5,6 +5,8 @@ https://github.com/OmerElmaliach/AP-Email
 link to jira -
 https://omerelmaliachprivate.atlassian.net/jira/software/projects/AE/summary
 
+the flow process of our work and SCRUM meeting summaries can all be found under the user story "Manage project process"
+
 ## Overview
 
 This project implements a URL filtering system using a Bloom filter. The system allows users to add URLs to a blacklist and check if a given URL is potentially blacklisted. It leverages the speed and memory efficiency of Bloom filters to quickly determine potential membership in the blacklist.
@@ -12,6 +14,9 @@ This project implements a URL filtering system using a Bloom filter. The system 
 ## Architecture
 
 The system follows the structure outlined in the provided UML diagram:
+
+![UML diagram](https://github.com/user-attachments/assets/1245ecc6-7f5c-4943-bf17-f817982fa043)
+
 
 * **main()**: Entry point, runs the `App`.
 * **App**: Manages the application flow and uses the `CLI`.
