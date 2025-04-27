@@ -29,14 +29,25 @@ fileStorage::fileStorage(const string& fileName)
 
 // Helper function to serialize an object to the file
 void fileStorage::saveToFile(const string& object) {
+    // First check if the file is empty
+    bool isFileEmpty = false;
+    
+    {
+        ifstream checkFile(filePath);
+        isFileEmpty = checkFile.peek() == ifstream::traits_type::eof();
+    }
+    
     // Open in append mode to add the new entry
     fileStream.open(filePath, ios::out | ios::app);
     if (!fileStream) {
         throw runtime_error("Failed to open file for saving.");
     }
     
-    // Write the object followed by a newline
-    fileStream << object << endl;
+    // Write the object with a newline only if the file is not empty
+    if (!isFileEmpty) {
+        fileStream << endl;
+    }
+    fileStream << object;
     fileStream.close();
 }
 
@@ -137,19 +148,27 @@ void fileStorage::remove(const string& data) {
             throw runtime_error("Failed to open file for writing.");
         }
         
-        for (const auto& entry : newEntries) {
-            fileStream << entry << endl;
+        for (size_t i = 0; i < newEntries.size(); ++i) {
+            if (i > 0) {
+                fileStream << endl;
+            }
+            fileStream << newEntries[i];
         }
         
         fileStream.close();
     } catch (const exception& e) {
         // Handle the exception
+        cerr << "Error in remove: " << e.what() << endl;
     }
 }
 
 void fileStorage::remove() {
     if (exists()) {
         filesystem::remove(filePath);
+        
+        // Recreate an empty file
+        ofstream file(filePath);
+        file.close();
     }
 }
 
