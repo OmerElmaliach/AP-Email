@@ -2,14 +2,18 @@
 #include <iostream>
 #include <regex>
 #include <bits/stdc++.h>
+#include "MyHash.h"
+#include "BloomFilter.h"
 #include "imenu.h"
 #include "bloomFilterStorage.h"
 #include "icommand.h"
 using namespace std;
 
-class CLI : public IMenu<int, string>{
+class CLI : public IMenu<int, string> {
 private:
     bloomFilterStorage* m_Stor;
+    hash<std::string> m_stringHasher; 
+    BloomFilter<string, hash<std::string>> m_bloomFilter(m_stringHasher);
 
     /**
      * @brief Helper function, returns true if input string is in proper format for bloom filter settings input, otherwise false.
@@ -17,7 +21,7 @@ private:
      * @param input String input to be checked.
      */
     bool checkInput(string input) {
-        static regex bloomInputRegex("^\\d+(\\s+\\d+)+$");
+        static regex bloomInputRegex("^((?!0+$)\\d+\\s+)((?!0+$)\\d+\\s+)*((?!0+$)\\d+)$");
         return regex_match(input, bloomInputRegex);
     }
 
@@ -72,7 +76,7 @@ private:
     void executeCommand(int& input, string& str) override {
         if (m_cmdMap.find(input) != m_cmdMap.end()) {
             // Command number was found in map, can perform command.
-            m_cmdMap[input]->execute(str);
+            m_cmdMap[input]->execute(m_Stor, str, m_bloomFilter);
         }
     }
 
@@ -91,6 +95,7 @@ private:
     void exit() override {
         m_menuState = false;
     }
+
 
 public:
     /**
@@ -117,10 +122,10 @@ public:
      */
     void run() override {
         // Menu state is permenantly true since no exit protocol defined.
-        m_menuState = true;
+        m_menuState = false;
         while (isRunning()) {
             string input;
-            if (!m_Stor->exists()) {
+            if (m_Stor->LoadInput().empty() || m_Stor->LoadFilterArray().empty()) {
                 // Storage files do not not exist for bloom filter input.
                 do {
                     // Loop until input is in the proper format.
