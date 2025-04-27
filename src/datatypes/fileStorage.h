@@ -1,31 +1,48 @@
+#ifndef FILESTORAGE_H
+#define FILESTORAGE_H
+
 #include "Istorage.h"
 #include <fstream>
 #include <filesystem>
 #include <stdexcept>
+#include <vector>
 
 using namespace std;
-template <typename T>
 
-class fileStorage : public IStorage<T> {
+class fileStorage : public IStorage {
 private:
     mutable fstream fileStream;
     const string filePath;
 
     // Helper function to serialize an object to the file
-    void saveToFile(const T& object) const = 0;
+    void saveToFile(const string& object);
 
-    // Helper function to deserialize an object from the file
-    T loadFromFile() const = 0;
+    // Helper function to read all entries from the file
+    vector<string> loadAllFromFile();
+
+protected:
+    // Helper function to convert int* to string
+    string convertIntToString(const int* data) const;
+
+    // Helper function to convert vector<int> to string
+    string convertVectorToString(const vector<int>& data) const;
 
 public:
-    explicit FileStorage(const string& fileName)
-        : filePath("../data/" + fileName);
+    explicit fileStorage(const string& fileName);
 
-    void save(const T& object) override;
+    void save(const string& data) override;
 
-    T load() override;
+    optional<string> load() override;
+
+    optional<string> load(const string& data) override;
+
+    void remove(const string& data) override;
 
     void remove() override;
 
     bool exists() const override;
+
+    bool exists(const string& data) const override;
 };
+
+#endif
