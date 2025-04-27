@@ -1,138 +1,305 @@
 #include <gtest/gtest.h>
-#include <string>
-#include <bits/stdc++.h>
-#include "datatypes/cli.cpp"
-#include "datatypes/icommand.h"
-using namespace std;
 
-class DummyCommand : public ICommand {
-    void execute(string str) override {}
+#include "datatypes/app.h"
+#include <string>
+#include <vector>
+#include <optional>
+#include <memory>
+#include "datatypes/Istorage.h"
+#include "datatypes/fileStorage.h"
+#include "datatypes/bloomFilterStorage.h"
+
+#include "datatypes/imenu.h"
+
+
+class ICommand {
+    
 };
 
-
-// Should pass if run() function was executed.
-TEST(CLITest, runMethod) {
-    CLI* cmdMenu = new CLI();
-    EXPECT_NO_THROW(cmdMenu->run());
-    delete cmdMenu;
+// Should pass if an IMenu object was created.
+TEST(AppTest, objectCreation) {
+    App* app = new App();
+    std::cout << "App created\n";
+    delete app;
+    std::cout << "App destroyed\n";
 }
 
-// Non numeric first input line.
-TEST(CLITest, checkInputFirstLineLetters) {
-    CLI* cmdMenu = new CLI();
-    EXPECT_FALSE(cmdMenu->checkInput("THIS_IS_A_TEST"));
-    delete cmdMenu;
+using namespace std;
+using namespace testing;
+
+// Concrete implementation for testing
+
+
+// Define test types
+class fileStorageTest : public testing::Test {
+    protected:
+        unique_ptr<fileStorage> storage;
+    
+        void SetUp() override {
+            storage = make_unique<fileStorage>("test.txt");
+        }
+    
+        void TearDown() override {
+            storage->remove(); // clean up if necessary
+        }
+    };
+    
+// Test: constructor
+TEST_F(fileStorageTest, Constructor_CreatesFile) {
+    EXPECT_TRUE(filesystem::exists("../data/test.txt"));
 }
 
-// Mixture of numbers and letters.
-TEST(CLITest, checkInputFirstLineMixture) {
-    CLI* cmdMenu = new CLI();
-    EXPECT_FALSE(cmdMenu->checkInput("8adf2 1 2"));
-    EXPECT_FALSE(cmdMenu->checkInput("8 a34 64"));
-    EXPECT_FALSE(cmdMenu->checkInput("8 1 1 3 f1"));
-    delete cmdMenu;
+// Test: save method
+    
+TEST_F(fileStorageTest, Save_ReturnsTrueOnSuccess) {
+    string testData = "Hello, world!";
+    storage->save(testData);
+    auto result = storage->load();
+    ASSERT_TRUE(result.has_value());
+    EXPECT_EQ(result.value(), testData);
 }
 
-// Numeric first input line.
-TEST(CLITest, checkInputFirstLineNumbers) {
-    CLI* cmdMenu = new CLI();
-    EXPECT_FALSE(cmdMenu->checkInput("8"));
-    EXPECT_TRUE(cmdMenu->checkInput("8 6 3"));
-    EXPECT_TRUE(cmdMenu->checkInput("1 2 3 4 5"));
-    EXPECT_TRUE(cmdMenu->checkInput("45 4 246 6 4763 2 7"));
-    delete cmdMenu;
+// Test: load method with no data
+
+TEST_F(fileStorageTest, Load_returnsEmptyWhenNoData) {
+    storage->remove();
+    auto result = storage->load();
+    EXPECT_FALSE(result.has_value());
 }
 
-// Check zero outputs.
-TEST(CLITest, checkInputZeroes) {
-    CLI* cmdMenu = new CLI();
-    EXPECT_FALSE(cmdMenu->checkInput("0"));
-    EXPECT_FALSE(cmdMenu->checkInput("8 0 0"));
-    EXPECT_FALSE(cmdMenu->checkInput("0 0 0 0 0"));
-    EXPECT_FALSE(cmdMenu->checkInput("00"));
-    EXPECT_FALSE(cmdMenu->checkInput("00 00 00 00"));
-    EXPECT_FALSE(cmdMenu->checkInput("0 00"));
-    delete cmdMenu;
+// Test: load method with specific data
+TEST_F(fileStorageTest, Load_ReturnsDataWhenDataExists) {
+    string testData = "Hello, world!";
+    storage->save(testData);
+    auto result = storage->load(testData);
+    ASSERT_TRUE(result.has_value());
+    EXPECT_EQ(testData, result.value());
 }
 
-// Format tests {Number} {URL}
-TEST(CLITest, checkRegexWrongFormat) {
-    CLI* cmdMenu = new CLI();
-    EXPECT_TRUE(cmdMenu->checkRegex("2 www.example.com0"));
-    EXPECT_TRUE(cmdMenu->checkRegex("2 www.example.com0"));
-    EXPECT_TRUE(cmdMenu->checkRegex("1 https://www.example.com"));
-    EXPECT_TRUE(cmdMenu->checkRegex("2 http://example.co.il"));
-    EXPECT_TRUE(cmdMenu->checkRegex("1 https://example.com/path"));
-    EXPECT_TRUE(cmdMenu->checkRegex("2 http://www.example.org"));
-    EXPECT_TRUE(cmdMenu->checkRegex("1 example.org"));
-    EXPECT_TRUE(cmdMenu->checkRegex("2 example.co.il"));
-    EXPECT_TRUE(cmdMenu->checkRegex("2 https://example.co.il/test"));
-
-    EXPECT_FALSE(cmdMenu->checkRegex("ABCD"));
-    EXPECT_FALSE(cmdMenu->checkRegex("THIS_IS_A_TEST"));
-    EXPECT_FALSE(cmdMenu->checkRegex("www.example.com0"));
-    EXPECT_FALSE(cmdMenu->checkRegex("1 htp://example.com"));
-    EXPECT_FALSE(cmdMenu->checkRegex("1 http://.com"));
-    EXPECT_FALSE(cmdMenu->checkRegex("1 www..com"));
-    EXPECT_FALSE(cmdMenu->checkRegex("1 example"));
-    EXPECT_FALSE(cmdMenu->checkRegex("1 http://example"));
-    EXPECT_FALSE(cmdMenu->checkRegex("1 http://example.c"));
-    EXPECT_FALSE(cmdMenu->checkRegex("1 example.c"));
-    EXPECT_FALSE(cmdMenu->checkRegex("1 http://exa_mple.com"));
-    delete cmdMenu;
+// Test: exists method with no data
+TEST_F(fileStorageTest, Exists_ReturnsFalseWhenNoData) {
+    bool result = storage->exists();
+    EXPECT_TRUE(result);
 }
 
-// Test for the split function for strings.
-TEST(CLITest, checkSplitString) {
-    CLI* cmdMenu = new CLI();
-    string str = "This is a basic string";
-    vector<string> res = cmdMenu->split(str, ' ');
-    EXPECT_EQ("This", res[0]);
-    EXPECT_EQ("is", res[1]);
-    EXPECT_EQ("a", res[2]);
-    EXPECT_EQ("basic", res[3]);
-    EXPECT_EQ("string", res[4]);
+// Test: exists method with specific data
+TEST_F(fileStorageTest, Exists_ReturnsTrueWhenDataExists) {
+    string testData = "Hello, world!";
+    storage->save(testData);
+    bool result = storage->exists(testData);
+    EXPECT_TRUE(result);
+}
+
+// Test: overwrite data
+TEST_F(fileStorageTest, Save_OverwritesExistingData) {
+    string testData1 = "Hello, world!";
+    string testData2 = "Goodbye, world!";
+    storage->save(testData1);
+    storage->save(testData2);
+    string expected = testData1+ "\n" + testData2;
+    
+    auto result = storage->load();
+    ASSERT_TRUE(result.has_value());
+    EXPECT_EQ(expected, result.value());
+}
+
+// Test: remove method
+TEST_F(fileStorageTest, Remove_DeletesData) {
+    string testData = "Hello, world!";
+    storage->save(testData);
+    
+    storage->remove(testData);
+    
+    auto result = storage->load();
+    EXPECT_FALSE(result.has_value());
+}
+
+// Test: remove method when no data exists
+TEST_F(fileStorageTest, Remove_NoDataDoesNotThrow) {
+    EXPECT_NO_THROW(storage->remove());
+}
+
+class bloomFilterStorageTest : public testing::Test {
+    protected:
+        unique_ptr<bloomFilterStorage> storage;
+    
+        void SetUp() override {
+            storage = make_unique<bloomFilterStorage>();
+        }
+    
+        void TearDown() override {
+            storage->remove(); // clean up if necessary
+        }
+    };
+    
+// Test: constructor
+TEST_F(bloomFilterStorageTest, Constructor_CreatesFile) {
+    EXPECT_TRUE(filesystem::exists("../data/bloomFilterStorage.txt"));
+    EXPECT_TRUE(filesystem::exists("../data/urls.txt"));
+    EXPECT_TRUE(filesystem::exists("../data/input.txt"));
+    EXPECT_TRUE(filesystem::exists("../data/filter.txt"));
+}
+
+// Test: save method
+TEST_F(bloomFilterStorageTest, Save_ReturnsTrueOnSuccess) {
+    vector<int> testData = {1, 2, 3};
+    storage->save(testData);
+    auto result = storage->loadInput();
+    ASSERT_FALSE(result.empty());
+    EXPECT_EQ(result, testData);
+}
+
+// Test: save method with char vector
+TEST_F(bloomFilterStorageTest, SaveIntArray_ReturnsTrueOnSuccess) {
+    vector<char> testData = {1, 2, 3};
+    storage->save(testData);
+    auto result = storage->loadFilterArray();
+    ASSERT_FALSE(result.empty());
+    EXPECT_EQ(result, testData);
+}
+
+// Test: save method with string
+TEST_F(bloomFilterStorageTest, SaveString_ReturnsTrueOnSuccess) {
+    string testData = "Hello, world!";
+    storage->save(testData);
+    auto result = storage->loadUrls();
+    ASSERT_FALSE(result == "");
+    EXPECT_EQ(result, testData);
+}
+
+// Test: load method with specific data
+TEST_F(bloomFilterStorageTest, Load_ReturnsDataWhenDataExists) {
+    vector<int> testData = {1, 2, 3};
+    storage->save(testData);
+    auto result = storage->loadInput();
+    ASSERT_FALSE(result.empty());
+    EXPECT_EQ(result, testData);
+}
+
+// Test: load method with no data
+TEST_F(bloomFilterStorageTest, Load_ReturnsEmptyWhenNoData) {
+    storage->remove();
+    auto result = storage->loadInput();
+    EXPECT_TRUE(result.empty());
+}
+
+// Test: exists method with no data
+TEST_F(bloomFilterStorageTest, Exists_ReturnsFalseWhenNoData) {
+    bool result = storage->exists();
+    EXPECT_TRUE(result);
+}
+
+// Test: exists method with vector data
+TEST_F(bloomFilterStorageTest, Exists_ReturnsTrueWhenDataExists) {
+    vector<int> testData = {1, 2, 3};
+    storage->save(testData);
+    bool result = storage->exists(testData);
+    EXPECT_TRUE(result);
+}
+
+// Test: exists method with char vector data
+TEST_F(bloomFilterStorageTest, Exists_ReturnsTrueWhenIntArrayExists) {
+    vector<char> testData = {3, 2, 3};
+    storage->save(testData);
+    bool result = storage->exists(testData);
+    EXPECT_TRUE(result);
+}
+
+// Test: exists method with string data
+TEST_F(bloomFilterStorageTest, Exists_ReturnsTrueWhenStringExists) {
+    string testData = "Hello, world!";
+    storage->save(testData);
+    bool result = storage->exists(testData);
+    EXPECT_TRUE(result);
+}
+
+// Test: remove method with vector data
+TEST_F(bloomFilterStorageTest, Remove_DeletesData) {
+    vector<int> testData = {1, 2, 3};
+    storage->save(testData);
+    
+    storage->remove(testData);
+    
+    auto result = storage->loadInput();
+    EXPECT_TRUE(result.empty());
+}
+
+// Test: remove method with char vector data
+TEST_F(bloomFilterStorageTest, RemoveIntArray_DeletesData) {
+    vector<int> testData = {1, 'a', 3};
+    storage->save(testData);
+    
+    storage->remove(testData);
+    
+    auto result = storage->loadInput();
+    EXPECT_TRUE(result.empty());
+}
+
+// Test: remove method with string data
+TEST_F(bloomFilterStorageTest, RemoveString_DeletesData) {
+    string testData = "Hello, world!";
+    storage->save(testData);
+    
+    storage->remove(testData);
+    
+    auto result = storage->loadUrls();
+    EXPECT_TRUE(result.empty());
+}
+
+// Test: remove method when no data exists
+TEST_F(bloomFilterStorageTest, Remove_NoDataDoesNotThrow) {
+    EXPECT_NO_THROW(storage->remove());
 }
 
 
-// Test adding commands to the map.
-TEST(CLITest, registerCommand) {
-    CLI* cmdMenu = new CLI();
-    ICommand* ic = new DummyCommand();
-    int cmdone = 1;
-    int cmdtwo = 2;
-    EXPECT_NO_THROW(cmdMenu->registerCommand(cmdone, ic));
-    EXPECT_NO_THROW(cmdMenu->registerCommand(cmdtwo, ic));
-    EXPECT_NO_THROW(cmdMenu->registerCommand(cmdone, ic)); // Handles duplications.
-    delete ic;
-    delete cmdMenu;
+// Test: load method for specific data when several datas saved
+TEST_F(bloomFilterStorageTest, Load_ReturnsDataWhenSeveralDatasSaved) {
+    vector<int> testData1 = {1, 2, 3};
+    vector<int> testData2 = {4, 5, 6};
+    storage->save(testData1);
+    storage->save(testData2);
+    vector<int> expected = {1, 2, 3, 4, 5, 6};
+    
+    auto result = storage->loadInput();
+    ASSERT_FALSE(result.empty());
+    EXPECT_EQ(result, expected);
 }
 
-// Test executing commands using the map.
-TEST(CLITest, executeCommand) {
-    CLI* cmdMenu = new CLI();
-    ICommand* ic = new DummyCommand();
-    int cmdone = 1;
-    cmdMenu->registerCommand(cmdone, ic);
-    string input = "Input";
-    EXPECT_NO_THROW(cmdMenu->executeCommand(cmdone, input));
-    delete ic;
-    delete cmdMenu;
+// Test: exist method for specific data when several datas saved
+TEST_F(bloomFilterStorageTest, Exists_ReturnsTrueWhenSeveralDatasSaved) {
+    vector<int> testData1 = {1, 2, 3};
+    vector<int> testData2 = {4, 5, 6};
+    storage->save(testData1);
+    storage->save(testData2);
+    
+    bool result = storage->exists(testData1);
+    EXPECT_TRUE(result);
 }
 
-// Test the is running method, should be false for testing purposes.
-TEST(CLITest, isRunning) {
-    CLI* cmdMenu = new CLI();
-    EXPECT_FALSE(cmdMenu->isRunning());
-    delete cmdMenu;
+// Test: remove method for specific data when several datas saved
+TEST_F(bloomFilterStorageTest, Remove_DeletesDataWhenSeveralDatasSaved) {
+    vector<int> testData1 = {1, 2, 3};
+    vector<int> testData2 = {4, 5, 6};
+    storage->save(testData1);
+    storage->save(testData2);
+    
+    storage->remove(testData2);
+    
+    auto result = storage->loadInput();
+    EXPECT_EQ(result, testData1);
+    EXPECT_FALSE(result == testData2);
 }
 
-// Test the exit function, should only change m_menuState for CLI.
-TEST(CLITest, exitCMD) {
-    CLI* cmdMenu = new CLI();
-    EXPECT_NO_THROW(cmdMenu->exit());
-    EXPECT_FALSE(cmdMenu->isRunning());
-    delete cmdMenu;
+
+// Test: remove specific data
+TEST_F(fileStorageTest tester, Remove_SpecificData) {
+    string testData1 = "Hello, world!";
+    tester.getURLS().save(testData1);
+    
+    tester.getURLS().remove(testData1);
+    
+    auto result = tester.getURLS().load();
+    EXPECT_FALSE(result.has_value());
 }
 
 
