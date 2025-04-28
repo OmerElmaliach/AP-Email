@@ -54,7 +54,9 @@ using namespace std;
         //in the end we get the final result 
         vector<char> bitsToUpdate = m_bloomFilter.getFiltered();
 
-        for (size_t i = 0; i < length; i++)
+        std::size_t len = filterdArray.size();
+
+        for (size_t i = 0; i < len; i++)
         {
             if (bitsToUpdate[i] == 1)
             {
