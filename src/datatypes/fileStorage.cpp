@@ -89,7 +89,12 @@ void fileStorage::save(const string& data) {
 }
 
 void fileStorage::save(const vector<int>& data) {
-    // Simply append the data to the file
+    // Simply swap the data to the file
+    saveTruncToFile(convertVectorToString(data));
+}
+
+void fileStorage::save(const vector<char>& data) {
+    // Simply swap the data to the file
     saveTruncToFile(convertVectorToString(data));
 }
 
