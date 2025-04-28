@@ -27,7 +27,7 @@ bloomFilterStorage::bloomFilterStorage(const vector<int>& inputData, const strin
 
     input->save(convertVectorIntToString(inputData));
     urls->save(urlsData);
-    filter->save(convertVectorCharToString(filterData));
+    filter->save(filterData);
 }
 
 bloomFilterStorage::~bloomFilterStorage() {
@@ -45,7 +45,7 @@ void bloomFilterStorage::save(const vector<int> data) {
 }
 
 void bloomFilterStorage::save(const vector<char> data) {
-    filter->save(convertVectorCharToString(data));
+    filter->save(data);
 }
 
 vector<int> bloomFilterStorage::loadInput() {
