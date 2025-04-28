@@ -16,9 +16,9 @@ using namespace std;
 using namespace std::filesystem;
 
 fileStorage::fileStorage(const string& fileName)
-    : filePath("../data/" + fileName) {
-    // Ensure the ../data directory exists
-    filesystem::create_directories("../data");
+    : filePath("/Ap_Email/data/" + fileName) {
+    // Ensure the /Ap_Email/data directory exists
+    filesystem::create_directories("/Ap_Email/data");
     
     // Create an empty file if it doesn't exist already
     if (!filesystem::exists(filePath)) {
