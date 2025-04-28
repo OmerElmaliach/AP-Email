@@ -14,6 +14,8 @@ using namespace std;
 class CLI : public IMenu<int, string> {
 private:
     bloomFilterStorage m_Stor;
+    MyHash m_stringHasher;
+    BloomFilter<string, MyHash> m_bloomFilter;
 
     /**
      * @brief Helper function, returns true if input string is in proper format for bloom filter settings input, otherwise false.
@@ -101,11 +103,7 @@ public:
     /**
      * @brief CLI Builder function, defines the menu's state and the ICommands associated with command numbers.
      */
-    CLI() {
-        // Define hash function
-        MyHash m_stringHasher(1);
-        BloomFilter<string, MyHash> m_bloomFilter(m_stringHasher);
-
+    CLI() : m_stringHasher(1), m_bloomFilter(m_stringHasher) {
         // Initialize the commands with the associated numbers to perform them.
         int addInput = 1, checkNum = 2;
         Icommand* addCmd = new AddURLCommand(m_Stor, m_bloomFilter);
@@ -126,7 +124,7 @@ public:
         m_menuState = true;
         while (isRunning()) {
             string input;
-            if (m_Stor.loadInput().empty() || m_Stor.loadFilterArray().empty()) {
+            if (m_Stor.loadInput().empty() && m_Stor.loadFilterArray().empty()) {
                 // Storage files do not not exist for bloom filter input.
                 do {
                     // Loop until input is in the proper format.
@@ -138,6 +136,10 @@ public:
                     input_vec.push_back(stoi(sub));
                 }
                 // Save the bloom input settings.
+                vector<char> filter(input_vec[0], 0);
+
+                m_Stor.save(filter);
+                
                 m_Stor.save(input_vec);
             }
             do {

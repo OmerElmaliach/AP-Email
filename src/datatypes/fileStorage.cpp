@@ -16,15 +16,27 @@ using namespace std;
 using namespace std::filesystem;
 
 fileStorage::fileStorage(const string& fileName)
-    : filePath("../data/" + fileName) {
-    // Ensure the ../data directory exists
-    filesystem::create_directories("../data");
+    : filePath("/Ap_Email/data/" + fileName) {
+    // Ensure the /Ap_Email/data directory exists
+    filesystem::create_directories("/Ap_Email/data");
     
     // Create an empty file if it doesn't exist already
     if (!filesystem::exists(filePath)) {
         ofstream file(filePath);
         file.close();
     }
+}
+
+// Helper function to serialize an object to the file in a truncated manner
+// (overwrites the file content)
+void fileStorage::saveTruncToFile(const string& object) {
+    fileStream.open(filePath, ios::out | ios::trunc);
+    if (!fileStream) {
+        throw runtime_error("Failed to open file for saving.");
+    }
+    
+    fileStream << object;
+    fileStream.close();
 }
 
 // Helper function to serialize an object to the file
@@ -75,6 +87,17 @@ void fileStorage::save(const string& data) {
     // Simply append the data to the file
     saveToFile(data);
 }
+
+void fileStorage::save(const vector<int>& data) {
+    // Simply swap the data to the file
+    saveTruncToFile(convertVectorToString(data));
+}
+
+void fileStorage::save(const vector<char>& data) {
+    // Simply swap the data to the file
+    saveTruncToFile(convertVectorToString(data));
+}
+
 
 optional<string> fileStorage::load() {
     if (!exists()) {
@@ -210,6 +233,17 @@ string fileStorage::convertIntToString(const int* data) const {
 }
 
 string fileStorage::convertVectorToString(const vector<int>& data) const {
+    string result;
+    for (const auto& val : data) {
+        if (!result.empty()) {
+            result += ",";
+        }
+        result += to_string(val);
+    }
+    return result;
+}
+
+string fileStorage::convertVectorToString(const vector<char>& data) const {
     string result;
     for (const auto& val : data) {
         if (!result.empty()) {
