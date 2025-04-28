@@ -107,12 +107,8 @@ string bloomFilterStorage::convertVectorCharToString(const vector<char>& data) c
             result += ",";
         }
         // Handle special characters explicitly
-        if (val == 'a') {
-            result += "a";
-        } else if (val == 'b') {
-            result += "b";
-        } else if (val == 'c') {
-            result += "c";
+        if (isalpha(val)) {
+            result += val;
         } else {
             result += to_string(int(val));
         }
