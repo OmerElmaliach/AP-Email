@@ -29,7 +29,7 @@ protected:
     // Helper function to convert vector<int> to string
     string convertVectorToString(const vector<int>& data) const;
 
-    string convertVectorToString(const vector<int>& data) const;
+    string convertVectorToString(const vector<char>& data) const;
 
     // Helper function to serialize an object to the file in a truncated manner
     // (overwrites the file content)
