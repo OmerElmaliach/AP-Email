@@ -42,6 +42,8 @@ public:
 
     void save(const vector<int>& data);
 
+    void save(const vector<char>& data);
+
     optional<string> load() override;
 
     optional<string> load(const string& data) override;
