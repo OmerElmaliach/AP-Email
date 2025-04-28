@@ -63,3 +63,12 @@ chmod +x start.sh
     * The `-it` flags allow you to interact with the application (provide input).
     * The application expects the first line of input to define the Bloom filter size and hash functions, followed by commands (`1 [URL]` to add, `2 [URL]` to check).
 
+## Example Run:
+
+Below is an example illustrating how the Bloom filter operates:
+
+
+![Example #1](readmeFiles/RUN1.png)
+
+
+![Example #2](readmeFiles/RUN2.png)
