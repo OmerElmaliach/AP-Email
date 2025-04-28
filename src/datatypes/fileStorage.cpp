@@ -1,4 +1,4 @@
-.// fileStorage.cpp
+// fileStorage.cpp
 
 #include "Istorage.h"
 #include <fstream>
@@ -243,7 +243,7 @@ string fileStorage::convertVectorToString(const vector<int>& data) const {
     return result;
 }
 
-string fileStorage::convertVectorToString(const vector<int>& data) const {
+string fileStorage::convertVectorToString(const vector<char>& data) const {
     string result;
     for (const auto& val : data) {
         if (!result.empty()) {
