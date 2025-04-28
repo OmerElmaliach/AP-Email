@@ -24,9 +24,13 @@ using namespace std;
 
         //get hash function numbers
         vector<int> hashes = m_storage.loadInput();
-        // cell one has trash value (the array size)
+
         std::size_t length = hashes.size();
-        //for eatch cell build the myhash and pass it to the bloom
+
+        //set array size to correct size, first arg of input      
+        m_bloomFilter.setArraySize(hashes[0]);
+
+        //for eatch cell set the myhash rounds and pass it to the bloom
         MyHash myHash(hashes[0]);
 
         for (size_t i = 1; i < length; i++)
@@ -40,10 +44,23 @@ using namespace std;
         }
 
         //in the end we get the final result 
-        vector<char> bitArrayToCheck = m_bloomFilter.getFiltered();
+        vector<char> bitsToCheck = m_bloomFilter.getFiltered();
+        // check if every bit in url filter is on in bloomfilter
+        vector<char> filterdArray = m_storage.loadFilterArray();
+        bool flag  = true;
+        size_t len = filterdArray.size(); 
 
+        for (size_t i = 0; i < len; i++)
+        {
+            if (bitsToCheck[i] == 1 && filterdArray[i] != 1 ){
+                flag = false;
+                break;
+            }
+             
+        }
+        
 
-        if (m_storage.exists(bitArrayToCheck))
+        if (flag)
         {
             cout << "true ";
              //final test if in the URL file
