@@ -136,6 +136,10 @@ public:
                     input_vec.push_back(stoi(sub));
                 }
                 // Save the bloom input settings.
+                vector<char> filter(input_vec[0], 0);
+
+                m_Stor.save(filter);
+                
                 m_Stor.save(input_vec);
             }
             do {
