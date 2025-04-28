@@ -14,6 +14,7 @@ private:
     mutable fstream fileStream;
     const string filePath;
 
+
     // Helper function to serialize an object to the file
     void saveToFile(const string& object);
 
@@ -21,16 +22,29 @@ private:
     vector<string> loadAllFromFile();
 
 protected:
+
     // Helper function to convert int* to string
     string convertIntToString(const int* data) const;
 
     // Helper function to convert vector<int> to string
     string convertVectorToString(const vector<int>& data) const;
 
+    string convertVectorToString(const vector<char>& data) const;
+
+    // Helper function to serialize an object to the file in a truncated manner
+    // (overwrites the file content)
+
+    void saveTruncToFile(const string& object);
+
 public:
+
     explicit fileStorage(const string& fileName);
 
     void save(const string& data) override;
+
+    void save(const vector<int>& data);
+
+    void save(const vector<char>& data);
 
     optional<string> load() override;
 
@@ -39,8 +53,7 @@ public:
     void remove(const string& data) override;
 
     void remove() override;
-    void remove(const T& data) override;
-    
+
     bool exists() const override;
 
     bool exists(const string& data) const override;

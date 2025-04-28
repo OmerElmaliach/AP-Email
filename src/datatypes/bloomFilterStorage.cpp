@@ -1,7 +1,9 @@
-#include "bloomFilterStorage.h"
 #include "fileStorage.h"
 #include "bloomFilterStorage.h"
 #include <fstream>
+#include <filesystem>
+#include <stdexcept>
+#include "Istorage.h"
 #include <string>
 #include <vector>
 #include <optional>
@@ -23,9 +25,9 @@ bloomFilterStorage::bloomFilterStorage(const vector<int>& inputData, const strin
     urls = new fileStorage("urls.txt");
     filter = new fileStorage("filter.txt");
 
-    input->save(convertVectorIntToString(inputData));
+    input->save(inputData);
     urls->save(urlsData);
-    filter->save(convertVectorCharToString(filterData));
+    filter->save(filterData);
 }
 
 bloomFilterStorage::~bloomFilterStorage() {
@@ -39,11 +41,11 @@ void bloomFilterStorage::save(const string& data) {
 }
 
 void bloomFilterStorage::save(const vector<int> data) {
-    input->save(convertVectorIntToString(data));
+    input->save(data);
 }
 
 void bloomFilterStorage::save(const vector<char> data) {
-    filter->save(convertVectorCharToString(data));
+    filter->save(data);
 }
 
 vector<int> bloomFilterStorage::loadInput() {
@@ -105,12 +107,8 @@ string bloomFilterStorage::convertVectorCharToString(const vector<char>& data) c
             result += ",";
         }
         // Handle special characters explicitly
-        if (val == 'a') {
-            result += "a";
-        } else if (val == 'b') {
-            result += "b";
-        } else if (val == 'c') {
-            result += "c";
+        if (isalpha(val)) {
+            result += val;
         } else {
             result += to_string(int(val));
         }

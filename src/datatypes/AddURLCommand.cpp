@@ -21,18 +21,22 @@ using namespace std;
 
     // will add the URL to url's file, run it through the bloomfilter and save the array in the array's file
     void AddURLCommand::executeCommand( const std::string& URL)  {
+
+
         //save URL in its file
         m_storage.save(URL);
+
 
         //get hash function numbers
         vector<int> hashes = m_storage.loadInput();
         // cell one has trash value (the array size)
         std::size_t length = hashes.size();
 
+
         //set array size to correct size, first arg of input      
         m_bloomFilter.setArraySize(hashes[0]);
 
-        //for eatch cell build the myhash and pass it to the blood
+        //for eatch cell set the myhash rounds and pass it to the bloo
         MyHash myHash(hashes[0]);
 
         for (size_t i = 1; i < length; i++)
@@ -45,9 +49,26 @@ using namespace std;
             //we keep doing that for every hash
         }
 
+        
+        vector<char> filterdArray = m_storage.loadFilterArray();
         //in the end we get the final result 
-        vector<char> bitArrayToSave = m_bloomFilter.getFiltered();
-        m_storage.save(bitArrayToSave); //TODO: Gabi- this needs to be a char vec, ok?  
+        vector<char> bitsToUpdate = m_bloomFilter.getFiltered();
+
+        std::size_t len = filterdArray.size();
+
+        for (size_t i = 0; i < len; i++)
+        {
+            if (bitsToUpdate[i] == 1)
+            {
+                filterdArray[i] = 1;
+            }
+            
+        }
+        
+        // TODO this is wrong 
+        m_storage.save(filterdArray); 
+
+
         //all is saved yay! reset the bloomFilter array to all 0's and were done
         m_bloomFilter.resetBitArray();   
 
