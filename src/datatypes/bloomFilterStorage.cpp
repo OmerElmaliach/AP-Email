@@ -25,7 +25,7 @@ bloomFilterStorage::bloomFilterStorage(const vector<int>& inputData, const strin
     urls = new fileStorage("urls.txt");
     filter = new fileStorage("filter.txt");
 
-    input->save(convertVectorIntToString(inputData));
+    input->save(inputData);
     urls->save(urlsData);
     filter->save(filterData);
 }
