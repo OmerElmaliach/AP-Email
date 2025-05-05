@@ -302,6 +302,19 @@ TEST_F(fileStorageTest tester, Remove_SpecificData) {
     EXPECT_FALSE(result.has_value());
 }
 
+// Test: remove all appearances of specific data
+TEST_F(fileStorageTest tester, Remove_AllAppearances) {
+    string testData1 = "Hello, world!";
+    string testData2 = "Hello, world!";
+    tester.getURLS().save(testData1);
+    tester.getURLS().save(testData2);
+    
+    tester.getURLS().remove(testData1);
+    
+    auto result = tester.getURLS().load();
+    EXPECT_FALSE(result.has_value());
+}
+
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
