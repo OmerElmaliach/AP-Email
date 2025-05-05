@@ -19,6 +19,8 @@ add_executable(runTests
     test.cpp
     datatypes/cli.cpp
     datatypes/bloomFilterStorage.cpp
+    datatypes/fileStorage.cpp
+    datatypes/Istorage.h
 )
 
 target_link_libraries(runTests gtest_main)
