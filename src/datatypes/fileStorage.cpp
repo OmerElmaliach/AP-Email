@@ -176,6 +176,7 @@ void fileStorage::remove(const string& data) {
                 fileStream << endl;
             }
             fileStream << newEntries[i];
+            printf("Writing entry: %s\n", newEntries[i].c_str());
         }
         
         fileStream.close();
