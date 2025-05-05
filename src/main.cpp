@@ -1,4 +1,4 @@
-#include "datatypes/app.h"
+#include <app.h>
 
 // Main function, runs the run function inside app object.
 int main() {

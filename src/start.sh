@@ -1,6 +1,6 @@
 #!/bin/bash
 # DOCKER FOR RUNNING MAIN
-DOCKERFILE="DockerMain"
+DOCKERFILE="config/DockerMain"
 
 # Build the image
 docker build -f ${DOCKERFILE} -t docker-main .

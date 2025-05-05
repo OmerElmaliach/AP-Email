@@ -2,8 +2,8 @@
 #define IMENU_H
 
 #include <map>
-#include "Icommand.h"
-#include "Istorage.h"
+#include <Icommand.h>
+#include <Istorage.h>
 using namespace std;
 
 // IMenu abstract class.

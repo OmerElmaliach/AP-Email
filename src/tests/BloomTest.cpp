@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-#include "datatypes/MyHash.h"
-#include "datatypes/BloomFilter.h"
+#include <MyHash.h>
+#include <BloomFilter.h>
 #include <string>
 
 // Test: Compare BloomFilter outputs with 10 rounds of hashing
