@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "datatypes/MyHash.h"  // Make sure to include your MyHash header file
+#include <MyHash.h>  // Make sure to include your MyHash header file
 // Test the constructor and default behavior (number of rounds).
 
 

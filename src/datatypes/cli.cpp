@@ -2,13 +2,13 @@
 #include <iostream>
 #include <regex>
 #include <bits/stdc++.h>
-#include "MyHash.h"
-#include "BloomFilter.h"
-#include "imenu.h"
-#include "bloomFilterStorage.h"
-#include "Icommand.h"
-#include "AddURLCommand.h"
-#include "CheckURLCommand.h"
+#include <MyHash.h>
+#include <BloomFilter.h>
+#include <imenu.h>
+#include <bloomFilterStorage.h>
+#include <Icommand.h>
+#include <AddURLCommand.h>
+#include <CheckURLCommand.h>
 using namespace std;
 
 class CLI : public IMenu<int, string> {

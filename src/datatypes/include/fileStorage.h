@@ -1,7 +1,7 @@
 #ifndef FILESTORAGE_H
 #define FILESTORAGE_H
 
-#include "Istorage.h"
+#include <Istorage.h>
 #include <fstream>
 #include <filesystem>
 #include <stdexcept>
