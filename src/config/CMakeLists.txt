@@ -15,12 +15,18 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
+file(GLOB DATATYPE_FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/../datatypes/*.cpp
+)
+
 add_executable(runTests
-    test.cpp
-    datatypes/cli.cpp
-    datatypes/bloomFilterStorage.cpp
-    datatypes/fileStorage.cpp
-    datatypes/Istorage.h
+    ../tests/test.cpp
+    ${DATATYPE_FILES}
+)
+
+# Include a path to header files.
+target_include_directories(runTests PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/../datatypes/include
 )
 
 target_link_libraries(runTests gtest_main)

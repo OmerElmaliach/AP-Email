@@ -1,6 +1,6 @@
 #!/bin/bash
 # DOCKER FOR TESTS
-DOCKERFILE="DockerTest"
+DOCKERFILE="config/DockerTest"
 
 docker build -f ${DOCKERFILE} -t docker-test .
 docker run docker-test
