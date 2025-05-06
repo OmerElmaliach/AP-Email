@@ -40,11 +40,11 @@ void bloomFilterStorage::save(const string& data) {
     urls->save(data);
 }
 
-void bloomFilterStorage::save(const vector<int> data) {
+void bloomFilterStorage::save(const vector<int>& data) {
     input->save(data);
 }
 
-void bloomFilterStorage::save(const vector<char> data) {
+void bloomFilterStorage::save(const vector<char>& data) {
     filter->save(data);
 }
 
@@ -86,11 +86,11 @@ void bloomFilterStorage::remove(const string& data) {
     urls->remove(data);
 }
 
-void bloomFilterStorage::remove(const vector<int> data) {
+void bloomFilterStorage::remove(const vector<int>& data) {
     input->remove(convertVectorIntToString(data));
 }
 
-void bloomFilterStorage::remove(const vector<char> data) {
+void bloomFilterStorage::remove(const vector<char>& data) {
     filter->remove(convertVectorCharToString(data));
 }
 
