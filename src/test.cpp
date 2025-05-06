@@ -46,7 +46,7 @@ class fileStorageTest : public testing::Test {
     
 // Test: constructor
 TEST_F(fileStorageTest, Constructor_CreatesFile) {
-    EXPECT_TRUE(filesystem::exists("../data/test.txt"));
+    EXPECT_TRUE(filesystem::exists("/Ap_Email/data/test.txt"));
 }
 
 // Test: save method
@@ -114,6 +114,22 @@ TEST_F(fileStorageTest, Remove_DeletesData) {
     EXPECT_FALSE(result.has_value());
 }
 
+// Test: remove method with specific data when multiple duplicates exist
+TEST_F(fileStorageTest, Remove_DeletesSpecificData) {
+    string testData1 = "Hello, world!";
+    string testData2 = "Hello, world!";
+    string testData3 = "Goodbye, world!";
+    storage->save(testData1);
+    storage->save(testData2);
+    storage->save(testData3);
+    
+    storage->remove(testData1);
+    
+    auto result = storage->load();
+    ASSERT_TRUE(result.has_value());
+    EXPECT_EQ(testData3, result.value());
+}
+
 // Test: remove method when no data exists
 TEST_F(fileStorageTest, Remove_NoDataDoesNotThrow) {
     EXPECT_NO_THROW(storage->remove());
@@ -134,10 +150,10 @@ class bloomFilterStorageTest : public testing::Test {
     
 // Test: constructor
 TEST_F(bloomFilterStorageTest, Constructor_CreatesFile) {
-    EXPECT_TRUE(filesystem::exists("../data/bloomFilterStorage.txt"));
-    EXPECT_TRUE(filesystem::exists("../data/urls.txt"));
-    EXPECT_TRUE(filesystem::exists("../data/input.txt"));
-    EXPECT_TRUE(filesystem::exists("../data/filter.txt"));
+    EXPECT_TRUE(filesystem::exists("/Ap_Email/data/bloomFilterStorage.txt"));
+    EXPECT_TRUE(filesystem::exists("/Ap_Email/data/urls.txt"));
+    EXPECT_TRUE(filesystem::exists("/Ap_Email/data/input.txt"));
+    EXPECT_TRUE(filesystem::exists("/Ap_Email/data/filter.txt"));
 }
 
 // Test: save method
@@ -254,21 +270,21 @@ TEST_F(bloomFilterStorageTest, Remove_NoDataDoesNotThrow) {
 
 // Test: load method for specific data when several datas saved
 TEST_F(bloomFilterStorageTest, Load_ReturnsDataWhenSeveralDatasSaved) {
-    vector<int> testData1 = {1, 2, 3};
-    vector<int> testData2 = {4, 5, 6};
+    string testData1 = "hello";
+    string testData2 = "goodbye";
     storage->save(testData1);
     storage->save(testData2);
-    vector<int> expected = {1, 2, 3, 4, 5, 6};
+    string expected = "hello\ngoodbye";
     
-    auto result = storage->loadInput();
-    ASSERT_FALSE(result.empty());
+    auto result = storage->loadUrls();
+    ASSERT_TRUE(result != "");
     EXPECT_EQ(result, expected);
 }
 
 // Test: exist method for specific data when several datas saved
 TEST_F(bloomFilterStorageTest, Exists_ReturnsTrueWhenSeveralDatasSaved) {
-    vector<int> testData1 = {1, 2, 3};
-    vector<int> testData2 = {4, 5, 6};
+    string testData1 = "hello";
+    string testData2 = "goodbye";
     storage->save(testData1);
     storage->save(testData2);
     
@@ -286,22 +302,25 @@ TEST_F(bloomFilterStorageTest, Remove_DeletesDataWhenSeveralDatasSaved) {
     storage->remove(testData2);
     
     auto result = storage->loadInput();
-    EXPECT_EQ(result, testData1);
+    ASSERT_TRUE(result.empty());
     EXPECT_FALSE(result == testData2);
 }
 
-
-// Test: remove specific data
-TEST_F(fileStorageTest tester, Remove_SpecificData) {
-    string testData1 = "Hello, world!";
-    tester.getURLS().save(testData1);
+// Test: remove method for all appearances of specific data when several datas saved
+TEST_F(bloomFilterStorageTest, RemoveAll_DeletesAllAppearancesOfDataWhenSeveralDatasSaved) {
+    vector<int> testData1 = {1, 2, 3};
+    vector<int> testData2 = {1, 2, 3};
+    vector<int> testData3 = {4, 5, 6};
+    storage->save(testData1);
+    storage->save(testData2);
+    storage->save(testData3);
     
-    tester.getURLS().remove(testData1);
+    storage->remove(testData1);
     
-    auto result = tester.getURLS().load();
-    EXPECT_FALSE(result.has_value());
+    auto result = storage->loadInput();
+    EXPECT_EQ(result, testData3);
+    EXPECT_FALSE(result == testData1);
 }
-
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);

@@ -30,8 +30,8 @@ public:
     ~bloomFilterStorage();
 
     void save(const string& data) override;
-    void save(const vector<int> data);
-    void save(const vector<char> data);
+    void save(const vector<int>& data);
+    void save(const vector<char>& data);
 
     vector<int> loadInput();
     string loadUrls();
@@ -45,8 +45,8 @@ public:
     bool exists(const vector<char> data);
 
     void remove(const string& data) override;
-    void remove(const vector<int> data);
-    void remove(const vector<char> data);
+    void remove(const vector<int>& data);
+    void remove(const vector<char>& data);
     void remove() override;
 
     // Getters
