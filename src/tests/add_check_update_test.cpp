@@ -24,17 +24,17 @@ TEST(BloomFilterTest, CheckURLPrintsTrue) {
     CheckURLCommand checkURLCommand{storage, bf};
 
     //check that addURL reyruns the correct string
-    char* ADDresult = addURLCommand.executeCommand(url);
-    EXPECT_STREQ(ADDresult, "201 Created");
+    std::string ADDresult = addURLCommand.executeCommand(url);
+    EXPECT_EQ(ADDresult, "201 Created");
 
     //test the checkurl retuns correct out put in case of bloom and urlList conatining the url
-    char* CHECKresult = checkURLCommand.executeCommand(url);    
-    EXPECT_STREQ(CHECKresult, "200 Ok\n\ntrue true");
+    std::string CHECKresult = checkURLCommand.executeCommand(url);    
+    EXPECT_EQ(CHECKresult, "200 Ok\n\ntrue true");
 
 
     //test the checkurl retuns correct out put in case of bloom and urlList not conatining the url
-    char* CHECKresult2 = checkURLCommand.executeCommand(url2);    
-    EXPECT_STREQ(CHECKresult2, "200 Ok\n\nfalse");
+    std::string CHECKresult2 = checkURLCommand.executeCommand(url2);    
+    EXPECT_EQ(CHECKresult2, "200 Ok\n\nfalse");
 
 
 }
