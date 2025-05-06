@@ -12,7 +12,7 @@ public:
     /**
      * @brief Initializes an imenu type object and runs it, supports socket.
      * 
-     * @param sock Active socker.
+     * @param sock Active socket.
      */
     void run(int sock);
 };
