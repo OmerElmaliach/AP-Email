@@ -15,15 +15,13 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
+file(GLOB DATATYPE_FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/../datatypes/*.cpp
+)
+
 add_executable(runTests
     ../tests/test.cpp
-    ../datatypes/app.cpp
-    ../datatypes/bloomFilterStorage.cpp
-    ../datatypes/fileStorage.cpp
-    ../datatypes/CheckURLCommand.cpp
-    ../datatypes/AddURLCommand.cpp
-    ../datatypes/cli.cpp
-    ../datatypes/MyHash.cpp
+    ${DATATYPE_FILES}
 )
 
 # Include a path to header files.
