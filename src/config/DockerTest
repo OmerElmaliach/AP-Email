@@ -8,7 +8,7 @@ WORKDIR /Ap_Email/src
 RUN mkdir build
 WORKDIR /Ap_Email/src/build
 
-RUN cmake .. && make
+RUN cmake ../config && make
 
 # Run the tests
 CMD ["./runTests"]

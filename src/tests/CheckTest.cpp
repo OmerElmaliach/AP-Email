@@ -3,13 +3,12 @@
 #include <vector>
 #include <cstddef>
 #include <iostream>
-
-#include "datatypes/AddURLCommand.h"  
-#include "datatypes/Icommand.h"
-#include "datatypes/CheckURLCommand.h" 
-#include "datatypes/bloomFilterStorage.h"  
-#include "datatypes/MyHash.h"
-#include "datatypes/BloomFilter.h"
+#include <AddURLCommand.h>
+#include <Icommand.h>
+#include <CheckURLCommand.h>
+#include <bloomFilterStorage.h>
+#include <MyHash.h>
+#include <BloomFilter.h>
 
 TEST(BloomFilterTest, CheckURLPrintsTrue) {
     bloomFilterStorage storage;

@@ -2,12 +2,12 @@
 #include <vector>
 #include <cstddef>
 
-#include "MyHash.h"
-#include "Istorage.h"
-#include "Icommand.h"
-#include "bloomFilterStorage.h"
-#include "BloomFilter.h"
-#include "AddURLCommand.h"
+#include <MyHash.h>
+#include <Istorage.h>
+#include <Icommand.h>
+#include <bloomFilterStorage.h>
+#include <BloomFilter.h>
+#include <AddURLCommand.h>
 
 
 #include <iostream>
