@@ -1,6 +1,7 @@
 
-#ifndef ADD_URL_COMMAND_H
-#define ADD_URL_COMMAND_H
+#ifndef DELETE_URL_COMMAND_H
+#define DELETE_URL_COMMAND_H
+
 
 #include <cstddef>
 #include <string>
@@ -16,14 +17,17 @@
 
 
 /**
- * @class AddURLCommand
- * @brief Handles the addition of a new URL to the system.
+ * @class DeleteURLCommand
+ * @brief Handles the Deleting of a URL from the system.
  *
  * This command performs the following operations:
- * 1. checks if selected url exists in lists with check
- * 2. Passes the URL through a Bloom filter to convert it into a bit array.
- * 3. Saves the array to a file for future checks.
- *
+ * Passes the URL through a Bloom filter to convert it into a bit array then checks if its on the bloom filter array 
+ *  if it is, it then checks if selected url exists in url list 
+ *  if indded selected url is on the url lest every intance of it will be deleted 
+ * 
+ *  if deletes- retuns std::string "204 No Content" if not - will return "404 Not Found"
+ * if theres an error in storage handeling will return string "fail"
+ * 
  * Inherits from the Icommand interface to support command-based execution.
  */
 class DeleteURLCommand : public Icommand{
