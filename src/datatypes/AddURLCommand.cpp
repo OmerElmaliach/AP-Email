@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 #include <cstddef>
+#include <sstream>
 
 #include <MyHash.h>
 #include <Istorage.h>
@@ -20,9 +21,10 @@ using namespace std;
 
 
     // will add the URL to url's file, run it through the bloomfilter and save the array in the array's file
-    void AddURLCommand::executeCommand( const std::string& URL)  {
+    std::string AddURLCommand::executeCommand( const std::string& URL)  {
 
-
+        try
+        {
         //save URL in its file
         m_storage.save(URL);
 
@@ -66,11 +68,21 @@ using namespace std;
         }
         
         // TODO this is wrong 
-        m_storage.save(filterdArray); 
-
+        m_storage.save(filterdArray);        
+        
+        }
+        catch(const std::exception& e)
+        {   // retun fail flag
+            return "fail";
+        }
+        
+        
 
         //all is saved yay! reset the bloomFilter array to all 0's and were done
         m_bloomFilter.resetBitArray();   
+
+        //return sucsess to caller
+        return"201 Created";
 
     }
 
