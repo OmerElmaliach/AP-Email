@@ -16,12 +16,13 @@
  * @class CheckURLCommand
  * @brief Handles the checking if a URL has ben added to the system
  *
- * This command performs the following operations:
- * 1.first does a quick check in the bloom filter array file  
- * 2. if theres a match prints posotive
- * 3. check the actuall URL file to see if theres a match 
- * 4. if theres a match prints posotive if not negative
-
+ *  will retun std::string "200 Ok\n\n", then-
+ *  
+ *  first does a quick check in the bloom filter array file   
+ *  if theres a match Concatenates "true"
+ *  check the actuall URL file to see if theres a match 
+ *  if theres a match Concatenates "true" if not "false"
+ *  if failed to upen files will catch the exeption and return "fail"
  *
  * Inherits from the Icommand interface to support command-based execution.
  */
