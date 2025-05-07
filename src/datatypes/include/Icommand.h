@@ -12,7 +12,7 @@ public:
 virtual ~Icommand() = default; 
 
 // virtual command methode, the diffrenr command will implament
-virtual void executeCommand( const std::string& URL)=0;
+virtual std::string executeCommand( const std::string& URL)=0;
 
 };
 #endif // ICOMMAND_H
