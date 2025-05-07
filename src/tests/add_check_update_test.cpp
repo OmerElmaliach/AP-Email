@@ -10,16 +10,16 @@
 #include <MyHash.h>
 #include <BloomFilter.h>
 
-TEST(BloomFilterTest, CheckURLPrintsTrue) {
+TEST(BloomFilterTest, CheckURLPrints) {
     bloomFilterStorage storage;
-    std::vector<int> data = {2, 1, 2, 3};
+    std::vector<int> data = {10, 1, 2, 3};
 
     MyHash hash(10);  // Create a hash with 10 rounds
-    BloomFilter<std::string, MyHash> bf(hash, 2);  // Specify template parameters
+    BloomFilter<std::string, MyHash> bf(hash, 10);  // Specify template parameters
     storage.save(data);
 
     std::string url = "hello.com";
-    std::string url2= "whynot";
+    std::string url2= "why111not";
     AddURLCommand addURLCommand{storage, bf};
     CheckURLCommand checkURLCommand{storage, bf};
 
@@ -28,12 +28,15 @@ TEST(BloomFilterTest, CheckURLPrintsTrue) {
     EXPECT_EQ(ADDresult, "201 Created");
 
     //test the checkurl retuns correct out put in case of bloom and urlList conatining the url
-    std::string CHECKresult = checkURLCommand.executeCommand(url);    
+    std::string CHECKresult = checkURLCommand.executeCommand(url); 
+    cout << "test1:"<<CHECKresult << "thats all" << std::endl ;    
     EXPECT_EQ(CHECKresult, "200 Ok\n\ntrue true");
 
 
     //test the checkurl retuns correct out put in case of bloom and urlList not conatining the url
     std::string CHECKresult2 = checkURLCommand.executeCommand(url2);    
+    cout<< "test2:" << CHECKresult2<< "thats all"<< std::endl ; ;    
+
     EXPECT_EQ(CHECKresult2, "200 Ok\n\nfalse");
 
 
