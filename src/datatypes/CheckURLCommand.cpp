@@ -2,7 +2,6 @@
 #include <vector>
 #include <cstddef>
 #include <iostream>
-#include <sstream>
 
 #include <MyHash.h>
 #include <Istorage.h>
@@ -20,7 +19,8 @@ using namespace std;
 
     // will add the URL to url's file, run it through the bloomfilter and save the array in the array's file
     std::string CheckURLCommand::executeCommand(const std::string& URL)  {
-        
+        std::string output;
+
         // we put a "try" for accessing storage 
         try
         {
@@ -62,23 +62,17 @@ using namespace std;
              
         }
         
-        std::ostringstream output;
-        output << "200 Ok\n\n"; 
+        output = "200 Ok\n\n"; 
 
         if (flag)
         {
-            output << "true ";
-             //final test if in the URL file
-            if ( m_storage.exists(URL))
-            {
-                output << "true";
-            }else{
-                //else not in url list so false
-                output << "false";
-            }
+            output += "true ";
+            //final test if in the URL file
+            output += m_storage.exists(URL) ? "true" : "false";             
+        
             //not in array then right away flase
         }else{
-            output << "false" ;
+            output += "false ";
         }
 
         } // all that was in a "try" incase storage failed
@@ -90,7 +84,7 @@ using namespace std;
         //were done reset the bloomFilter array to all 0's and return
         m_bloomFilter.resetBitArray(); 
         
-        return output.str();  
+        return output;  
     }
 
 
