@@ -120,6 +120,32 @@ public:
      * @param isRunning The new running state.
      */
     void setRunningFlag(bool isRunning);
-};
+
+    /**
+     * @brief Gets the server address structure.
+     * @return The server address structure.
+     */
+    struct sockaddr_in getServerAddr() const;
+
+    /**
+     * @brief Sets the server address structure.
+     * @param addr The new server address structure.
+     */
+    void setServerAddr(const struct sockaddr_in& addr);
+
+    /**
+     * @brief Gets the client address structure.
+     * @return The client address structure.
+     */
+    struct sockaddr_in getClientAddr() const;
+
+    /**
+     * @brief Sets the client address structure.
+     * @param addr The new client address structure.
+     */
+    void setClientAddr(const struct sockaddr_in& addr);
+    ~Server(); ///< Destructor to clean up resources.
+}
+;
 
 #endif // SERVER_H

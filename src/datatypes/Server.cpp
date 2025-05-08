@@ -43,10 +43,14 @@ bool Server::checkValidInput(const std::string& argv) {
  * @param port The port number to bind to.
  */
 Server::Server(int port) {
-    this->port = port;
     if ((this->serverSocket = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
         perror("Socket creation failed");
         exit(1);
+    }        
+    if (checkValidInput(to_string(port))) {
+        this->port = port;
+    } else {
+        this->port = SERVER_PORT; // Default to a random port if invalid
     }
 
     // Set SO_REUSEADDR to allow reuse of the address and port
@@ -58,6 +62,10 @@ Server::Server(int port) {
 
     this->running = false;
     this->app = new App(); 
+    this->m_Stor = new bloomFilterStorage(); // Initialize storage object
+    this->serverAddr = {0}; // Initialize server address structure
+    this->clientAddr = {0}; // Initialize client address structure
+
 }
 
 /**
@@ -119,7 +127,7 @@ void Server::acceptAndHandleClient(sockaddr_in clientAddr) {
     }
 
     // Delegate handling to the app instance
-    this->app->run(this->serverSocket, this->m_Stor*); // Pass the server socket and client socket to the app instance
+    this->app->run(this->serverSocket, this->serverAddr&, this->m_Stor*); // Pass the server socket and client socket to the app instance
 
     close(clientSocket); // Close the client socket after handling
 }
@@ -132,11 +140,11 @@ void Server::kickClient(int clientSocket) {
     if (clientSocket >= 0) {
         close(clientSocket); // Close the client socket
     } 
-    // else {
-    //     cout << "Invalid client socket" << endl;
-    // }
+    else {
+        perror("Invalid client socket");
+    }
 
-} // Handle client in a separate thread
+} 
 
 /**
  * @brief Gets the server's port number.
@@ -152,7 +160,7 @@ int Server::getPort() const {
  */
 void Server::setPort(int newPort) {
     this->port = newPort; // Set the server port
-} // Set the server port
+}
 
 /**
  * @brief Gets the server socket file descriptor.
@@ -160,7 +168,7 @@ void Server::setPort(int newPort) {
  */
 int Server::getServerSocket() const {
     return this->serverSocket; // Get the server socket
-} // Get the server socket
+}
 
 /**
  * @brief Sets the server socket file descriptor.
@@ -168,7 +176,7 @@ int Server::getServerSocket() const {
  */
 void Server::setServerSocket(int newServerSocket) {
     this->serverSocket = newServerSocket; // Set the server socket
-} // Set the server socket
+}
 
 /**
  * @brief Sets the running flag.
@@ -176,28 +184,47 @@ void Server::setServerSocket(int newServerSocket) {
  */
 void Server::setRunningFlag(bool isRunning) {
     this->running = isRunning; // Set the running flag
-} // Set the running flag
+} 
 
-int main() {
-    Server server(SERVER_PORT);
-    if (!server.checkValidInput(to_string(SERVER_PORT))()) {
-        cout << "Invalid port number" << endl;
-        perror("Invalid port number");
+/**
+ * @brief Gets the server address structure.
+ * @return The server address structure.
+ */
+struct sockaddr_in Server::getServerAddr() const {
+    return this->serverAddr; // Get the server address
+} // Get the server address
+/**
+ * @brief Sets the server address structure.
+ * @param newServerAddr The new server address structure.
+ */
+void Server::setServerAddr(const struct sockaddr_in& newServerAddr) {
+    this->serverAddr = newServerAddr; // Set the server address
+}
+/**
+ * @brief Gets the client address structure.
+ * @return The client address structure.
+ */
+struct sockaddr_in Server::getClientAddr() const {
+    return this->clientAddr; // Get the client address
+
+} // Get the client address
+
+/**
+ * @brief Sets the client address structure.
+ * @param newClientAddr The new client address structure.
+ */
+void Server::setClientAddr(const struct sockaddr_in& newClientAddr) {
+    this->clientAddr = newClientAddr; // Set the client address
+} // Set the client address
+/**
+ * @brief Destructor for the Server class.
+ */
+Server::~Server() {
+    delete this->app; // Clean up the App instance
+    delete this->m_Stor; // Clean up the storage object
+    if (this->serverSocket >= 0) {
+        close(this->serverSocket); // Close the server socket
     }
-    if (server.startServer()) {
-        cout << "Server started on port " << server.getPort() << endl;
-    } else {
-        cout << "Failed to start server" << endl;
-        return 1;
-    }
-    
-    // Accept and handle clients in a loop
-    while (server.isRunning()) {
-        sockaddr_in clientAddr;
-        server.acceptAndHandleClient(clientAddr);
-    }
-    
-    server.stopServer();
-    cout << "Server stopped" << endl;
-    return 0;
-} // Main function to run the server
+    this->serverSocket = -1; // Reset the server socket
+    this->running = false; // Reset the running flag
+} // Destructor
