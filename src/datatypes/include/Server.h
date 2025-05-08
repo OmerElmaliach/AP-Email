@@ -38,7 +38,7 @@ private:
     int serverSocket;                 ///< File descriptor for the server socket.
     bool running;                     ///< Indicates if the server is running.
     struct sockaddr_in serverAddr, clientAddr; ///< Server and client address structures.
-    bloomFilterStorage* m_Stor;       ///< Storage for Bloom filter data (not owned by Server).
+    bloomFilterStorage m_Stor;       ///< Storage for Bloom filter data (not owned by Server).
     App* app;                         ///< Pointer to the application logic handler.
 
 public:
@@ -53,7 +53,7 @@ public:
      * @param input String to validate.
      * @return True if valid, false otherwise.
      */
-    bool checkValidInput(const std::string& input);
+    static bool checkValidInput(const std::string& input);
 
     /**
      * @brief Initializes the server socket, binds, and starts listening.
@@ -81,9 +81,8 @@ public:
 
     /**
      * @brief Accepts a client connection and delegates handling to the App instance.
-     * @param clientAddr The sockaddr_in structure for the client.
      */
-    void acceptAndHandleClient(sockaddr_in clientAddr);
+    void acceptAndHandleClient();
 
     /**
      * @brief Gets the server's port number.
