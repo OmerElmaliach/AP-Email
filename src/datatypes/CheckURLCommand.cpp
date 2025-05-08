@@ -78,7 +78,7 @@ using namespace std;
         } // all that was in a "try" incase storage failed
         catch(const std::exception& e)
         {   // retun fail flag
-            return "fail";
+            return "404 Not Found";
         }           
 
         //were done reset the bloomFilter array to all 0's and return
