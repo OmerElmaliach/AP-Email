@@ -18,10 +18,13 @@ using namespace std;
                 m_storage(storage), m_bloomFilter(bloomFilter){}
 
     // will add the URL to url's file, run it through the bloomfilter and save the array in the array's file
-    void CheckURLCommand::executeCommand(const std::string& URL)  {
-        
-        //convert to bloom to see if similer arrray is in the array file
+    std::string CheckURLCommand::executeCommand(const std::string& URL)  {
+        std::string output;
 
+        // we put a "try" for accessing storage 
+        try
+        {
+        //convert to bloom to see if similer arrray is in the array file
         //get hash function numbers
         vector<int> hashes = m_storage.loadInput();
 
@@ -59,25 +62,29 @@ using namespace std;
              
         }
         
+        output = "200 Ok\n\n"; 
 
         if (flag)
         {
-            cout << "true ";
-             //final test if in the URL file
-            if ( m_storage.exists(URL))
-            {
-                cout << "true" << endl;
-            }else{
-                //else not in url list so false
-                cout << "false" << endl;
-            }
+            output += "true ";
+            //final test if in the URL file
+            output += m_storage.exists(URL) ? "true" : "false";             
+        
             //not in array then right away flase
         }else{
-            cout << "false" << endl;
+            output += "false ";
         }
-                    
+
+        } // all that was in a "try" incase storage failed
+        catch(const std::exception& e)
+        {   // retun fail flag
+            return "fail";
+        }           
+
         //were done reset the bloomFilter array to all 0's and return
-        m_bloomFilter.resetBitArray();   
+        m_bloomFilter.resetBitArray(); 
+        
+        return output;  
     }
 
 
