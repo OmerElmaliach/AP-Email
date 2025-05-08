@@ -118,16 +118,17 @@ bool Server::isRunning() const {
  * @brief Accepts a client connection and delegates handling to the App instance.
  * @param clientAddr The sockaddr_in structure for the client.
  */
-void Server::acceptAndHandleClient(sockaddr_in clientAddr) {
+void Server::acceptAndHandleClient() {
+    struct sockaddr_in clientAddr; // Client address structure
     socklen_t addrLen = sizeof(clientAddr);
-    int clientSocket = accept(this->serverSocket, (struct sockaddr*)&clientAddr, &addrLen);
+    int clientSocket = accept(this->serverSocket, (struct sockaddr_in*) &clientAddr, &addrLen);
     if (clientSocket < 0) {
         perror("Accept failed");
         return;
     }
 
     // Delegate handling to the app instance
-    this->app->run(this->serverSocket, this->serverAddr&, this->m_Stor*); // Pass the server socket and client socket to the app instance
+    this->app->run(clientSocket, this->m_Stor*); // Pass the server socket and client socket to the app instance
 
     close(clientSocket); // Close the client socket after handling
 }
