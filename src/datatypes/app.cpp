@@ -1,5 +1,5 @@
 #include <app.h>
-#include "cli.cpp"
+#include <cli.cpp>
 
 void App::run(int sock, bloomFilterStorage* p_bloomFilterStorage) {
     // Initialize CLI menu and run it.
