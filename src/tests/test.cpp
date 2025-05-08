@@ -327,7 +327,7 @@ protected:
     std::unique_ptr<Server> server;
 
     void SetUp() override {
-        server = std::make_unique<Server>(8080);
+        server = std::make_unique<Server>(8085);
     }
 
     void TearDown() override {
@@ -337,7 +337,7 @@ protected:
 
 // Test: Constructor initializes correctly
 TEST_F(ServerTest, Constructor_InitializesCorrectly) {
-    EXPECT_EQ(server->getPort(), 8080);
+    EXPECT_EQ(server->getPort(), 8085);
     EXPECT_FALSE(server->isRunning());
 }
 
@@ -362,8 +362,8 @@ TEST_F(ServerTest, SetAndGetPort) {
 
 // Test: Set and get server socket
 TEST_F(ServerTest, SetAndGetServerSocket) {
-    server->setServerSocket(1234);
-    EXPECT_EQ(server->getServerSocket(), 1234);
+    server->setServerSocket(12345);
+    EXPECT_EQ(server->getServerSocket(), 12345);
 }
 
 // Test: Set and get running flag
@@ -374,38 +374,35 @@ TEST_F(ServerTest, SetAndGetRunningFlag) {
     EXPECT_FALSE(server->isRunning());
 }
 
-// Test: Accept and handle a single client
-TEST_F(ServerTest, AcceptAndHandleSingleClient) {
-    // Simulate starting the server
-    server->startServer();
-
-    // Create a mock client address
-    struct sockaddr_in mockClientAddr;
-    mockClientAddr.sin_family = AF_INET;
-    mockClientAddr.sin_port = htons(8081);
-    inet_pton(AF_INET, "127.0.0.1", &mockClientAddr.sin_addr);
-
-    // Simulate accepting a single client
-    EXPECT_NO_THROW(server->acceptSingleClient(mockClientAddr));
-
-    // Ensure the server is still running after handling the client
-    EXPECT_TRUE(server->isRunning());
-}
 
 // Test: Accept and handle multiple clients
 TEST_F(ServerTest, AcceptAndHandleMultipleClients) {
     // Simulate starting the server
     server->startServer();
 
-    // Create a mock client address
-    struct sockaddr_in mockClientAddr;
-    mockClientAddr.sin_family = AF_INET;
-    mockClientAddr.sin_port = htons(8081);
-    inet_pton(AF_INET, "127.0.0.1", &mockClientAddr.sin_addr);
+    // Create mock client sockets and connect them to the server
+    std::vector<int> clientSockets;
+    for (int i = 0; i < 5; ++i) {
+        int clientSocket = socket(AF_INET, SOCK_STREAM, 0);
+        ASSERT_TRUE(clientSocket >= 0) << "Failed to create client socket";
+
+        struct sockaddr_in serverAddr;
+        serverAddr.sin_family = AF_INET;
+        serverAddr.sin_port = htons(8085); // Use the server's port
+        inet_pton(AF_INET, "127.0.0.1", &serverAddr.sin_addr);
+
+        ASSERT_EQ(connect(clientSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr)), 0) << "Failed to connect client socket";
+        clientSockets.push_back(clientSocket);
+    }
 
     // Simulate accepting and handling multiple clients
     for (int i = 0; i < 5; ++i) {
-        EXPECT_NO_THROW(server->acceptAndHandleClient(mockClientAddr));
+        EXPECT_NO_THROW(server->acceptAndHandleClient({}));
+    }
+
+    // Close client sockets
+    for (int clientSocket : clientSockets) {
+        close(clientSocket);
     }
 
     // Ensure the server is still running after handling clients

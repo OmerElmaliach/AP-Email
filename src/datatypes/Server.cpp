@@ -19,12 +19,12 @@
 #include <regex>
 
 #define BUFFER_SIZE 4096
-
+#define SERVER_PORT 8080 + rand() % 30000 // Random port value
 using namespace std;
 
 bool Server::checkValidInput(const std::string& argv) {
-    int port_reg = '^([0-9]|[1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$';
-    return regex_match(argv, regex(port_reg));
+    regex port_reg("^([0-9]|[1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$");
+    return regex_match(argv, port_reg);
 }
 
 Server::Server(int port) {
@@ -33,6 +33,14 @@ Server::Server(int port) {
         perror("Socket creation failed");
         exit(1);
     }
+
+    // Set SO_REUSEADDR to allow reuse of the address and port
+    int opt = 1;
+    if (setsockopt(this->serverSocket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
+        perror("setsockopt failed");
+        exit(1);
+    }
+
     this->running = false;
     this->app = new App(); 
 }
@@ -42,7 +50,11 @@ bool Server::startServer() {
     this->serverAddr.sin_family = AF_INET; // IPv4
     this->serverAddr.sin_addr.s_addr = INADDR_ANY; // Accept connections from any address
     this->serverAddr.sin_port = htons(this->port); // Port number
-    return false; // Placeholder for actual implementation
+    if (bind(this->serverSocket, (struct sockaddr*)&this->serverAddr, sizeof(this->serverAddr)) < 0) {
+        perror("Bind failed");
+        return false;
+    }
+    return true; // Placeholder for actual implementation
 }      // Initialize socket, bind, and listen
 
 bool Server::stopServer() {
@@ -51,6 +63,7 @@ bool Server::stopServer() {
         perror("Socket close failed");
         return false;
     }
+    this->serverSocket = -1; // Reset the server socket
     return true;
 }       // Close socket and cleanup
 bool Server::isRunning() const {
@@ -65,7 +78,7 @@ void Server::acceptAndHandleClient(sockaddr_in clientAddr) {
     }
 
     // Delegate handling to the app instance
-    this->app->run(clientSocket);
+    this->app->run();
 
     close(clientSocket); // Close the client socket after handling
 } // Accept a client and handle commands until client disconnects or server stops
@@ -79,25 +92,6 @@ void Server::kickClient(int clientSocket) {
     // }
 
 } // Handle client in a separate thread
-void Server::acceptSingleClient(sockaddr_in clientAddr) {
-    char buffer[BUFFER_SIZE];
-    int clientSocket = accept(this->serverSocket, (struct sockaddr*)&clientAddr, (socklen_t*)&clientAddr);
-    if (clientSocket < 0) {
-        perror("Accept failed");
-        return;
-    }
-    memset(buffer, 0, BUFFER_SIZE); // Clear the buffer
-    int bytesRead = recv(clientSocket, buffer, BUFFER_SIZE - 1, 0);
-    if (bytesRead <= 0) {
-        close(clientSocket); // Close the client socket
-        return; // Client disconnected or error occurred
-    }
-    buffer[bytesRead] = '\0'; // Null-terminate the string
-    cout << "Received: " << buffer << endl;
-    // Handle command using app object
-    close(clientSocket); // Close the client socket
-
-} // Accept a single client
 
 int Server::getPort() const {
     return this->port; // Get the server port
@@ -116,26 +110,26 @@ void Server::setRunningFlag(bool isRunning) {
     this->running = isRunning; // Set the running flag
 } // Set the running flag
 
-int main() {
-    Server server(8080);
-    if (!server.checkValidInput("8080")) {
-        cout << "Invalid port number" << endl;
-        perror("Invalid port number");
-    }
-    if (server.startServer()) {
-        cout << "Server started on port " << server.getPort() << endl;
-    } else {
-        cout << "Failed to start server" << endl;
-        return 1;
-    }
+// int main() {
+//     Server server(SERVER_PORT);
+//     if (!server.checkValidInput(to_string(SERVER_PORT))()) {
+//         cout << "Invalid port number" << endl;
+//         perror("Invalid port number");
+//     }
+//     if (server.startServer()) {
+//         cout << "Server started on port " << server.getPort() << endl;
+//     } else {
+//         cout << "Failed to start server" << endl;
+//         return 1;
+//     }
     
-    // Accept and handle clients in a loop
-    while (server.isRunning()) {
-        sockaddr_in clientAddr;
-        server.acceptAndHandleClient(clientAddr);
-    }
+//     // Accept and handle clients in a loop
+//     while (server.isRunning()) {
+//         sockaddr_in clientAddr;
+//         server.acceptAndHandleClient(clientAddr);
+//     }
     
-    server.stopServer();
-    cout << "Server stopped" << endl;
-    return 0;
-} // Main function to run the server
+//     server.stopServer();
+//     cout << "Server stopped" << endl;
+//     return 0;
+// } // Main function to run the server

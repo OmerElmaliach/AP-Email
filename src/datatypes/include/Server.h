@@ -30,18 +30,16 @@ class Server {
         bool running;
         struct sockaddr_in serverAddr, clientAddr;
         App* app;                // Your existing command handling logic
-
-        bool checkValidInput(const std::string& input); // Check if the input is valid
     
     public:
         Server(int port);
+        bool checkValidInput(const std::string& input); // Check if the input is valid
         bool startServer();      // Initialize socket, bind, and listen
         bool stopServer();       // Close socket and cleanup
         bool isRunning() const;  // Check server status
                 
-        void acceptAndHandleClient(sockaddr_in clientAddr); // Accept a client and handle commands until client disconnects or server stops
         void kickClient(int clientSocket); // Handle client in a separate thread
-        void acceptSingleClient(sockaddr_in clientAddr); // Accept a single client
+        void acceptAndHandleClient(sockaddr_in clientAddr); // Accept and handle a client
 
         int getPort() const; // Get the server port
         void setPort(int newPort); // Set the server port
