@@ -26,6 +26,7 @@ TEST(BloomFilterTest, CheckURLPrintsTrue) {
     addURLCommand.executeCommand(url);
 
     checkURLCommand.executeCommand(url2);     // This should print true true
+    
     EXPECT_EQ(1, 1);
 
 }
