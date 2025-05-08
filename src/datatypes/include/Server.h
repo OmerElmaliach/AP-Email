@@ -1,3 +1,7 @@
+/**
+ * @file Server.h
+ * @brief Defines the Server class for managing client connections and delegating messaging to the App layer.
+ */
 #ifndef SERVER_H
 #define SERVER_H
 
@@ -11,6 +15,7 @@
 #include <condition_variable>
 #include <string>
 #include <cstring>
+#include <bloomFilterStorage.h>
 
 #ifdef _WIN32
     #error "This file is not supported on Windows. Please use a Linux environment."
@@ -23,33 +28,98 @@
     #include <netdb.h>
 #endif
 
+/**
+ * @class Server
+ * @brief Handles TCP server socket setup, client connection management, and delegates client messaging to the App class.
+ */
 class Server {
-    private:
-        int port;
-        int serverSocket;
-        bool running;
-        struct sockaddr_in serverAddr, clientAddr;
-        App* app;                // Your existing command handling logic
-    
-    public:
-        Server(int port);
-        bool checkValidInput(const std::string& input); // Check if the input is valid
-        bool startServer();      // Initialize socket, bind, and listen
-        bool stopServer();       // Close socket and cleanup
-        bool isRunning() const;  // Check server status
-                
-        void kickClient(int clientSocket); // Handle client in a separate thread
-        void acceptAndHandleClient(sockaddr_in clientAddr); // Accept and handle a client
+private:
+    int port;                         ///< Port number the server listens on.
+    int serverSocket;                 ///< File descriptor for the server socket.
+    bool running;                     ///< Indicates if the server is running.
+    struct sockaddr_in serverAddr, clientAddr; ///< Server and client address structures.
+    bloomFilterStorage* m_Stor;       ///< Storage for Bloom filter data (not owned by Server).
+    App* app;                         ///< Pointer to the application logic handler.
 
-        int getPort() const; // Get the server port
-        void setPort(int newPort); // Set the server port
-        int getServerSocket() const; // Get the server socket
-        void setServerSocket(int newServerSocket); // Set the server socket
+public:
+    /**
+     * @brief Constructs a Server object on the given port.
+     * @param port Port number to bind the server socket to.
+     */
+    Server(int port);
 
-        bool getIsRunningFlag() const; // Get the running flag
-        void setRunningFlag(bool isRunning); // Set the running flag
+    /**
+     * @brief Checks if the input string is a valid port number.
+     * @param input String to validate.
+     * @return True if valid, false otherwise.
+     */
+    bool checkValidInput(const std::string& input);
 
-        
-    };
+    /**
+     * @brief Initializes the server socket, binds, and starts listening.
+     * @return True on success, false on failure.
+     */
+    bool startServer();
+
+    /**
+     * @brief Stops the server and releases resources.
+     * @return True on success, false on failure.
+     */
+    bool stopServer();
+
+    /**
+     * @brief Checks if the server is currently running.
+     * @return True if running, false otherwise.
+     */
+    bool isRunning() const;
+
+    /**
+     * @brief Forcibly disconnects a client by closing its socket.
+     * @param clientSocket The client socket file descriptor.
+     */
+    void kickClient(int clientSocket);
+
+    /**
+     * @brief Accepts a client connection and delegates handling to the App instance.
+     * @param clientAddr The sockaddr_in structure for the client.
+     */
+    void acceptAndHandleClient(sockaddr_in clientAddr);
+
+    /**
+     * @brief Gets the server's port number.
+     * @return The port number.
+     */
+    int getPort() const;
+
+    /**
+     * @brief Sets the server's port number.
+     * @param newPort The new port number.
+     */
+    void setPort(int newPort);
+
+    /**
+     * @brief Gets the server socket file descriptor.
+     * @return The server socket file descriptor.
+     */
+    int getServerSocket() const;
+
+    /**
+     * @brief Sets the server socket file descriptor.
+     * @param newServerSocket The new server socket file descriptor.
+     */
+    void setServerSocket(int newServerSocket);
+
+    /**
+     * @brief Gets the running flag.
+     * @return True if running, false otherwise.
+     */
+    bool getIsRunningFlag() const;
+
+    /**
+     * @brief Sets the running flag.
+     * @param isRunning The new running state.
+     */
+    void setRunningFlag(bool isRunning);
+};
 
 #endif // SERVER_H
