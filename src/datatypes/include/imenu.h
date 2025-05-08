@@ -9,7 +9,7 @@ using namespace std;
 // IMenu abstract class.
 template<class T, class S>
 class IMenu {
-protected:
+public:
     std::map<T, Icommand*> m_cmdMap;
     bool m_menuState; // True if running, otherwise false.
 
