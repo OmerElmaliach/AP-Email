@@ -119,7 +119,7 @@ void Server::acceptAndHandleClient(sockaddr_in clientAddr) {
     }
 
     // Delegate handling to the app instance
-    this->app->run();
+    this->app->run(this->serverSocket, this->m_Stor*); // Pass the server socket and client socket to the app instance
 
     close(clientSocket); // Close the client socket after handling
 }
