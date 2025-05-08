@@ -38,7 +38,7 @@ private:
     int serverSocket;                 ///< File descriptor for the server socket.
     bool running;                     ///< Indicates if the server is running.
     struct sockaddr_in serverAddr, clientAddr; ///< Server and client address structures.
-    bloomFilterStorage* m_Stor;       ///< Storage for Bloom filter data (not owned by Server).
+    bloomFilterStorage m_Stor;       ///< Storage for Bloom filter data (not owned by Server).
     App* app;                         ///< Pointer to the application logic handler.
 
 public:

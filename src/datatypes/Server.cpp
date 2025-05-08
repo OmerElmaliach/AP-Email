@@ -128,7 +128,7 @@ void Server::acceptAndHandleClient() {
     }
 
     // Delegate handling to the app instance
-    this->app->run(clientSocket, this->m_Stor*); // Pass the server socket and client socket to the app instance
+    this->app->run(clientSocket, this->m_Stor); // Pass the server socket and client socket to the app instance
 
     close(clientSocket); // Close the client socket after handling
 }
