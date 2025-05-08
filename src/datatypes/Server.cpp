@@ -119,6 +119,7 @@ bool Server::isRunning() const {
  * @param clientAddr The sockaddr_in structure for the client.
  */
 void Server::acceptAndHandleClient() {
+    struct sockaddr_in clientAddr; // Client address structure
     socklen_t addrLen = sizeof(clientAddr);
     int clientSocket = accept(this->serverSocket, (struct sockaddr_in*) &clientAddr, &addrLen);
     if (clientSocket < 0) {
