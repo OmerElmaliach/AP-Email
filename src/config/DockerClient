@@ -1,0 +1,8 @@
+FROM python:3
+
+# Copy relevant files to a directory inside the container.
+COPY client_socket.py /Ap_Email/client/
+WORKDIR /Ap_Email/client
+
+# Sets the command to be run when executing.
+ENTRYPOINT ["python3", "client_socket.py"]
