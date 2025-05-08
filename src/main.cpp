@@ -10,7 +10,9 @@ int main(int argc, char* argv[]) {
     }
     Server server((int) argv[1]); // Create a server object with the given port number
     server.startServer(); // Start the server
-    server.acceptAndHandleClient(); // Accept and handle client connections
+    while (true) {  // Server never stops working
+        server.acceptAndHandleClient(); // Accept and handle client connections
+    }
     server.stopServer(); // Stop the server
     return 0; // Exit the program
 }
