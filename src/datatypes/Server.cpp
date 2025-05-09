@@ -192,6 +192,7 @@ void Server::setRunningFlag(bool isRunning) {
  * @return The server address structure.
  */
 struct sockaddr_in Server::getServerAddr() const {
+    printf("Server address: %s\n", inet_ntoa(this->serverAddr.sin_addr)); // Print the server address
     return this->serverAddr; // Get the server address
 } // Get the server address
 /**
