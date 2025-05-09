@@ -121,7 +121,7 @@ bool Server::isRunning() const {
 void Server::acceptAndHandleClient() {
     struct sockaddr_in clientAddr; // Client address structure
     socklen_t addrLen = sizeof(clientAddr);
-    int clientSocket = accept(this->serverSocket, (struct sockaddr_in*) &clientAddr, &addrLen);
+    int clientSocket = accept(this->serverSocket, (struct sockaddr*) &clientAddr, &addrLen);
     if (clientSocket < 0) {
         perror("Accept failed");
         return;
