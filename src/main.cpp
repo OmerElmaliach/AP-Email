@@ -11,11 +11,11 @@ int main(int argc, char* argv[]) {
         return 1;
     }
     if (!Server::checkValidInput(argv[1])) {
-        printf("0\n");
         return 1;
     }
     Server server(std::stoi(argv[1])); // Create a server object with the given port number
     server.startServer(); // Start the server
+    printf("Server started on port %d\n, server started on ip %s\n", server.getPort(), server.getServerAddr()); // Print the port number
     while (true) {  // Server never stops working
         server.acceptAndHandleClient(); // Accept and handle client connections
     }
