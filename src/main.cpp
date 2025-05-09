@@ -8,7 +8,7 @@ int main(int argc, char* argv[]) {
     if (!Server::checkValidInput(argv[1])) {
         return 1;
     }
-    Server server((int) argv[1]); // Create a server object with the given port number
+    Server server(atoi(argv[1])); // Create a server object with the given port number
     server.startServer(); // Start the server
     while (true) {  // Server never stops working
         server.acceptAndHandleClient(); // Accept and handle client connections
