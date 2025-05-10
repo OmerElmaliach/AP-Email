@@ -1,7 +1,7 @@
 #include <cli.h>
 
 
-bool CLI::checkRegex(string input) { // TODO: CHANGE REGEX TO FIT STRINGS
+bool CLI::checkRegex(string input) {
     static regex urlRegex("^\\S+\\s+((https?:\\/\\/)?(www\\.)?([a-zA-Z0-9-]+\\.)+[a-zA-Z0-9]{2,})(\\/\\S*)?$");
     return regex_match(input, urlRegex);
 }
@@ -86,7 +86,7 @@ void CLI::run() {
         do {
             // Loop until input is in the proper format for performing commands.
             int read_bytes = recv(m_sock, buffer, sizeof(buffer) - 1, 0);
-            buffer[read_bytes] = '/0';
+            buffer[read_bytes] = '\0';
             // Socket is not valid anymore, exiting...
             if (read_bytes <= 0) {
                 sock_valid = false;
