@@ -2,7 +2,7 @@
 
 
 bool CLI::checkRegex(string input) {
-    static regex urlRegex("^\\S+\\s+((https?:\\/\\/)?(www\\.)?([a-zA-Z0-9-]+\\.)+[a-zA-Z0-9]{2,})(\\/\\S*)?$");
+    static regex urlRegex("^\\S+\\s+((https?:\\/\\/)?(www\\.)?([a-zA-Z0-9-]+\\.)+[a-zA-Z0-9]{2,})(\\/\\S*)?\\s*$");
     return regex_match(input, urlRegex);
 }
 
