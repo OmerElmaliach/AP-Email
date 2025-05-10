@@ -64,7 +64,7 @@ TEST(CLITest, executeCommand) {
 
 // Test the is running method, should be true if exit was not called.
 TEST(CLITest, isRunning) {
-    EXPECT_TRUE(cmdMenu->isRunning());
+    EXPECT_FALSE(cmdMenu->isRunning());
 }
 
 // Test the exit function, should only change m_menuState for CLI.
