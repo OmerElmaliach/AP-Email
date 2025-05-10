@@ -17,7 +17,7 @@ CLI* cmdMenu = new CLI(1, m_Stor);
 // Format tests {String} {URL}
 TEST(CLITest, checkRegexWrongFormat) {
     EXPECT_TRUE(cmdMenu->checkRegex("GET www.example.com0"));
-    EXPECT_TRUE(cmdMenu->checkRegex("ABCD"));
+    EXPECT_FALSE(cmdMenu->checkRegex("ABCD"));
     EXPECT_TRUE(cmdMenu->checkRegex("GET www.example.com0"));
     EXPECT_TRUE(cmdMenu->checkRegex("POST https://www.example.com"));
     EXPECT_TRUE(cmdMenu->checkRegex("GET http://example.co.il"));
@@ -26,7 +26,8 @@ TEST(CLITest, checkRegexWrongFormat) {
     EXPECT_TRUE(cmdMenu->checkRegex("POST example.org"));
     EXPECT_TRUE(cmdMenu->checkRegex("GET example.co.il"));
     EXPECT_TRUE(cmdMenu->checkRegex("GET https://example.co.il/test"));
-    EXPECT_TRUE(cmdMenu->checkRegex("GET             www.google.com     "));
+    EXPECT_FALSE(cmdMenu->checkRegex("GET             wfdsww.goofdsgle..cofdfm     "));
+    EXPECT_FALSE(cmdMenu->checkRegex("GET   TEST    www.google.com     "));
 
     EXPECT_FALSE(cmdMenu->checkRegex("THIS_IS_A_TEST"));
     EXPECT_FALSE(cmdMenu->checkRegex("www.example.com0"));
