@@ -85,10 +85,10 @@ void Server::acceptAndHandleClient() {
     struct sockaddr_in clientAddr; // Client address structure
     unsigned int addrLen = sizeof(clientAddr);
     int clientSocket = accept(this->serverSocket, (struct sockaddr*) &clientAddr, &addrLen);
-    // if (clientSocket < 0) {
-    //     perror("Accept failed");
-    //     return;
-    // }
+    if (clientSocket < 0) {
+        perror("Accept failed");
+        return;
+    }
     // Delegate handling to the app instance
     this->app->run(clientSocket, this->m_Stor); // Pass the server socket and client socket to the app instance
     close(clientSocket); // Close the client socket after handling
