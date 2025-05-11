@@ -18,6 +18,7 @@ vector<string> CLI::split(string str) {
 }
 
 
+
 void CLI::registerCommand(string& input, Icommand* command) {
     if (m_cmdMap.find(input) == m_cmdMap.end()) {
         // Command number was not found in map, can insert.
@@ -69,6 +70,7 @@ CLI::CLI(int sock, bloomFilterStorage* p_bloomFilterStorage)
     registerCommand(del_str, cmd_del);
 
     Icommand* cmd_get = new CheckURLCommand(stor_ref, m_bloomFilter); // GET Command
+
     string get_str = "GET";
     registerCommand(get_str, cmd_get);
 
@@ -81,6 +83,7 @@ void CLI::run() {
     m_menuState = true;
     bool sock_valid = true, valid_input_recv = false;
     const char* bad_req_msg = "400 Bad Request\n";
+
     while (isRunning()) {
         char buffer[4096];
         memset(buffer, 0, sizeof(buffer));
@@ -111,6 +114,7 @@ void CLI::run() {
 
         if (sock_valid) {
             vector<string> str_vec = split(string(buffer));
+
             // Execute the command associated with num in map.
             executeCommand(str_vec[0], str_vec[1]);
         }

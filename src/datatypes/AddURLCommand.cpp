@@ -73,7 +73,7 @@ using namespace std;
         }
         catch(const std::exception& e)
         {   // retun fail flag
-            return "fail";
+            return "404 Not Found";
         }
         
         
