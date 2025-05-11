@@ -15,7 +15,6 @@ using namespace std;
 
 class CLI : public IMenu<string, string> {
 private:
-    bloomFilterStorage& m_Stor;
     MyHash m_stringHasher;
     BloomFilter<string, MyHash> m_bloomFilter;
     int m_sock;
@@ -70,7 +69,7 @@ public:
     /**
      * @brief CLI Builder function, defines the menu's state and the ICommands associated with command numbers.
      */
-    CLI(int sock, bloomFilterStorage& p_bloomFilterStorage);
+    CLI(int sock, bloomFilterStorage* p_bloomFilterStorage);
 
 
     /**
