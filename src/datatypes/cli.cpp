@@ -6,11 +6,11 @@ bool CLI::checkRegex(string input) {
     return regex_match(input, urlRegex);
 }
 
-vector<string> CLI::split(string str, char delimiter) {
+vector<string> CLI::split(string str) {
     vector<string> vec;
     stringstream ss(str);
     string substring;
-    while(getline(ss, substring, delimiter)) {
+    while (ss >> substring) {
         vec.push_back(substring);
     }
 
@@ -34,7 +34,7 @@ void CLI::executeCommand(string& input, string& str) {
         output = m_cmdMap[input]->executeCommand(str);
         buffer = output.c_str();
         int sent_bytes = send(m_sock, buffer, sizeof(buffer), 0);
-        // Socket is not valid anymore, exiting...
+        // Socket is not valid anymore, exiting..., char delimiter
         if (sent_bytes <= 0) {
             CLI::exit();
         }
@@ -95,7 +95,7 @@ void CLI::run() {
             }
         } while(!checkRegex(string(buffer)));
         if (sock_valid) {
-            vector<string> str_vec = split(string(buffer), ' ');
+            vector<string> str_vec = split(string(buffer));
             // Execute the command associated with num in map.
             executeCommand(str_vec[0], str_vec[1]);
         }
