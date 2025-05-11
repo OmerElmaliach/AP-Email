@@ -84,22 +84,15 @@ bool Server::startServer() {
  */
 void Server::acceptAndHandleClient() {
     struct sockaddr_in clientAddr; // Client address structure
-    printf("1\n");
     unsigned int addrLen = sizeof(clientAddr);
-    printf("2\n");
     int clientSocket = accept(this->serverSocket, (struct sockaddr*) &clientAddr, &addrLen);
-    printf("3\n");
     if (clientSocket < 0) {
         perror("Accept failed");
-        printf("4\n");
         return;
     }
-    printf("5\n");
     // Delegate handling to the app instance
     this->app->run(clientSocket, this->m_Stor); // Pass the server socket and client socket to the app instance
-    printf("6\n");
     close(clientSocket); // Close the client socket after handling
-    printf("7\n");
 }
 
 /**
