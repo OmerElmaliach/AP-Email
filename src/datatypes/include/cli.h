@@ -12,6 +12,7 @@
 #include <DeleteURLCommand.h>
 #include <sys/socket.h>
 using namespace std;
+#define MSG_SIZE 4096
 
 class CLI : public IMenu<string, string> {
 private:
