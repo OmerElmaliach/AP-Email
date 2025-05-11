@@ -16,17 +16,13 @@
 #include <string>
 #include <cstring>
 #include <bloomFilterStorage.h>
-
-#ifdef _WIN32
-    #error "This file is not supported on Windows. Please use a Linux environment."
-#else
-    #include <sys/types.h>
-    #include <sys/socket.h>
-    #include <netinet/in.h>
-    #include <arpa/inet.h>
-    #include <unistd.h>
-    #include <netdb.h>
-#endif
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <netdb.h>
+#define BUFFER_SIZE 4096
 
 /**
  * @class Server
@@ -39,6 +35,7 @@ private:
     bool running;                     ///< Indicates if the server is running.
     struct sockaddr_in serverAddr, clientAddr; ///< Server and client address structures.
     bloomFilterStorage* m_Stor;       ///< Storage for Bloom filter data (owned by Server).
+    char buffer[BUFFER_SIZE]; ///< Buffer for data transfer.
     App* app;                         ///< Pointer to the application logic handler.
 
 public:
@@ -143,8 +140,11 @@ public:
      * @param addr The new client address structure.
      */
     void setClientAddr(const struct sockaddr_in& addr);
+
     ~Server(); ///< Destructor to clean up resources.
+
 }
+
 ;
 
 #endif // SERVER_H

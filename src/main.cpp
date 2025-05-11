@@ -15,9 +15,10 @@ int main(int argc, char* argv[]) {
     }
     Server server(std::stoi(argv[1])); // Create a server object with the given port number
     server.startServer(); // Start the server
-    printf("Server started on port %d\n, server started on ip %s\n", server.getPort(), server.getServerAddr()); // Print the port number
     while (true) {  // Server never stops working
+        printf("Waiting for client connection...\n");
         server.acceptAndHandleClient(); // Accept and handle client connections
+        printf("Client disconnected.\n");
     }
     server.stopServer(); // Stop the server
     return 0; // Exit the program
