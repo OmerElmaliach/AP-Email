@@ -35,13 +35,11 @@ using namespace std;
 Server::Server(int port) {
     this->serverSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (this->serverSocket < 0) {
-        perror("Socket creation failed");
         exit(1);
     }
     if (checkValidInput(to_string(port))) {
         this->port = port;
     } else {
-        perror("Invalid port number");
         exit(1);
     }
 
@@ -58,7 +56,8 @@ Server::Server(int port) {
  * @brief Initializes the server socket, binds, and starts listening for connections.
  * @return True on success, false on failure.
  */
-bool Server::startServer() {
+bool Server::startServer(vector<int> args_filter) {
+    this->m_Stor->save(args_filter);
     this->running = true; // Set running flag to true
     memset(&this->serverAddr, 0, sizeof(this->serverAddr)); // Clear server address structure
     this->serverAddr.sin_family = AF_INET; // IPv4
@@ -86,10 +85,10 @@ void Server::acceptAndHandleClient() {
     struct sockaddr_in clientAddr; // Client address structure
     unsigned int addrLen = sizeof(clientAddr);
     int clientSocket = accept(this->serverSocket, (struct sockaddr*) &clientAddr, &addrLen);
-    if (clientSocket < 0) {
-        perror("Accept failed");
-        return;
-    }
+    // if (clientSocket < 0) {
+    //     perror("Accept failed");
+    //     return;
+    // }
     // Delegate handling to the app instance
     this->app->run(clientSocket, this->m_Stor); // Pass the server socket and client socket to the app instance
     close(clientSocket); // Close the client socket after handling
