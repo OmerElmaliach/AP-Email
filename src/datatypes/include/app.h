@@ -10,7 +10,7 @@ public:
      * @param sock Active socket.
      * @param p_bloomFilterStorage Pointer to a bloom filter storage.
      */
-    void run(int sock, bloomFilterStorage& p_bloomFilterStorage);
+    void run(int sock, bloomFilterStorage* p_bloomFilterStorage);
 };
 
 #endif
