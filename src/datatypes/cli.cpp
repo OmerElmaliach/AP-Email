@@ -34,7 +34,7 @@ void CLI::executeCommand(string& input, string& str) {
         // Command number was found in map, can perform command.
         output = m_cmdMap[input]->executeCommand(str);
         buffer = output.c_str();
-        int sent_bytes = send(m_sock, buffer, sizeof(buffer), 0);
+        int sent_bytes = send(m_sock, buffer, strlen(buffer), 0);
         // Socket is not valid anymore, exiting...
         if (sent_bytes <= 0) {
             CLI::exit();
@@ -89,8 +89,7 @@ void CLI::run() {
         memset(buffer, 0, sizeof(buffer));
         do {
             // Loop until input is in the proper format for performing commands.
-            int read_bytes = recv(m_sock, buffer, sizeof(buffer) - 1, 0);
-            buffer[read_bytes] = '\0';
+            int read_bytes = recv(m_sock, buffer, MSG_SIZE, 0);
             // Socket is not valid anymore, exiting...
             if (read_bytes <= 0) {
                 sock_valid = false;
@@ -100,7 +99,7 @@ void CLI::run() {
             
             // Check if input is in the right format.
             if (!checkRegex(string(buffer))) {
-                int sent_bytes = send(m_sock, bad_req_msg, sizeof(bad_req_msg), 0);
+                int sent_bytes = send(m_sock, bad_req_msg, strlen(bad_req_msg), 0);
                 // Socket is not valid anymore, exiting...
                 if (sent_bytes <= 0) {
                     sock_valid = false;
