@@ -13,4 +13,4 @@ RUN g++ -I datatypes/include ${FILES} -o /Ap_Email/main
 WORKDIR /Ap_Email
 
 # Run main.
-CMD ["./main"]
+ENTRYPOINT [ "./main" ]

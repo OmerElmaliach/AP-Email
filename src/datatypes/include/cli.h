@@ -15,6 +15,7 @@ using namespace std;
 
 class CLI : public IMenu<string, string> {
 private:
+
     MyHash m_stringHasher;
     BloomFilter<string, MyHash> m_bloomFilter;
     int m_sock;
@@ -33,6 +34,7 @@ private:
      * @param input String input to be checked.
      */
     vector<string> split(string str);
+
 
 
     /**
