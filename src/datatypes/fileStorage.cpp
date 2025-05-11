@@ -176,13 +176,12 @@ void fileStorage::remove(const string& data) {
                 fileStream << endl;
             }
             fileStream << newEntries[i];
-            printf("Writing entry: %s\n", newEntries[i].c_str());
         }
         
         fileStream.close();
     } catch (const exception& e) {
         // Handle the exception
-        cerr << "Error in remove: " << e.what() << endl;
+        throw e;
     }
 }
 
