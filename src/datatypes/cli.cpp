@@ -80,7 +80,7 @@ void CLI::run() {
     // Menu state is permenantly true since no exit protocol defined.
     m_menuState = true;
     bool sock_valid = true, valid_input_recv = false;
-    char* bad_req_msg = "400 Bad Request\n";
+    const char* bad_req_msg = "400 Bad Request\n";
     while (isRunning()) {
         char buffer[4096];
         memset(buffer, 0, sizeof(buffer));
