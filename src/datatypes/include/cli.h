@@ -14,8 +14,8 @@
 using namespace std;
 
 class CLI : public IMenu<string, string> {
-public:
-    bloomFilterStorage& m_Stor;
+private:
+
     MyHash m_stringHasher;
     BloomFilter<string, MyHash> m_bloomFilter;
     int m_sock;
@@ -29,11 +29,12 @@ public:
 
 
     /**
-     * @brief Helper function, Returns a vector of strings previously seperated by a delimiter.
+     * @brief Helper function, Returns a vector of strings previously seperated by spaces.
      * 
      * @param input String input to be checked.
      */
-    vector<string> split(string str, char delimiter);
+    vector<string> split(string str);
+
 
 
     /**
@@ -66,10 +67,11 @@ public:
     void exit() override;
 
     
+public:
     /**
      * @brief CLI Builder function, defines the menu's state and the ICommands associated with command numbers.
      */
-    CLI(int sock, bloomFilterStorage& p_bloomFilterStorage);
+    CLI(int sock, bloomFilterStorage* p_bloomFilterStorage);
 
 
     /**

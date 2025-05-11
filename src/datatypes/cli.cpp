@@ -1,21 +1,22 @@
 #include <cli.h>
 
 
-bool CLI::checkRegex(string input) { // TODO: CHANGE REGEX TO FIT STRINGS
-    static regex urlRegex("^\\S+\\s+((https?:\\/\\/)?(www\\.)?([a-zA-Z0-9-]+\\.)+[a-zA-Z0-9]{2,})(\\/\\S*)?$");
+bool CLI::checkRegex(string input) {
+    static regex urlRegex("^\\S+\\s+((https?:\\/\\/)?(www\\.)?([a-zA-Z0-9-]+\\.)+[a-zA-Z0-9]{2,})(\\/\\S*)?\\s*$");
     return regex_match(input, urlRegex);
 }
 
-vector<string> CLI::split(string str, char delimiter) {
+vector<string> CLI::split(string str) {
     vector<string> vec;
     stringstream ss(str);
     string substring;
-    while(getline(ss, substring, delimiter)) {
+    while (ss >> substring) {
         vec.push_back(substring);
     }
 
     return vec;
 }
+
 
 
 void CLI::registerCommand(string& input, Icommand* command) {
@@ -52,23 +53,24 @@ void CLI::exit() {
 }
 
 
-CLI::CLI(int sock, bloomFilterStorage& p_bloomFilterStorage)
+CLI::CLI(int sock, bloomFilterStorage* p_bloomFilterStorage)
     : m_sock(sock),
-      m_Stor(p_bloomFilterStorage),
       m_stringHasher(1),
       m_bloomFilter(m_stringHasher)
 {
+    bloomFilterStorage& stor_ref = *p_bloomFilterStorage;
 
     // Initialize the commands with the associated numbers to perform them.
-    Icommand* cmd_post = new AddURLCommand(m_Stor, m_bloomFilter);  // POST Command
+    Icommand* cmd_post = new AddURLCommand(stor_ref, m_bloomFilter);  // POST Command
     string post_str = "POST";
     registerCommand(post_str, cmd_post);
 
-    Icommand* cmd_del = new DeleteURLCommand(m_Stor, m_bloomFilter);  // DELETE Command
+    Icommand* cmd_del = new DeleteURLCommand(stor_ref, m_bloomFilter);  // DELETE Command
     string del_str = "DELETE";
     registerCommand(del_str, cmd_del);
 
-    Icommand* cmd_get = new CheckURLCommand(m_Stor, m_bloomFilter); // GET Command
+    Icommand* cmd_get = new CheckURLCommand(stor_ref, m_bloomFilter); // GET Command
+
     string get_str = "GET";
     registerCommand(get_str, cmd_get);
 
@@ -79,7 +81,9 @@ CLI::CLI(int sock, bloomFilterStorage& p_bloomFilterStorage)
 void CLI::run() {
     // Menu state is permenantly true since no exit protocol defined.
     m_menuState = true;
-    bool sock_valid = true;
+    bool sock_valid = true, valid_input_recv = false;
+    const char* bad_req_msg = "400 Bad Request\n";
+
     while (isRunning()) {
         char buffer[4096];
         memset(buffer, 0, sizeof(buffer));
@@ -93,9 +97,24 @@ void CLI::run() {
                 CLI::exit();
                 break;
             }
-        } while(!checkRegex(string(buffer)));
+            
+            // Check if input is in the right format.
+            if (!checkRegex(string(buffer))) {
+                int sent_bytes = send(m_sock, bad_req_msg, sizeof(bad_req_msg), 0);
+                // Socket is not valid anymore, exiting...
+                if (sent_bytes <= 0) {
+                    sock_valid = false;
+                    CLI::exit();
+                    break;
+                }
+            } else {
+                valid_input_recv = true;
+            }
+        } while(!valid_input_recv);
+
         if (sock_valid) {
-            vector<string> str_vec = split(string(buffer), ' ');
+            vector<string> str_vec = split(string(buffer));
+
             // Execute the command associated with num in map.
             executeCommand(str_vec[0], str_vec[1]);
         }
