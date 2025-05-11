@@ -34,7 +34,7 @@ void CLI::executeCommand(string& input, string& str) {
         output = m_cmdMap[input]->executeCommand(str);
         buffer = output.c_str();
         int sent_bytes = send(m_sock, buffer, sizeof(buffer), 0);
-        // Socket is not valid anymore, exiting..., char delimiter
+        // Socket is not valid anymore, exiting...
         if (sent_bytes <= 0) {
             CLI::exit();
         }
@@ -79,7 +79,8 @@ CLI::CLI(int sock, bloomFilterStorage& p_bloomFilterStorage)
 void CLI::run() {
     // Menu state is permenantly true since no exit protocol defined.
     m_menuState = true;
-    bool sock_valid = true;
+    bool sock_valid = true, valid_input_recv = false;
+    char* bad_req_msg = "400 Bad Request\n";
     while (isRunning()) {
         char buffer[4096];
         memset(buffer, 0, sizeof(buffer));
@@ -93,7 +94,21 @@ void CLI::run() {
                 CLI::exit();
                 break;
             }
-        } while(!checkRegex(string(buffer)));
+            
+            // Check if input is in the right format.
+            if (!checkRegex(string(buffer))) {
+                int sent_bytes = send(m_sock, bad_req_msg, sizeof(bad_req_msg), 0);
+                // Socket is not valid anymore, exiting...
+                if (sent_bytes <= 0) {
+                    sock_valid = false;
+                    CLI::exit();
+                    break;
+                }
+            } else {
+                valid_input_recv = true;
+            }
+        } while(!valid_input_recv);
+
         if (sock_valid) {
             vector<string> str_vec = split(string(buffer));
             // Execute the command associated with num in map.
