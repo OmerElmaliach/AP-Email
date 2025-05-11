@@ -3,6 +3,7 @@
 #include <Icommand.h>
 #include <string>
 #include <bloomFilterStorage.h>
+#include <vector>
 using namespace std;
 
 class TestCommand : public Icommand {
@@ -66,6 +67,24 @@ TEST(CLITest, executeCommand) {
 // Test the is running method, should be true if exit was not called.
 TEST(CLITest, isRunning) {
     EXPECT_FALSE(cmdMenu->isRunning());
+}
+
+// Test the split function.
+TEST(CLITest, splitFunc) {
+    string txt = "POST www.google.com";
+    vector<string> splittxt = cmdMenu->split(txt);
+    EXPECT_EQ(splittxt[0], "POST");
+    EXPECT_EQ(splittxt[1], "www.google.com");
+
+    txt = "   POST    www.google2.com    ";
+    splittxt = cmdMenu->split(txt);
+    EXPECT_EQ(splittxt[0], "POST");
+    EXPECT_EQ(splittxt[1], "www.google2.com");
+
+    txt = "POST    www.google3.com    ";
+    splittxt = cmdMenu->split(txt);
+    EXPECT_EQ(splittxt[0], "POST");
+    EXPECT_EQ(splittxt[1], "www.google3.com");
 }
 
 // Test the exit function, should only change m_menuState for CLI.
