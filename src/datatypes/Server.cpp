@@ -59,10 +59,18 @@ Server::Server(int port) {
  * @return True on success, false on failure.
  */
 bool Server::startServer(vector<int> args_filter) {
-    this->m_Stor->save(args_filter);
-    // vecore of zeros in the size of the bloom array
-    vector<char> filter(args_filter[0], 0);
-    this->m_Stor->save(filter);
+
+
+    
+    if (m_Stor->loadInput().empty() && m_Stor->loadFilterArray().empty())
+    {
+        this->m_Stor->save(args_filter);
+        // vecore of zeros in the size of the bloom array
+        vector<char> filter(args_filter[0], 0);
+        this->m_Stor->save(filter);
+    }
+    
+   
 
     this->running = true; // Set running flag to true
     memset(&this->serverAddr, 0, sizeof(this->serverAddr)); // Clear server address structure

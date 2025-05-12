@@ -82,9 +82,10 @@ void CLI::run() {
     // Menu state is permenantly true since no exit protocol defined.
     m_menuState = true;
     bool sock_valid = true, valid_input_recv = false;
-    const char* bad_req_msg = "400 Bad Request\n";
+    const char* bad_req_msg = "400 Bad Request";
 
     while (isRunning()) {
+        valid_input_recv = false;
         char buffer[4096];
         memset(buffer, 0,  MSG_SIZE);
         do {
@@ -107,23 +108,22 @@ void CLI::run() {
                     break;
                 }
                 memset(buffer, 0, MSG_SIZE);    
-            
+                
             } else {
                 valid_input_recv = true;
             }
           
         } while(!valid_input_recv);
 
-        printf("exited while\n");
 
         if (sock_valid) {
 
             vector<string> str_vec = split(string(buffer));
         
-            printf("after split\n");
-            
-            cout << "1:"<< str_vec[0]<<endl;
-            cout<< "2:"<< str_vec[1]<<endl;
+           //printf("after split\n");
+           //
+           //cout << "1:"<< str_vec[0]<<endl;
+           //cout<< "2:"<< str_vec[1]<<endl;
             // Execute the command associated with num in map.
             executeCommand(str_vec[0], str_vec[1]);
         }
