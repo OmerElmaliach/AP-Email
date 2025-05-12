@@ -35,17 +35,17 @@ using namespace std;
 Server::Server(int port) {
     this->serverSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (this->serverSocket < 0) {
-        perror("Socket creation failed");
+        throw runtime_error("Socket creation failed");
         exit(1);
     }
     if (checkValidInput(to_string(port))) {
         this->port = port;
     } else {
-        perror("Invalid port number");
+        throw runtime_error("Invalid port number");
         exit(1);
     }
 
-    this->buffer[BUFFER_SIZE] = {0}; // Initialize buffer
+    memset(this->buffer, 0, BUFFER_SIZE); // Initialize buffer
     this->running = false;
     this->app = new App(); 
     this->m_Stor = new bloomFilterStorage(); // Initialize storage object
@@ -58,20 +58,33 @@ Server::Server(int port) {
  * @brief Initializes the server socket, binds, and starts listening for connections.
  * @return True on success, false on failure.
  */
-bool Server::startServer() {
+bool Server::startServer(vector<int> args_filter) {
+
+
+    
+    if (m_Stor->loadInput().empty() && m_Stor->loadFilterArray().empty())
+    {
+        this->m_Stor->save(args_filter);
+        // vecore of zeros in the size of the bloom array
+        vector<char> filter(args_filter[0], 0);
+        this->m_Stor->save(filter);
+    }
+    
+   
+
     this->running = true; // Set running flag to true
     memset(&this->serverAddr, 0, sizeof(this->serverAddr)); // Clear server address structure
     this->serverAddr.sin_family = AF_INET; // IPv4
     this->serverAddr.sin_addr.s_addr = INADDR_ANY; // Accept connections from any address
     this->serverAddr.sin_port = htons(this->port); // Convert port number to network byte order
     if (bind(this->serverSocket, (struct sockaddr*)&this->serverAddr, sizeof(this->serverAddr)) < 0) {
-        perror("Bind failed");
+        throw runtime_error("Bind failed");
         return false;
     }
     
     // Add the listen call to start accepting connections
     if (listen(this->serverSocket, MAX_CLIENTS) < 0) {  // Allow up to 5 pending connections
-        perror("Listen failed");
+        throw runtime_error("Listen failed");
         return false;
     }
     
@@ -87,22 +100,32 @@ void Server::acceptAndHandleClient() {
     unsigned int addrLen = sizeof(clientAddr);
     int clientSocket = accept(this->serverSocket, (struct sockaddr*) &clientAddr, &addrLen);
     if (clientSocket < 0) {
-        perror("Accept failed");
+        throw runtime_error("Accept failed");
         return;
     }
     // Delegate handling to the app instance
-    this->app->run(clientSocket, this->m_Stor); // Pass the server socket and client socket to the app instance
+    try
+    {
+        this->app->run(clientSocket, this->m_Stor); // Pass the server socket and client socket to the app instance
+    }
+    catch(const std::exception& e)
+    {
+        throw runtime_error("App run failed");
+        close(clientSocket); // Close the client socket on error
+        return;
+    }
+    
     close(clientSocket); // Close the client socket after handling
 }
 
 /**
- * @brief Validates if the given string is a valid port number.
+ * @brief Validates if the given string is a valid port number in range 1024-65535.
  * @param argv The string to validate.
  * @return True if valid, false otherwise.
  */
 bool Server::checkValidInput(const std::string& argv) {
-    regex port_reg("^([0-9]|[1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$");
-    return regex_match(argv, port_reg);
+    return std::regex_match(argv, std::regex("^[1-9][0-9]{3,4}$")) 
+    && (std::stoi(argv) >= 1024 && std::stoi(argv) <= 65535);
 }
 
 
@@ -124,7 +147,7 @@ void Server::kickClient(int clientSocket) {
         close(clientSocket); // Close the client socket
     } 
     else {
-        perror("Invalid client socket");
+        throw runtime_error("Invalid client socket");
     }
 
 } 
