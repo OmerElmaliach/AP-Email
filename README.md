@@ -48,25 +48,33 @@ The system follows the structure outlined in the provided UML diagrams:
 
 **Using script:**
 
-If you have the `start.sh` script, you can run it directly:
+If you have the `start-server.sh` and `start-client.sh` scripts, you can run them directly:
 
 ```bash
-chmod +x start.sh
-./start.sh
+chmod +x start-server.sh
+./start-server.sh
+
+*In a separate window:*
+
+chmod +x start-client.sh
+./start-client.sh
 ```
 **Alternative: using a docker image directly:**
 1.  **Build the Docker Image:**
     Open a terminal in the project's root directory (where `DockerMain` is located) and run:
     ```bash
-    docker build -f DockerMain -t bloom-filter-app .
+    docker build -f config/DockerServer -t docker-server .
+    docker build -f config/DockerClient -t docker-client .
     ```
 
 2.  **Run the Application:**
     ```bash
-    docker run -it bloom-filter-app
+    docker run -it --network=host -v "Ap-Email/data:/Ap_Email/data" docker-server {PORT} {BLOOM FILTER INPUT (example 8 2 1)}
+    docker run -it --network=host docker-client {IP} {PORT}
     ```
     * The `-it` flags allow you to interact with the application (provide input).
-    * The application expects the first line of input to define the Bloom filter size and hash functions, followed by commands (`1 [URL]` to add, `2 [URL]` to check).
+    * The `--network=host` flag allows to access local host outside the docker.
+    * The application expects commands (`POST [URL]` to add, `GET [URL]` to check and `DELETE [URL]` to delete).
 
 ## Example Run:
 
