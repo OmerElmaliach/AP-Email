@@ -35,11 +35,13 @@ using namespace std;
 Server::Server(int port) {
     this->serverSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (this->serverSocket < 0) {
+        throw runtime_error("Socket creation failed");
         exit(1);
     }
     if (checkValidInput(to_string(port))) {
         this->port = port;
     } else {
+        throw runtime_error("Invalid port number");
         exit(1);
     }
 
@@ -64,13 +66,13 @@ bool Server::startServer(vector<int> args_filter) {
     this->serverAddr.sin_addr.s_addr = INADDR_ANY; // Accept connections from any address
     this->serverAddr.sin_port = htons(this->port); // Convert port number to network byte order
     if (bind(this->serverSocket, (struct sockaddr*)&this->serverAddr, sizeof(this->serverAddr)) < 0) {
-        perror("Bind failed");
+        throw runtime_error("Bind failed");
         return false;
     }
     
     // Add the listen call to start accepting connections
     if (listen(this->serverSocket, MAX_CLIENTS) < 0) {  // Allow up to 5 pending connections
-        perror("Listen failed");
+        throw runtime_error("Listen failed");
         return false;
     }
     
@@ -86,11 +88,21 @@ void Server::acceptAndHandleClient() {
     unsigned int addrLen = sizeof(clientAddr);
     int clientSocket = accept(this->serverSocket, (struct sockaddr*) &clientAddr, &addrLen);
     if (clientSocket < 0) {
-        perror("Accept failed");
+        throw runtime_error("Accept failed");
         return;
     }
     // Delegate handling to the app instance
-    this->app->run(clientSocket, this->m_Stor); // Pass the server socket and client socket to the app instance
+    try
+    {
+        this->app->run(clientSocket, this->m_Stor); // Pass the server socket and client socket to the app instance
+    }
+    catch(const std::exception& e)
+    {
+        throw runtime_error("App run failed");
+        close(clientSocket); // Close the client socket on error
+        return;
+    }
+    
     close(clientSocket); // Close the client socket after handling
 }
 
@@ -123,7 +135,7 @@ void Server::kickClient(int clientSocket) {
         close(clientSocket); // Close the client socket
     } 
     else {
-        perror("Invalid client socket");
+        throw runtime_error("Invalid client socket");
     }
 
 } 
