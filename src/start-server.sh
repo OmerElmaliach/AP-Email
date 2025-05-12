@@ -11,8 +11,8 @@ prev_pwd=$(pwd)
 mkdir -p ./data
 cd src
 
-# Run and create a volume for data storage.
-docker run -it --network=host -v "${prev_pwd}/data:/Ap_Email/data" docker-server "$@"
+# Run and create a docker with port 8085 as argument, 16 2 5 as bloom filter settings
+docker run -it --network=host -v "${prev_pwd}/data:/Ap_Email/data docker-server" 8085 16 2 5
 
 # Delete the image previously created.
 docker image rm -f docker-server
