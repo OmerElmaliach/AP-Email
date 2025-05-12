@@ -86,7 +86,7 @@ void CLI::run() {
 
     while (isRunning()) {
         char buffer[4096];
-        memset(buffer, 0, sizeof(buffer));
+        memset(buffer, 0, strlen(buffer));
         do {
             // Loop until input is in the proper format for performing commands.
             int read_bytes = recv(m_sock, buffer, MSG_SIZE, 0);
@@ -109,6 +109,7 @@ void CLI::run() {
             } else {
                 valid_input_recv = true;
             }
+            memset(buffer, 0, strlen(buffer));
         } while(!valid_input_recv);
 
         if (sock_valid) {
