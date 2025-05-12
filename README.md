@@ -9,7 +9,7 @@ the flow process of our work and SCRUM meeting summaries can all be found under 
 
 ## Overview
 
-This project implements a URL filtering system using a Bloom filter. The system allows users to add and remove URLs to a blacklist and check if a given URL is potentially blacklisted. It leverages the speed and memory efficiency of Bloom filters to quickly determine potential membership in the blacklist. The communivation is done through a TCP protocol server/client implementation.
+This project implements a URL filtering system using a Bloom filter. The system allows users to add and remove URLs to a blacklist and check if a given URL is potentially blacklisted. It leverages the speed and memory efficiency of Bloom filters to quickly determine potential membership in the blacklist. The communication is done through a TCP protocol server/client implementation.
 
 ## Architecture
 
