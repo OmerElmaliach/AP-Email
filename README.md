@@ -79,14 +79,9 @@ Below is an example illustrating how the Bloom filter operates:
 ![Example #2](readmeFiles/RUN2.png)
 
 ## Takeaways from task 1 relating to SOLID:
-In general, lack of documentation harmed the ability to work and understand code which was written by other teammates in part 1. Regarding the following questions:
-1. Did changing command names change anything in code which was supposed to be SOLID?
-2. Did adding command names change anything in code which was supposed to be SOLID?
-3. Did command output change anything in code which was supposed to be SOLID?
-4. Did commands coming from sockets rather than console change anything in code which was supposed to be SOLID?
-   
-1. No, In the implementation a map data structure was initialized which receives a key value and pairs it with a specific ICommand object, so given input from the user the map would execute the relevant command.
+In general, lack of documentation harmed the ability to work and understand code which was written by other teammates in part Regarding the following questions:
+1. Did changing command names change anything in code which was supposed to be SOLID? No, In the implementation a map data structure was initialized which receives a key value and pairs it with a specific ICommand object, so given input from the user the map would execute the relevant command.
 In the new implementation with the new names all we had to do is change the key value from a number to string.
-2. No, as explained we conveniently just added more commands with keys to the map without altering any other code.
-3. Yes, before part 2 the commands never returned any output to the function that called them, more specifically the ICommands printed straight to the terminal instead of returning a string, in the new implementation we added return type so that regardless of what each command sent it would be delivered to the client.
-4. Partially. CLI which is the object type that handles I/O with a user was added a new member - sock -> the client socket, so instead of printing to a terminal the output from the commands would be sent to the client, the rest of the structure remained the same. The storage had to be updated to receive input from the socket and not tight-coupling with text from console.
+2. Did adding command names change anything in code which was supposed to be SOLID? No, as explained we conveniently just added more commands with keys to the map without altering any other code.
+3. Did command output change anything in code which was supposed to be SOLID? Yes, before part 2 the commands never returned any output to the function that called them, more specifically the ICommands printed straight to the terminal instead of returning a string, in the new implementation we added return type so that regardless of what each command sent it would be delivered to the client.
+4. Did commands coming from sockets rather than console change anything in code which was supposed to be SOLID? Partially. CLI which is the object type that handles I/O with a user was added a new member - sock -> the client socket, so instead of printing to a terminal the output from the commands would be sent to the client, the rest of the structure remained the same. The storage had to be updated to receive input from the socket and not tight-coupling with text from console.
