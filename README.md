@@ -78,13 +78,12 @@ chmod +x start-client.sh
 
 ## Example Run:
 
+
 Below is an example illustrating how the Bloom filter operates:
 
 
-![Example #1](readmeFiles/RUN1.png)
+![Example](https://github.com/user-attachments/assets/ee2add73-5fee-4d03-8d21-4988a0df9f2b)
 
-
-![Example #2](readmeFiles/RUN2.png)
 
 ## Takeaways from task 1 relating to SOLID:
 In general, lack of documentation harmed the ability to work and understand code which was written by other teammates in part Regarding the following questions:
