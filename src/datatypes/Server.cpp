@@ -95,13 +95,13 @@ void Server::acceptAndHandleClient() {
 }
 
 /**
- * @brief Validates if the given string is a valid port number.
+ * @brief Validates if the given string is a valid port number in range 1024-65535.
  * @param argv The string to validate.
  * @return True if valid, false otherwise.
  */
 bool Server::checkValidInput(const std::string& argv) {
-    regex port_reg("^([0-9]|[1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$");
-    return regex_match(argv, port_reg);
+    return std::regex_match(argv, std::regex("^[1-9][0-9]{3,4}$")) 
+    && (std::stoi(argv) >= 1024 && std::stoi(argv) <= 65535);
 }
 
 
