@@ -144,7 +144,7 @@ vector<int> bloomFilterStorage::convertStringToIntVector(const string& data) con
                     result.push_back(stoi(item));
                 } catch (const std::invalid_argument& e) {
                     // Skip non-numeric values
-                    std::cerr << "Warning: Skipping non-numeric value: " << item << std::endl;
+                    throw std::runtime_error("Invalid input data: " + item);
                 }
             }
         }
@@ -175,7 +175,7 @@ vector<char> bloomFilterStorage::convertStringToCharVector(const string& data) c
                     }
                 } catch (const std::invalid_argument& e) {
                     // Skip invalid values but log them
-                    std::cerr << "Warning: Skipping invalid value: " << item << std::endl;
+                    throw std::runtime_error("Invalid input data: " + item);
                 }
             }
         }

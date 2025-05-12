@@ -11,7 +11,15 @@ int main(int argc, char* argv[]) {
         // invalid port number
         exit(1);
     }
-    Server server(std::stoi(argv[1])); // Create a server object with the given port number
+    try
+    {
+        Server server(std::stoi(argv[1])); // Create a server object with the given port number
+    }
+    catch(const std::exception& e)
+    {
+        exit(1); // Handle exceptions
+    }
+    
     for (int i = 2; i < argc; i++) {
         // check bloom filter settings are numbers
         int is_number = atoi(argv[i]);
@@ -20,10 +28,35 @@ int main(int argc, char* argv[]) {
             exit(1);
         args_filter.push_back(is_number);
     }
-    server.startServer(args_filter); // Start the server
-    while (true) {  // Server never stops working
-        server.acceptAndHandleClient(); // Accept and handle client connections
+    try
+    {
+        server.startServer(args_filter); // Start the server
     }
-    server.stopServer(); // Stop the server
+    catch(const std::exception& e)
+    {
+        exit(1); // Handle exceptions
+    }
+    
+    while (true) {  // Server never stops working
+        try
+        {
+            server.acceptAndHandleClient(); // Accept and handle client connections
+        }
+        catch(const std::exception& e)
+        {
+            exit(1); // Handle exceptions
+        }
+        
+    }
+    try
+    {
+        server.stopServer(); // Stop the server
+    }
+    catch(const std::exception& e)
+    {   
+        ~server; // Destructor for server so there is no data corruption
+        exit(1); // Handle exceptions
+    }
+    
     return 0; // Exit the program
 }
