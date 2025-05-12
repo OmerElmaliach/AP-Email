@@ -45,7 +45,7 @@ Server::Server(int port) {
         exit(1);
     }
 
-    this->buffer[BUFFER_SIZE] = {0}; // Initialize buffer
+    memset(this->buffer, 0, BUFFER_SIZE); // Initialize buffer
     this->running = false;
     this->app = new App(); 
     this->m_Stor = new bloomFilterStorage(); // Initialize storage object
@@ -60,6 +60,10 @@ Server::Server(int port) {
  */
 bool Server::startServer(vector<int> args_filter) {
     this->m_Stor->save(args_filter);
+    // vecore of zeros in the size of the bloom array
+    vector<char> filter(args_filter[0], 0);
+    this->m_Stor->save(filter);
+
     this->running = true; // Set running flag to true
     memset(&this->serverAddr, 0, sizeof(this->serverAddr)); // Clear server address structure
     this->serverAddr.sin_family = AF_INET; // IPv4

@@ -86,7 +86,7 @@ void CLI::run() {
 
     while (isRunning()) {
         char buffer[4096];
-        memset(buffer, 0, strlen(buffer));
+        memset(buffer, 0,  MSG_SIZE);
         do {
             // Loop until input is in the proper format for performing commands.
             int read_bytes = recv(m_sock, buffer, MSG_SIZE, 0);
@@ -106,15 +106,24 @@ void CLI::run() {
                     CLI::exit();
                     break;
                 }
+                memset(buffer, 0, MSG_SIZE);    
+            
             } else {
                 valid_input_recv = true;
             }
-            memset(buffer, 0, strlen(buffer));
+          
         } while(!valid_input_recv);
 
-        if (sock_valid) {
-            vector<string> str_vec = split(string(buffer));
+        printf("exited while\n");
 
+        if (sock_valid) {
+
+            vector<string> str_vec = split(string(buffer));
+        
+            printf("after split\n");
+            
+            cout << "1:"<< str_vec[0]<<endl;
+            cout<< "2:"<< str_vec[1]<<endl;
             // Execute the command associated with num in map.
             executeCommand(str_vec[0], str_vec[1]);
         }
