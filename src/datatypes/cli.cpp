@@ -34,7 +34,7 @@ void CLI::executeCommand(string& input, string& str) {
         // Command number was found in map, can perform command.
         output = m_cmdMap[input]->executeCommand(str);
         buffer = output.c_str();
-        int sent_bytes = send(m_sock, buffer, sizeof(buffer), 0);
+        int sent_bytes = send(m_sock, buffer, strlen(buffer), 0);
         // Socket is not valid anymore, exiting...
         if (sent_bytes <= 0) {
             CLI::exit();
@@ -82,15 +82,15 @@ void CLI::run() {
     // Menu state is permenantly true since no exit protocol defined.
     m_menuState = true;
     bool sock_valid = true, valid_input_recv = false;
-    const char* bad_req_msg = "400 Bad Request\n";
+    const char* bad_req_msg = "400 Bad Request";
 
     while (isRunning()) {
+        valid_input_recv = false;
         char buffer[4096];
-        memset(buffer, 0, sizeof(buffer));
+        memset(buffer, 0,  MSG_SIZE);
         do {
             // Loop until input is in the proper format for performing commands.
-            int read_bytes = recv(m_sock, buffer, sizeof(buffer) - 1, 0);
-            buffer[read_bytes] = '\0';
+            int read_bytes = recv(m_sock, buffer, MSG_SIZE, 0);
             // Socket is not valid anymore, exiting...
             if (read_bytes <= 0) {
                 sock_valid = false;
@@ -100,21 +100,30 @@ void CLI::run() {
             
             // Check if input is in the right format.
             if (!checkRegex(string(buffer))) {
-                int sent_bytes = send(m_sock, bad_req_msg, sizeof(bad_req_msg), 0);
+                int sent_bytes = send(m_sock, bad_req_msg, strlen(bad_req_msg), 0);
                 // Socket is not valid anymore, exiting...
                 if (sent_bytes <= 0) {
                     sock_valid = false;
                     CLI::exit();
                     break;
                 }
+                memset(buffer, 0, MSG_SIZE);    
+                
             } else {
                 valid_input_recv = true;
             }
+          
         } while(!valid_input_recv);
 
-        if (sock_valid) {
-            vector<string> str_vec = split(string(buffer));
 
+        if (sock_valid) {
+
+            vector<string> str_vec = split(string(buffer));
+        
+           //printf("after split\n");
+           //
+           //cout << "1:"<< str_vec[0]<<endl;
+           //cout<< "2:"<< str_vec[1]<<endl;
             // Execute the command associated with num in map.
             executeCommand(str_vec[0], str_vec[1]);
         }

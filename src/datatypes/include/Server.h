@@ -56,7 +56,7 @@ public:
      * @brief Initializes the server socket, binds, and starts listening.
      * @return True on success, false on failure.
      */
-    bool startServer();
+    bool startServer(vector<int> args_filter);
 
     /**
      * @brief Stops the server and releases resources.
