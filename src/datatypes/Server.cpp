@@ -65,7 +65,7 @@ bool Server::startServer(vector<int> args_filter) {
     if (m_Stor->loadInput().empty() && m_Stor->loadFilterArray().empty())
     {
         this->m_Stor->save(args_filter);
-        // vecore of zeros in the size of the bloom array
+        // vector of zeros in the size of the bloom array
         vector<char> filter(args_filter[0], 0);
         this->m_Stor->save(filter);
     }
@@ -96,26 +96,24 @@ bool Server::startServer(vector<int> args_filter) {
  * @param clientAddr The sockaddr_in structure for the client.
  */
 void Server::acceptAndHandleClient() {
-    struct sockaddr_in clientAddr; // Client address structure
-    unsigned int addrLen = sizeof(clientAddr);
-    int clientSocket = accept(this->serverSocket, (struct sockaddr*) &clientAddr, &addrLen);
-    if (clientSocket < 0) {
-        throw runtime_error("Accept failed");
-        return;
+    while (this->running) {
+        struct sockaddr_in clientAddr;
+        unsigned int addrLen = sizeof(clientAddr);
+        int clientSocket = accept(this->serverSocket, (struct sockaddr*)&clientAddr, &addrLen);
+        if (clientSocket < 0) {
+            // Accept failed, try again after a short delay
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            continue;
+        }
+        std::thread([this, clientSocket]() {
+            try {
+                this->app->run(clientSocket, this->m_Stor);
+            } catch (const std::exception& e) {
+                // Log error here in future
+            }
+            close(clientSocket);
+        }).detach();
     }
-    // Delegate handling to the app instance
-    try
-    {
-        this->app->run(clientSocket, this->m_Stor); // Pass the server socket and client socket to the app instance
-    }
-    catch(const std::exception& e)
-    {
-        throw runtime_error("App run failed");
-        close(clientSocket); // Close the client socket on error
-        return;
-    }
-    
-    close(clientSocket); // Close the client socket after handling
 }
 
 /**
