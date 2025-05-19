@@ -10,6 +10,7 @@
 #include <memory>
 #include <sstream>
 #include <iostream>
+#include <mutex>
 
 using namespace std;
 
@@ -37,64 +38,79 @@ bloomFilterStorage::~bloomFilterStorage() {
 }
 
 void bloomFilterStorage::save(const string& data) {
+    std::lock_guard<std::mutex> lock(storage_mutex);
     urls->save(data);
 }
 
 void bloomFilterStorage::save(const vector<int>& data) {
+    std::lock_guard<std::mutex> lock(storage_mutex);
     input->save(data);
 }
 
 void bloomFilterStorage::save(const vector<char>& data) {
+    std::lock_guard<std::mutex> lock(storage_mutex);
     filter->save(data);
 }
 
 vector<int> bloomFilterStorage::loadInput() {
+    std::lock_guard<std::mutex> lock(storage_mutex);
     string data = input->load().value_or("");
     return convertStringToIntVector(data);
 }
 
 string bloomFilterStorage::loadUrls() {
+    std::lock_guard<std::mutex> lock(storage_mutex);
     return urls->load().value_or("");
 }
 
 vector<char> bloomFilterStorage::loadFilterArray() {
+    std::lock_guard<std::mutex> lock(storage_mutex);
     string data = filter->load().value_or("");
     return convertStringToCharVector(data);
 }
 
 bloomFilterStorage& bloomFilterStorage::loadBloomFilter() {
+    std::lock_guard<std::mutex> lock(storage_mutex);
     return *this;
 }
 
 bool bloomFilterStorage::exists() const {
+    std::lock_guard<std::mutex> lock(storage_mutex);
     return input->exists() || urls->exists() || filter->exists();
 }
 
 bool bloomFilterStorage::exists(const string& data) const {
+    std::lock_guard<std::mutex> lock(storage_mutex);
     return urls->exists(data);
 }
 
 bool bloomFilterStorage::exists(const vector<int> data) {
+    std::lock_guard<std::mutex> lock(storage_mutex);
     return input->exists(convertVectorIntToString(data));
 }
 
 bool bloomFilterStorage::exists(const vector<char> data) {
+    std::lock_guard<std::mutex> lock(storage_mutex);
     return filter->exists(convertVectorCharToString(data));
 }
 
 void bloomFilterStorage::remove(const string& data) {
+    std::lock_guard<std::mutex> lock(storage_mutex);
     urls->remove(data);
 }
 
 void bloomFilterStorage::remove(const vector<int>& data) {
+    std::lock_guard<std::mutex> lock(storage_mutex);
     input->remove(convertVectorIntToString(data));
 }
 
 void bloomFilterStorage::remove(const vector<char>& data) {
+    std::lock_guard<std::mutex> lock(storage_mutex);
     filter->remove(convertVectorCharToString(data));
 }
 
 void bloomFilterStorage::remove() {
+    std::lock_guard<std::mutex> lock(storage_mutex);
     input->remove();
     urls->remove();
     filter->remove();
