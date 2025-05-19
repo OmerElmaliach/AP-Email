@@ -1,100 +1,97 @@
 #include <gtest/gtest.h>
-#include <cli.h>
-#include <Icommand.h>
-#include <string>
+#include <AddURLCommand.h>
+#include <DeleteURLCommand.h>
+#include <CheckURLCommand.h>
 #include <bloomFilterStorage.h>
-#include <vector>
-using namespace std;
+#include <MyHash.h>
+#include <BloomFilter.h>
 
-class TestCommand : public Icommand {
-    std::string executeCommand(const std::string& URL) {
-        return "Works!";
-    }
-};
 
-bloomFilterStorage m_Stor;
-CLI* cmdMenu = new CLI(1, m_Stor);
 
-// Format tests {String} {URL}
-TEST(CLITest, checkRegexWrongFormat) {
-    EXPECT_TRUE(cmdMenu->checkRegex("GET www.example.com0"));
-    EXPECT_FALSE(cmdMenu->checkRegex("ABCD"));
-    EXPECT_TRUE(cmdMenu->checkRegex("GET www.example.com0"));
-    EXPECT_TRUE(cmdMenu->checkRegex("POST https://www.example.com"));
-    EXPECT_TRUE(cmdMenu->checkRegex("GET http://example.co.il"));
-    EXPECT_TRUE(cmdMenu->checkRegex("POST https://example.com/path"));
-    EXPECT_TRUE(cmdMenu->checkRegex("GET http://www.example.org"));
-    EXPECT_TRUE(cmdMenu->checkRegex("POST example.org"));
-    EXPECT_TRUE(cmdMenu->checkRegex("GET example.co.il"));
-    EXPECT_TRUE(cmdMenu->checkRegex("GET https://example.co.il/test"));
-    EXPECT_FALSE(cmdMenu->checkRegex("GET             wfdsww.goofdsgle..cofdfm     "));
-    EXPECT_FALSE(cmdMenu->checkRegex("GET   TEST    www.google.com     "));
 
-    EXPECT_FALSE(cmdMenu->checkRegex("THIS_IS_A_TEST"));
-    EXPECT_FALSE(cmdMenu->checkRegex("www.example.com0"));
-    EXPECT_FALSE(cmdMenu->checkRegex("POST htp://example.com"));
-    EXPECT_FALSE(cmdMenu->checkRegex("POST http://.com"));
-    EXPECT_FALSE(cmdMenu->checkRegex("POST www..com"));
-    EXPECT_FALSE(cmdMenu->checkRegex("POST example"));
-    EXPECT_FALSE(cmdMenu->checkRegex("POST http://example"));
-    EXPECT_FALSE(cmdMenu->checkRegex("POST http://example.c"));
-    EXPECT_FALSE(cmdMenu->checkRegex("POST example.c"));
-    EXPECT_FALSE(cmdMenu->checkRegex("POST http://exa_mple.com"));
+
+
+TEST(CommandTests, AddAndCheckURL) {
+
+    bloomFilterStorage storage;
+    MyHash hash(10);
+    BloomFilter<std::string, MyHash> bf(hash, 2);  // Specify template parameters
+
+    std::vector<int> data = {2, 1, 2, 3};
+    storage.save(data);
+    
+    AddURLCommand addCmd(storage, bf);
+    CheckURLCommand checkCmd(storage, bf);
+
+    // Add a new URL
+    std::string result = addCmd.executeCommand("www.k.com");
+    EXPECT_EQ(result, "201 Created");
+
+    // Re-adding the same URL
+    result = addCmd.executeCommand("www.k.com");
+    EXPECT_EQ(result, "201 Created");
+
+    // Check URL existence
+    result = checkCmd.executeCommand("www.k.com");
+    EXPECT_EQ(result, "200 Ok\n\ntrue true");
 }
 
 
-// Test adding commands to the map.
-TEST(CLITest, registerCommand) {
-    Icommand* ic = new TestCommand();
-    string new1 = "NEW1";
-    string new2 = "NEW2";
-    EXPECT_NO_THROW(cmdMenu->registerCommand(new1, ic));
-    EXPECT_NO_THROW(cmdMenu->registerCommand(new2, ic));
-    EXPECT_NO_THROW(cmdMenu->registerCommand(new1, ic)); // Handles duplications.
-    delete ic;
+//make sure storge is working
+TEST(BloomFilterStorageTests, ConstructorCreatesFiles) {
+    bloomFilterStorage storage;
+    EXPECT_TRUE(storage.getInput().exists());
+    EXPECT_TRUE(storage.getUrls().exists());
+    EXPECT_TRUE(storage.getFilter().exists());
 }
 
-// Test executing commands using the map.
-TEST(CLITest, executeCommand) {
-    Icommand* ic = new TestCommand();
-    string test = "Test";
-    string test2 = "";
-    cmdMenu->registerCommand(test, ic);
-    EXPECT_EQ(cmdMenu->m_cmdMap[test]->executeCommand(test2), "Works!");
-    delete ic;
+TEST(BloomFilterStorageTests, SaveAndLoadInputVector) {
+    bloomFilterStorage storage;
+    std::vector<char> inputVec = {1, 0, 1,0,1,0,1,0};
+    storage.save(inputVec);
+
+    vector<char> loaded = storage.loadFilterArray();
+    EXPECT_EQ(loaded, inputVec);
 }
 
-// Test the is running method, should be true if exit was not called.
-TEST(CLITest, isRunning) {
-    EXPECT_FALSE(cmdMenu->isRunning());
+//gota make sure math still works! for without math, we have nothing.
+TEST(logicFunctionality, logicFunctionality) {
+
+    EXPECT_EQ(1 + 1, 2);
+    EXPECT_TRUE(3 < 5);
 }
 
-// Test the split function.
-TEST(CLITest, splitFunc) {
-    string txt = "POST www.google.com";
-    vector<string> splittxt = cmdMenu->split(txt);
-    EXPECT_EQ(splittxt[0], "POST");
-    EXPECT_EQ(splittxt[1], "www.google.com");
+TEST(CommandTests, DeleteURLBehavior) {
+    bloomFilterStorage storage;
+    MyHash hash(10);
+    BloomFilter<std::string, MyHash> bf(hash, 2);
 
-    txt = "   POST    www.google2.com    ";
-    splittxt = cmdMenu->split(txt);
-    EXPECT_EQ(splittxt[0], "POST");
-    EXPECT_EQ(splittxt[1], "www.google2.com");
+    AddURLCommand addCmd(storage, bf);
+    DeleteURLCommand delCmd(storage, bf);
+    CheckURLCommand checkCmd(storage, bf);
 
-    txt = "POST    www.google3.com    ";
-    splittxt = cmdMenu->split(txt);
-    EXPECT_EQ(splittxt[0], "POST");
-    EXPECT_EQ(splittxt[1], "www.google3.com");
+    // Add and delete a URL
+    addCmd.executeCommand("www.p.com");
+    std::string result = delCmd.executeCommand("www.p.com");
+    EXPECT_EQ(result, "204 No Content");
+
+    // Delete again — should be 404
+    result = delCmd.executeCommand("www.p.com");
+    EXPECT_EQ(result, "404 Not Found");
+
+    // Check after deletion
+    result = checkCmd.executeCommand("www.p.com");
+    EXPECT_EQ(result, "200 Ok\n\ntrue false");
 }
 
-// Test the exit function, should only change m_menuState for CLI.
-TEST(CLITest, exitCMD) {
-    EXPECT_NO_THROW(cmdMenu->exit());
-    EXPECT_FALSE(cmdMenu->isRunning());
-}
+TEST(CommandTests, BadURLFormatIgnoredInLogic) {
+    bloomFilterStorage storage;
+    MyHash hash(10);
+    BloomFilter<std::string, MyHash> bf(hash, 2);
 
+    AddURLCommand addCmd(storage, bf);
+    std::string result = addCmd.executeCommand("not_a_valid_url");
 
-int main(int argc, char **argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
+    // Still accepted, because format check is CLI responsibility
+    EXPECT_EQ(result, "201 Created");
 }
