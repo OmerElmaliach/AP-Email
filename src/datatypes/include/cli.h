@@ -16,7 +16,6 @@ using namespace std;
 
 class CLI : public IMenu<string, string> {
 private:
-
     MyHash m_stringHasher;
     BloomFilter<string, MyHash> m_bloomFilter;
     int m_sock;
