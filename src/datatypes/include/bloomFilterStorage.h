@@ -9,6 +9,7 @@
 #include <string>
 #include <Istorage.h>
 #include <fileStorage.h>
+#include <mutex>
 
 using namespace std;
 
@@ -24,6 +25,7 @@ private:
     fileStorage* input;   ///< Storage for input data (vector<int>).
     fileStorage* urls;    ///< Storage for URLs (string).
     fileStorage* filter;  ///< Storage for filter array (vector<char>).
+    mutable std::mutex storage_mutex; ///< Mutex for thread safety.
 
     /**
      * @brief Convert a vector of chars to a comma-separated string.
