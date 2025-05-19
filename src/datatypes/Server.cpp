@@ -28,6 +28,52 @@
 #define SERVER_PORT 8080 + rand() % 30000 ///< Random port value
 using namespace std;
 
+
+class ThreadPool {
+public:
+    ThreadPool(size_t numThreads) : stop(false) {
+        for (size_t i = 0; i < numThreads; ++i) {
+            workers.emplace_back([this] {
+                while (true) {
+                    std::function<void()> task;
+                    {
+                        std::unique_lock<std::mutex> lock(this->queue_mutex);
+                        this->condition.wait(lock, [this] { return this->stop || !this->tasks.empty(); });
+                        if (this->stop && this->tasks.empty())
+                            return;
+                        task = std::move(this->tasks.front());
+                        this->tasks.pop();
+                    }
+                    task();
+                }
+            });
+        }
+    }
+    template<class F>
+    void enqueue(F&& f) {
+        {
+            std::unique_lock<std::mutex> lock(queue_mutex);
+            tasks.emplace(std::forward<F>(f));
+        }
+        condition.notify_one();
+    }
+    ~ThreadPool() {
+        {
+            std::unique_lock<std::mutex> lock(queue_mutex);
+            stop = true;
+        }
+        condition.notify_all();
+        for (std::thread &worker : workers)
+            worker.join();
+    }
+private:
+    std::vector<std::thread> workers;
+    std::queue<std::function<void()>> tasks;
+    std::mutex queue_mutex;
+    std::condition_variable condition;
+    bool stop;
+};
+
 /**
  * @brief Constructs a Server object and initializes the server socket.
  * @param port The port number to bind to.
@@ -96,23 +142,23 @@ bool Server::startServer(vector<int> args_filter) {
  * @param clientAddr The sockaddr_in structure for the client.
  */
 void Server::acceptAndHandleClient() {
+    ThreadPool pool(MAX_CLIENTS);
     while (this->running) {
         struct sockaddr_in clientAddr;
         unsigned int addrLen = sizeof(clientAddr);
         int clientSocket = accept(this->serverSocket, (struct sockaddr*)&clientAddr, &addrLen);
         if (clientSocket < 0) {
-            // Accept failed, try again after a short delay
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
             continue;
         }
-        std::thread([this, clientSocket]() {
+        pool.enqueue([this, clientSocket]() {
             try {
                 this->app->run(clientSocket, this->m_Stor);
             } catch (const std::exception& e) {
                 // Log error here in future
             }
             close(clientSocket);
-        }).detach();
+        });
     }
 }
 
@@ -248,3 +294,4 @@ Server::~Server() {
     this->serverSocket = -1; // Reset the server socket
     this->running = false; // Reset the running flag
 } // Destructor
+;
