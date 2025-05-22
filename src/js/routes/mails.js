@@ -4,7 +4,7 @@ const controller = require('../controllers/mails');
 
 router.route('/')
     .get(controller.getUserMails)
-    // .post(controller.createMail);
+    .post(controller.createMail);
 
 router.route('/:id')
     // .get(controller.getMailById)
