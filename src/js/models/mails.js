@@ -8,10 +8,8 @@ const mails =  [{"id" : "1", "mail_id" : "1d12", "from": "alice@gmail.com", "to"
 
 
 const getUserMails = (id) => {
-    // TODO: Add id verification with users method and convert id to mail.
-    const idMail = "alice@gmail.com"; // TODO: Convert here
-    const fromMail = mails.filter(item => item.from === idMail);
-    const toMail = mails.filter(item => (Array.isArray(item.to) && item.to.includes(idMail)) || item.to === idMail);
+    const fromMail = mails.filter(item => item.from === id);
+    const toMail = mails.filter(item => (Array.isArray(item.to) && item.to.includes(id)) || item.to === id);
 
     // Concatenate from and to mails into one array, sort in reverse order.
     var mailList = fromMail.concat(toMail);
@@ -21,6 +19,16 @@ const getUserMails = (id) => {
     return Array.from(new Map(mailList.map(item => [item.mail_id, item])).values());
 }
 
+
+const createMail = (id, to, subject, body, label) => {
+    // TODO: Create method.
+
+    // Return list without duplicates.
+    return false;
+}
+
+
 module.exports = {
-    getUserMails
+    getUserMails,
+    createMail
 }
