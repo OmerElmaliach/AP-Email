@@ -22,11 +22,17 @@ exports.getUserMails = (req, res) => {
  * @returns {number} True if succeeded, otherwise false.
  */
 exports.createMail = (req, res) => {
-    // TODO: Add id verification with users method and convert id to mail ({id number} -> {mail}) using user class.
-    const { to, subject, body, label } = req.body;
-    if (Mails.createMail(id, to, subject, body, label)) {
-        res.status(201);
+    const { id, to, subject, body, label } = req.body;
+    // TODO: Wait for implementation and change.
+    if (!isIdValid(id)) { 
+        return res.status(404).json({ error : "Invalid id provided" });
+    } else if (!isLabelValid(label)) {
+        return res.status(404).json({ error : "Invalid label provided" });
+    } else if (!exists(to)){
+        return res.status(404).json({ error : "Invalid receiver mails provided" });
     }
 
-    return res.status(404).json({ error : "Failed to create mail" });
+    const from = convertToMail(id); // TODO: Wait for implementation and change.
+    Mails.createMail(id, from, to, subject, body, label)
+    return res.status(201);
 }
