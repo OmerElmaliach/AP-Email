@@ -52,6 +52,7 @@ exports.createMail = (req, res) => {
  */
 exports.getMailById = (req, res) => {
     const { userId, id } = req.body;
+    // TODO: Wait for implementation and change.
     if (!isIdValid(userId)) {
         return res.status(404).json({ error : "Invalid user id provided" });
     }
@@ -62,4 +63,29 @@ exports.getMailById = (req, res) => {
     }
 
     return res.json(mail);
+}
+
+
+/**
+ * Updates a mails content.
+ *
+ * @param {string} req - Request.
+ * @param {json} res - Response.
+ * @returns {number} Status code indicating result.
+ */
+exports.updateMail = (req, res) => {
+    const { userId, id, title, body, label} = req.body;
+    // TODO: Wait for implementation and change.
+    if (!isIdValid(userId)) {
+        return res.status(404).json({ error : "Invalid user id provided" });
+    } else if ((label != undefined) && (!isLabelValid(label))) {
+        return res.status(404).json({ error : "Invalid label provided" });
+    }
+
+    const mail = updateMail(id, title, body, label);
+    if (mail.length == 0) {
+        return res.status(404).json({ error : "Invalid mail id provided" });
+    }
+
+    return res.status(201);
 }
