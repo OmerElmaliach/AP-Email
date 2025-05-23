@@ -7,7 +7,7 @@ router.route('/')
     .post(controller.createMail);
 
 router.route('/:id')
-    // .get(controller.getMailById)
+    .get(controller.getMailById)
     // .patch(controller.updateMail)
     // .put(controller.updateMail)
     // .delete(controller.deleteMail);

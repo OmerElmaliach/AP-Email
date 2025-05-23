@@ -27,7 +27,13 @@ const createMail = (id, from, to, subject, body, label) => {
 }
 
 
+const getMailById = (mailId) => {
+    return mails.filter(item => item.mail_id === mailId)
+}
+
+
 module.exports = {
     getUserMails,
-    createMail
+    createMail,
+    getMailById
 }
