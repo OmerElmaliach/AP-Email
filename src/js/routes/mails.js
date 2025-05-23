@@ -8,8 +8,8 @@ router.route('/')
 
 router.route('/:id')
     .get(controller.getMailById)
-    // .patch(controller.updateMail)
-    // .put(controller.updateMail)
+    .patch(controller.updateMail)
+    .put(controller.updateMail)
     // .delete(controller.deleteMail);
 
 router.route('/search:query')
