@@ -29,23 +29,60 @@ const createMail = (id, from, to, subject, body, label) => {
 
 
 const getMailById = (mailId) => {
+    // Filter and return the specific mail.
     return mails.filter(item => item.mail_id === mailId);
 }
 
 
-const updateMail = (mailId, title, body, label) => {
+const updateMail = (userId, mailId, title, body, label) => {
+    // Loop over all mails and modify the correct one.
     for (var i = 0; i < mails.length; i++) {
         if (mails[i].mail_id == mailId) {
+            isFound = true;
             if (title != undefined)
                 mails[i].title = title;
             if (body != undefined)
                 mails[i].body = body;
             if (label != undefined)
                 mails[i].label = label;
+
+            // Mail was found and modified.
+            return true;
         }
     }
 
-    return mails.filter(item => item.mail_id === mailId);
+    // No early return -> No mail was modified.
+    return false;
+}
+
+
+const deleteMail = (userId, mailId) => {
+    // Filter so that whoever wants to delete has the mail in his inbox.
+    const delMail = mails.find(item => item.mail_id == mailId && item.id == userId);
+    if (delMail.length == 0)
+        return false;
+
+    mails.splice(delMail, 1);
+    return true;
+}
+
+
+const findMail = (userId, query) => {
+    const mailLst = getUserMails(userId);
+    var newLst = [];
+    // Loop over all mails
+    for (var i = 0; i < mailLst.length; i++) {
+        // Loop over all key and value in a specific json mail.
+        for (const [key, value] of Object.entries(mailLst[i])) {
+            // Check for a match.
+            if (value.includes(query)) {
+                newLst.push(mailLst[i]);
+                break;
+            }
+        }
+    }
+
+    return newLst;
 }
 
 
@@ -53,5 +90,7 @@ module.exports = {
     getUserMails,
     createMail,
     getMailById,
-    updateMail
+    updateMail,
+    deleteMail,
+    findMail
 }
