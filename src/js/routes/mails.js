@@ -10,9 +10,9 @@ router.route('/:id')
     .get(controller.getMailById)
     .patch(controller.updateMail)
     .put(controller.updateMail)
-    // .delete(controller.deleteMail);
+    .delete(controller.deleteMail);
 
 router.route('/search:query')
-    // .get(controller.findMail);
+    .get(controller.findMail);
 
 module.exports = router;

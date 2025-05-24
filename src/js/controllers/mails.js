@@ -57,7 +57,7 @@ exports.getMailById = (req, res) => {
         return res.status(404).json({ error : "Invalid user id provided" });
     }
 
-    const mail = getMailById(id);
+    const mail = Mails.getMailById(id);
     if (mail.length == 0) {
         return res.status(404).json({ error : "Invalid mail id provided" });
     }
@@ -82,10 +82,51 @@ exports.updateMail = (req, res) => {
         return res.status(404).json({ error : "Invalid label provided" });
     }
 
-    const mail = updateMail(id, title, body, label);
-    if (mail.length == 0) {
+    // updateMail returns true if mail was updated successfully, otherwise false.
+    const mailCon = Mails.updateMail(userId, id, title, body, label);
+    if (!mailCon) {
         return res.status(404).json({ error : "Invalid mail id provided" });
     }
 
     return res.status(201);
+}
+
+
+/**
+ * Deletes a mail.
+ *
+ * @param {string} req - Request.
+ * @param {json} res - Response.
+ * @returns {number} Status code indicating result.
+ */
+exports.deleteMail = (req, res) => {
+    const { userId, id } = req.body;
+    // TODO: Wait for implementation and change.
+    if (!isIdValid(userId)) {
+        return res.status(404).json({ error : "Invalid user id provided" });
+    }
+
+    const delCon = Mails.deleteMail(userId, id);
+    if (!delCon)
+        return res.status(404).json({ error : "Invalid mail id provided" });
+
+    return res.status(204);
+}
+
+
+/**
+ * Given a specific query finds a mail.
+ *
+ * @param {string} req - Request.
+ * @param {json} res - Response.
+ * @returns {json} Requested mail with query value.
+ */
+exports.findMail = (req, res) => {
+    const { userId, query } = req.body;
+    // TODO: Wait for implementation and change.
+    if (!isIdValid(userId)) {
+        return res.status(404).json({ error : "Invalid user id provided" });
+    }
+
+    return res.json(Mails.findMail(userId, query));
 }
