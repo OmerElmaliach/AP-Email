@@ -23,16 +23,15 @@ const getUserMails = (id) => {
 
 const createMail = (id, from, to, subject, body, label) => {
     // Instantly creates a json and adds to mail list.
-    // TODO: Check if subject or body contain bad url's
     const date = new Date();
     mails.push({"id" : id, "mail_id" : "1e".concat(idCounter.toString()), "from" : from, "to" : to, "subject" : subject, "body" : body, date_sent : date.toLocaleString(), "label" : label});
     idCounter++;
 }
 
 
-const getMailById = (mailId) => {
+const getMailById = (userEmail, mailId) => {
     // Filter and return the specific mail.
-    return mails.filter(item => item.mail_id === mailId);
+    return mails.find(item => item.mail_id === mailId && (item.from === userEmail || item.to.includes(userEmail)));
 }
 
 

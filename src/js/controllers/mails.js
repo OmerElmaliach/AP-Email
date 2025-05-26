@@ -38,6 +38,7 @@ exports.createMail = (req, res) => {
     // } else if (!isLabelValid(label)) {
     //     return res.status(404).json({ error : "Invalid label provided" });
     // }
+    // TODO: Check if subject or body contain bad url's
 
     // Check validation for each email in the 'to' section.
     for (var i = 0; i < to.length; i++) {
@@ -60,14 +61,15 @@ exports.createMail = (req, res) => {
  * @returns {json} Details of specific mail.
  */
 exports.getMailById = (req, res) => {
-    const { userId, id } = req.body;
-    // TODO: Wait for implementation and change.
-    if (!isIdValid(userId)) {
+    const id = req.params.id;
+    const { userId } = req.body;
+    const userDB = Model.getUser("id", userId);
+    if (userDB == undefined) {
         return res.status(404).json({ error : "Invalid user id provided" });
     }
 
-    const mail = Mails.getMailById(id);
-    if (mail.length == 0) {
+    const mail = Mails.getMailById(userDB.email, id);
+    if (mail == undefined) {
         return res.status(404).json({ error : "Invalid mail id provided" });
     }
 
