@@ -3,7 +3,8 @@ const EMAIL_AMOUNT = 50;
 const mails =  [{"id" : "1", "mail_id" : "1e61", "from": "alice@gmail.com", "to": ["bob@gmail.com"], "subject": "Aliens", "body": "Dont forget to send me the photos", "date_sent": "07-06-2025 16:00:00", "label" : "IMPORTANT"},
                 {"id" : "2", "mail_id" : "1e62", "from": "bob@gmail.com", "to": ["alice@gmail.com"], "subject": "Aliens", "body": "Will send in 5 minutes", "date_sent": "07-06-2025 18:00:00", "label" : "IMPORTANT"},
                 {"id" : "1", "mail_id" : "1e63", "from": "alice@gmail.com", "to": ["bob@gmail.com"], "subject": "Aliens", "body": "Got it", "date_sent": "07-06-2025 20:00:00", "label" : "IMPORTANT"},
-                {"id" : "1", "mail_id" : "1e64", "from": "alice@gmail.com", "to": ["alice@gmail.com"], "subject": "Fooled", "body": "I am the alien", "date_sent": "07-06-2025 22:00:00", "label" : "None"}
+                {"id" : "1", "mail_id" : "1e64", "from": "alice@gmail.com", "to": ["alice@gmail.com"], "subject": "Fooled", "body": "I am the alien", "date_sent": "07-06-2025 22:00:00", "label" : "None"},
+                {"id" : "3", "mail_id" : "1e65", "from": "omer@gmail.com", "to": ["omer@gmail.com"], "subject": "Test", "body": "This is a test", "date_sent": "07-06-2025 22:00:00", "label" : "IMPORTANT"}
                ];
 
 
@@ -23,7 +24,8 @@ const getUserMails = (id) => {
 const createMail = (id, from, to, subject, body, label) => {
     // Instantly creates a json and adds to mail list.
     // TODO: Check if subject or body contain bad url's
-    mails.push({"id" : id, "mail_id" : "1e".concat(idCounter.toString()), "from" : from, "to" : to, "subject" : subject, "body" : body, date_sent : Date().format('m-d-Y h:i:s'), "label" : label});
+    const date = new Date();
+    mails.push({"id" : id, "mail_id" : "1e".concat(idCounter.toString()), "from" : from, "to" : to, "subject" : subject, "body" : body, date_sent : date.toLocaleString(), "label" : label});
     idCounter++;
 }
 

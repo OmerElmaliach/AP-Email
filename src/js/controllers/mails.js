@@ -1,4 +1,5 @@
 const Mails = require('../models/mails');
+const Model = require('../models/users')
 
 /**
  * Returns fifty existing mails in reverse order by Id.
@@ -8,14 +9,14 @@ const Mails = require('../models/mails');
  * @returns {json} Fifty Mails in json structure.
  */
 exports.getUserMails = (req, res) => {
-    // TODO: Wait for implementation and change.
     const { userId } = req.body;
-    if (!isIdValid(userId)) {
+    // Receive json containing information of a given user.
+    const userDB = Model.getUser("id", userId);
+    if (userDB == undefined) {
         return res.status(404).json({ error : "Invalid user id provided" });
     }
 
-    const mail = convertToMail(userId);
-    res.json(Mails.getUserMails(mail));
+    res.json(Mails.getUserMails(userDB.email));
 }
 
 
@@ -28,18 +29,26 @@ exports.getUserMails = (req, res) => {
  */
 exports.createMail = (req, res) => {
     const { userId, to, subject, body, label } = req.body;
-    // TODO: Wait for implementation and change.
-    if (!isIdValid(userId)) { 
+    const userDB = Model.getUser("id", userId);
+    if (userDB == undefined) { 
         return res.status(404).json({ error : "Invalid user id provided" });
-    } else if (!isLabelValid(label)) {
-        return res.status(404).json({ error : "Invalid label provided" });
-    } else if (!mailExist(to)){
-        return res.status(404).json({ error : "Invalid receiver mails provided" });
     }
 
-    const from = convertToMail(userId); // TODO: Wait for implementation and change.
-    Mails.createMail(userId, from, to, subject, body, label)
-    return res.status(201);
+    // TODO: Wait for implementation and change.
+    // } else if (!isLabelValid(label)) {
+    //     return res.status(404).json({ error : "Invalid label provided" });
+    // }
+
+    // Check validation for each email in the 'to' section.
+    for (var i = 0; i < to.length; i++) {
+        let toUserDb = Model.getUser("email", to[i]);
+        if (toUserDb == undefined){
+            return res.status(404).json({ error : "Invalid receiver mails provided" });
+        }
+    }
+
+    Mails.createMail(userId, userDB.email, to, subject, body, label)
+    return res.sendStatus(201);
 }
 
 
