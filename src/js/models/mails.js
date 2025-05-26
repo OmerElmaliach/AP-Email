@@ -8,9 +8,9 @@ var mails =  [{"id" : "1", "mail_id" : "1e61", "from": "alice@gmail.com", "to": 
                ];
 
 
-const getUserMails = (id) => {
-    const fromMail = mails.filter(item => item.from === id);
-    const toMail = mails.filter(item => (Array.isArray(item.to) && item.to.includes(id)) || item.to === id);
+const getUserMails = (userMail) => {
+    const fromMail = mails.filter(item => item.from === userMail);
+    const toMail = mails.filter(item => (Array.isArray(item.to) && item.to.includes(userMail)) || item.to === userMail);
 
     // Concatenate from and to mails into one array, sort in reverse order.
     var mailList = fromMail.concat(toMail);
@@ -68,8 +68,8 @@ const deleteMail = (userId, mailId) => {
 }
 
 
-const findMail = (userId, query) => {
-    const mailLst = getUserMails(userId);
+const findMail = (userMail, query) => {
+    const mailLst = getUserMails(userMail);
     var newLst = [];
     // Loop over all mails
     for (var i = 0; i < mailLst.length; i++) {

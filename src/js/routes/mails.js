@@ -12,7 +12,7 @@ router.route('/:id')
     .put(controller.updateMail)
     .delete(controller.deleteMail);
 
-router.route('/search:query')
+router.route('/search/:query')
     .get(controller.findMail);
 
 module.exports = router;

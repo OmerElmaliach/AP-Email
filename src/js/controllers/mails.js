@@ -138,11 +138,12 @@ exports.deleteMail = (req, res) => {
  * @returns {json} Requested mail with query value.
  */
 exports.findMail = (req, res) => {
-    const { userId, query } = req.body;
-    // TODO: Wait for implementation and change.
-    if (!isIdValid(userId)) {
+    const query = req.params.query;
+    const { userId } = req.body;
+    const userDB = Model.getUser("id", userId);
+    if (userDB == undefined) {
         return res.status(404).json({ error : "Invalid user id provided" });
     }
 
-    return res.json(Mails.findMail(userId, query));
+    return res.json(Mails.findMail(userDB.email, query));
 }
