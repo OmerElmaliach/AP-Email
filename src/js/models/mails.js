@@ -1,6 +1,6 @@
 let idCounter = 0;
 const EMAIL_AMOUNT = 50;
-const mails =  [{"id" : "1", "mail_id" : "1e61", "from": "alice@gmail.com", "to": ["bob@gmail.com"], "subject": "Aliens", "body": "Dont forget to send me the photos", "date_sent": "07-06-2025 16:00:00", "label" : "IMPORTANT"},
+var mails =  [{"id" : "1", "mail_id" : "1e61", "from": "alice@gmail.com", "to": ["bob@gmail.com"], "subject": "Aliens", "body": "Dont forget to send me the photos", "date_sent": "07-06-2025 16:00:00", "label" : "IMPORTANT"},
                 {"id" : "2", "mail_id" : "1e62", "from": "bob@gmail.com", "to": ["alice@gmail.com"], "subject": "Aliens", "body": "Will send in 5 minutes", "date_sent": "07-06-2025 18:00:00", "label" : "IMPORTANT"},
                 {"id" : "1", "mail_id" : "1e63", "from": "alice@gmail.com", "to": ["bob@gmail.com"], "subject": "Aliens", "body": "Got it", "date_sent": "07-06-2025 20:00:00", "label" : "IMPORTANT"},
                 {"id" : "1", "mail_id" : "1e64", "from": "alice@gmail.com", "to": ["alice@gmail.com"], "subject": "Fooled", "body": "I am the alien", "date_sent": "07-06-2025 22:00:00", "label" : "None"},
@@ -60,10 +60,10 @@ const updateMail = (userEmail, mailId, subject, body, label) => {
 const deleteMail = (userId, mailId) => {
     // Filter so that whoever wants to delete has the mail in his inbox.
     const delMail = mails.find(item => item.mail_id == mailId && item.id == userId);
-    if (delMail.length == 0)
+    if (delMail == undefined)
         return false;
 
-    mails.splice(delMail, 1);
+    mails = mails.filter(item => item != delMail);
     return true;
 }
 

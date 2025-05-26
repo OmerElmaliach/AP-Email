@@ -115,9 +115,10 @@ exports.updateMail = (req, res) => {
  * @returns {number} Status code indicating result.
  */
 exports.deleteMail = (req, res) => {
-    const { userId, id } = req.body;
-    // TODO: Wait for implementation and change.
-    if (!isIdValid(userId)) {
+    const id = req.params.id;
+    const { userId } = req.body;
+    const userDB = Model.getUser("id", userId);
+    if (userDB == undefined) {
         return res.status(404).json({ error : "Invalid user id provided" });
     }
 
@@ -125,7 +126,7 @@ exports.deleteMail = (req, res) => {
     if (!delCon)
         return res.status(404).json({ error : "Invalid mail id provided" });
 
-    return res.status(204);
+    return res.sendStatus(204);
 }
 
 
