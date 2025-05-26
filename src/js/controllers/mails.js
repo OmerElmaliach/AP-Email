@@ -85,21 +85,25 @@ exports.getMailById = (req, res) => {
  * @returns {number} Status code indicating result.
  */
 exports.updateMail = (req, res) => {
-    const { userId, id, title, body, label} = req.body;
-    // TODO: Wait for implementation and change.
-    if (!isIdValid(userId)) {
+    const id = req.params.id;
+    const { userId, subject, body, label } = req.body;
+    const userDB = Model.getUser("id", userId);
+    if (userDB == undefined) {
         return res.status(404).json({ error : "Invalid user id provided" });
-    } else if ((label != undefined) && (!isLabelValid(label))) {
-        return res.status(404).json({ error : "Invalid label provided" });
     }
 
+    // TODO: Wait for implementation and change.
+    // } else if ((label != undefined) && (!isLabelValid(label))) {
+    //     return res.status(404).json({ error : "Invalid label provided" });
+    // }
+
     // updateMail returns true if mail was updated successfully, otherwise false.
-    const mailCon = Mails.updateMail(userId, id, title, body, label);
+    const mailCon = Mails.updateMail(userDB.email, id, subject, body, label);
     if (!mailCon) {
         return res.status(404).json({ error : "Invalid mail id provided" });
     }
 
-    return res.status(201);
+    return res.sendStatus(204);
 }
 
 
