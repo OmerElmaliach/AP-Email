@@ -35,13 +35,13 @@ const getMailById = (userEmail, mailId) => {
 }
 
 
-const updateMail = (userId, mailId, title, body, label) => {
+const updateMail = (userEmail, mailId, subject, body, label) => {
     // Loop over all mails and modify the correct one.
     for (var i = 0; i < mails.length; i++) {
-        if (mails[i].mail_id == mailId) {
+        if (mails[i].mail_id == mailId && mails[i].from === userEmail) {
             isFound = true;
-            if (title != undefined)
-                mails[i].title = title;
+            if (subject != undefined)
+                mails[i].subject = subject;
             if (body != undefined)
                 mails[i].body = body;
             if (label != undefined)
