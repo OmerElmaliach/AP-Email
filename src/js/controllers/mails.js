@@ -1,5 +1,46 @@
 const Mails = require('../models/mails');
 const Model = require('../models/users')
+const bloomFilterAddress = '127.0.0.1';
+const bloomFilterPort = 8089;
+const urlRegex = /(?<![a-zA-Z0-9])((https?:\/\/)?(www\.)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(\/\S*)?/g;
+
+
+/**
+ * @brief Validates whether a URL is not blacklisted.
+ * 
+ * @param {string} url 
+ * @returns True if not blacklisted, otherwise false.
+ */
+function checkURL(url) {
+    // Establish a connection with a cpp bloom filter server.
+    var urlValid = true;
+    const net = require('net');
+    return new Promise((resolve, reject) => {
+        const client = new net.Socket();
+        client.connect(bloomFilterPort, bloomFilterAddress, () => {
+            client.write("GET " + url);
+        });
+
+        // Handle data received.
+        client.on('data', (data) => {
+            let serverRes = data.toString();
+            if (serverRes.endsWith("true"))
+                urlValid = false;
+            client.end();
+        });
+
+        // Handle error in communication.
+        client.on('error', (err) => {
+            reject(err);
+        });
+
+        // Handle connection end.
+        client.on('end', () => {
+            resolve(urlValid)
+        });
+    });
+};
+
 
 /**
  * Returns fifty existing mails in reverse order by Id.
@@ -27,12 +68,12 @@ exports.getUserMails = (req, res) => {
  * @param {json} res - Response.
  * @returns {number} Status code indicating result.
  */
-exports.createMail = (req, res) => {
+exports.createMail = async (req, res) => {
     const { userId, to, subject, body, label } = req.body;
     const userDB = Model.getUser("id", userId);
     // List to hold all the 'to' email's id's
     var toIds = [];
-    if (userDB == undefined) { 
+    if (userDB == undefined) {
         return res.status(404).json({ error : "Invalid user id provided" });
     }
 
@@ -40,7 +81,6 @@ exports.createMail = (req, res) => {
     // } else if (!isLabelValid(label)) {
     //     return res.status(404).json({ error : "Invalid label provided" });
     // }
-    // TODO: Check if subject or body contain bad url's
 
     // Check validation for each email in the 'to' section.
     for (var i = 0; i < to.length; i++) {
@@ -49,6 +89,29 @@ exports.createMail = (req, res) => {
             return res.status(404).json({ error : "Invalid receiver mails provided" });
         }
         toIds.push(toUserDb.id);
+    }
+
+    // Save urls appearing in the mail's subject or body.
+    let urlsSubject = subject.match(urlRegex) || [];
+    let urlsBody = body.match(urlRegex) || [];
+
+    try {
+        // Iterate each url found and check if was found.
+        for (var i = 0; i < urlsSubject.length; i++) {
+            let isUrlValid = await checkURL(urlsSubject[i]);
+            if (!isUrlValid) {
+                return res.status(404).json({ error: "Invalid URL provided" });
+            }
+        }
+    
+        for (var i = 0; i < urlsBody.length; i++) {
+            let isUrlValid = await checkURL(urlsBody[i]);
+            if (!isUrlValid) {
+                return res.status(404).json({ error: "Invalid URL provided" });
+            }
+        }
+    } catch (err) {
+        return res.status(404).json({ error: err });
     }
 
     Mails.createMail(userId, userDB.email, to, toIds, subject, body, label)
