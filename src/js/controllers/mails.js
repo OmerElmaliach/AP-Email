@@ -103,12 +103,12 @@ exports.createMail = async (req, res) => {
         // Check for a list of urls if they are blacklisted.
         let urlsValid = await checkURLs(urlsSubject);
         if (!urlsValid) {
-            return res.status(404).json({ error: "Invalid URL provided" });
+            return res.status(400).json({ error: "Invalid URL provided" });
         }
     
         urlsValid = await checkURLs(urlsBody);
         if (!urlsValid) {
-            return res.status(404).json({ error: "Invalid URL provided" });
+            return res.status(400).json({ error: "Invalid URL provided" });
         }
         
     } catch (err) {
