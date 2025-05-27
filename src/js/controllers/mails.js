@@ -1,50 +1,7 @@
 const Mails = require('../models/mails');
-const Model = require('../models/users')
-const bloomFilterAddress = '127.0.0.1';
-const bloomFilterPort = 8089;
+const Model = require('../models/users');
+const BlackList = require('../models/blacklist');
 const urlRegex = /(?<![a-zA-Z0-9])((https?:\/\/)?(www\.)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(\/\S*)?/g;
-
-
-/**
- * @brief Validates whether a list of URLs are not blacklisted.
- * 
- * @param {list} urls 
- * @returns True if not blacklisted, otherwise false.
- */
-function checkURLs(urls) {
-    // Establish a connection with a cpp bloom filter server.
-    var urlValid = true;
-    const net = require('net');
-    return new Promise((resolve, reject) => {
-        const client = new net.Socket();
-        client.connect(bloomFilterPort, bloomFilterAddress, () => {
-            for (var i = 0; i < urls.length; i++) {
-                client.write("GET " + urls[i]);
-            }
-        });
-
-        // Handle data received.
-        client.on('data', (data) => {
-            for (var i = 0; i < urls.length; i++) {
-                let serverRes = data.toString();
-                if (serverRes.endsWith("true"))
-                    urlValid = false;
-            }
-            client.end();
-        });
-
-        // Handle error in communication.
-        client.on('error', (err) => {
-            reject(err);
-        });
-
-        // Handle connection end.
-        client.on('end', () => {
-            resolve(urlValid)
-        });
-    });
-};
-
 
 /**
  * Returns fifty existing mails in reverse order by Id.
@@ -74,6 +31,17 @@ exports.getUserMails = (req, res) => {
  */
 exports.createMail = async (req, res) => {
     const { userId, to, subject, body, label } = req.body;
+    if (to == undefined || to.length == 0) {
+        return res.status(404).json({ error : "Invalid input provided" });
+    }
+
+    if (subject == undefined)
+        subject = "";
+    if (body == undefined)
+        body = "";
+    if (label == undefined)
+        label = "";
+
     const userDB = Model.getUser("id", userId);
     // List to hold all the 'to' email's id's
     var toIds = [];
@@ -101,14 +69,18 @@ exports.createMail = async (req, res) => {
 
     try {
         // Check for a list of urls if they are blacklisted.
-        let urlsValid = await checkURLs(urlsSubject);
-        if (!urlsValid) {
-            return res.status(400).json({ error: "Invalid URL provided" });
+        if (urlsSubject.length > 0) {
+            let urlsValid = await BlackList.checkURLs(urlsSubject);
+            if (!urlsValid) {
+                return res.status(400).json({ error: "Invalid URL provided" });
+            }
         }
     
-        urlsValid = await checkURLs(urlsBody);
-        if (!urlsValid) {
-            return res.status(400).json({ error: "Invalid URL provided" });
+        if (urlsBody.length > 0) {
+            urlsValid = await BlackList.checkURLs(urlsBody);
+            if (!urlsValid) {
+                return res.status(400).json({ error: "Invalid URL provided" });
+            }
         }
         
     } catch (err) {
