@@ -31,7 +31,7 @@ exports.getUserMails = (req, res) => {
  */
 exports.createMail = async (req, res) => {
     const { userId, to, subject, body, label } = req.body;
-    if (to == undefined || to.length == 0) {
+    if (to == undefined || typeof to == "string" || to.length == 0) {
         return res.status(404).json({ error : "Invalid input provided" });
     }
 
