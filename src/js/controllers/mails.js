@@ -6,26 +6,30 @@ const urlRegex = /(?<![a-zA-Z0-9])((https?:\/\/)?(www\.)?([a-zA-Z0-9-]+\.)+[a-zA
 
 
 /**
- * @brief Validates whether a URL is not blacklisted.
+ * @brief Validates whether a list of URLs are not blacklisted.
  * 
- * @param {string} url 
+ * @param {list} urls 
  * @returns True if not blacklisted, otherwise false.
  */
-function checkURL(url) {
+function checkURLs(urls) {
     // Establish a connection with a cpp bloom filter server.
     var urlValid = true;
     const net = require('net');
     return new Promise((resolve, reject) => {
         const client = new net.Socket();
         client.connect(bloomFilterPort, bloomFilterAddress, () => {
-            client.write("GET " + url);
+            for (var i = 0; i < urls.length; i++) {
+                client.write("GET " + urls[i]);
+            }
         });
 
         // Handle data received.
         client.on('data', (data) => {
-            let serverRes = data.toString();
-            if (serverRes.endsWith("true"))
-                urlValid = false;
+            for (var i = 0; i < urls.length; i++) {
+                let serverRes = data.toString();
+                if (serverRes.endsWith("true"))
+                    urlValid = false;
+            }
             client.end();
         });
 
@@ -96,20 +100,17 @@ exports.createMail = async (req, res) => {
     let urlsBody = body.match(urlRegex) || [];
 
     try {
-        // Iterate each url found and check if was found.
-        for (var i = 0; i < urlsSubject.length; i++) {
-            let isUrlValid = await checkURL(urlsSubject[i]);
-            if (!isUrlValid) {
-                return res.status(404).json({ error: "Invalid URL provided" });
-            }
+        // Check for a list of urls if they are blacklisted.
+        let urlsValid = await checkURLs(urlsSubject);
+        if (!urlsValid) {
+            return res.status(404).json({ error: "Invalid URL provided" });
         }
     
-        for (var i = 0; i < urlsBody.length; i++) {
-            let isUrlValid = await checkURL(urlsBody[i]);
-            if (!isUrlValid) {
-                return res.status(404).json({ error: "Invalid URL provided" });
-            }
+        urlsValid = await checkURLs(urlsBody);
+        if (!urlsValid) {
+            return res.status(404).json({ error: "Invalid URL provided" });
         }
+        
     } catch (err) {
         return res.status(404).json({ error: err });
     }
