@@ -16,7 +16,7 @@ exports.getUserMails = (req, res) => {
         return res.status(404).json({ error : "Invalid user id provided" });
     }
 
-    res.json(Mails.getUserMails(userDB.email));
+    res.json(Mails.getUserMails(userId));
 }
 
 
@@ -30,6 +30,8 @@ exports.getUserMails = (req, res) => {
 exports.createMail = (req, res) => {
     const { userId, to, subject, body, label } = req.body;
     const userDB = Model.getUser("id", userId);
+    // List to hold all the 'to' email's id's
+    var toIds = [];
     if (userDB == undefined) { 
         return res.status(404).json({ error : "Invalid user id provided" });
     }
@@ -46,9 +48,10 @@ exports.createMail = (req, res) => {
         if (toUserDb == undefined){
             return res.status(404).json({ error : "Invalid receiver mails provided" });
         }
+        toIds.push(toUserDb.id);
     }
 
-    Mails.createMail(userId, userDB.email, to, subject, body, label)
+    Mails.createMail(userId, userDB.email, to, toIds, subject, body, label)
     return res.sendStatus(201);
 }
 
@@ -68,7 +71,7 @@ exports.getMailById = (req, res) => {
         return res.status(404).json({ error : "Invalid user id provided" });
     }
 
-    const mail = Mails.getMailById(userDB.email, id);
+    const mail = Mails.getMailById(userId, id);
     if (mail == undefined) {
         return res.status(404).json({ error : "Invalid mail id provided" });
     }

@@ -1,24 +1,20 @@
 let idCounter = 0;
 const EMAIL_AMOUNT = 50;
-var mails =  [{"id" : "1", "mail_id" : "e61", "from": "alice@gmail.com", "to": ["bob@gmail.com"], "subject": "Aliens", "body": "Dont forget to send me the photos", "date_sent": "07-06-2025 16:00:00", "label" : "IMPORTANT"},
-                {"id" : "2", "mail_id" : "e62", "from": "bob@gmail.com", "to": ["alice@gmail.com"], "subject": "Aliens", "body": "Will send in 5 minutes", "date_sent": "07-06-2025 18:00:00", "label" : "IMPORTANT"},
-                {"id" : "1", "mail_id" : "e63", "from": "alice@gmail.com", "to": ["bob@gmail.com"], "subject": "Aliens", "body": "Got it", "date_sent": "07-06-2025 20:00:00", "label" : "IMPORTANT"},
-                {"id" : "1", "mail_id" : "e64", "from": "alice@gmail.com", "to": ["alice@gmail.com"], "subject": "Fooled", "body": "I am the alien", "date_sent": "07-06-2025 22:00:00", "label" : "None"},
-                {"id" : "3", "mail_id" : "e65", "from": "omer@gmail.com", "to": ["omer@gmail.com"], "subject": "Test", "body": "This is a test", "date_sent": "07-06-2025 22:00:00", "label" : "IMPORTANT"}
+var mails =  [{"id" : "3", "mail_id" : "e65", "from": "omer@gmail.com", "to": ["test@gmail.com"], "subject": "Test1", "body": "This is a test1", "date_sent": "07-06-2025 22:00:00", "label" : "IMPORTANT"},
+                {"id" : "4", "mail_id" : "e65", "from": "omer@gmail.com", "to": ["test@gmail.com"], "subject": "Test1", "body": "This is a test1", "date_sent": "07-06-2025 22:00:00", "label" : "IMPORTANT"},
+                {"id" : "3", "mail_id" : "e64", "from": "omer@gmail.com", "to": ["bob@gmail.com"], "subject": "Test2", "body": "This is a test2", "date_sent": "07-06-2025 23:00:00", "label" : "IMPORTANT"},
+                {"id" : "2", "mail_id" : "e64", "from": "omer@gmail.com", "to": ["bob@gmail.com"], "subject": "Test2", "body": "This is a test2", "date_sent": "07-06-2025 23:00:00", "label" : "IMPORTANT"}
                ];
 
 
 /**
- * @param {string} userMail Email of a user.
+ * @param {string} userId Id of a user.
  * @returns fifty existing mails in reverse order by Id.
  */
-const getUserMails = (userMail) => {
-    const fromMail = mails.filter(item => item.from === userMail);
-    const toMail = mails.filter(item => (Array.isArray(item.to) && item.to.includes(userMail)) || item.to === userMail);
-
+const getUserMails = (userId) => {
     // Concatenate from and to mails into one array, sort in reverse order.
-    var mailList = fromMail.concat(toMail);
-    var mailList = mailList.sort((a, b) => a.date_sent.localeCompare(b.date_sent)).reverse().slice(0, EMAIL_AMOUNT);
+    var mailList = mails.filter(item => item.id === userId);
+    mailList = mailList.sort((a, b) => a.date_sent.localeCompare(b.date_sent)).reverse().slice(0, EMAIL_AMOUNT);
 
     // Return list without duplicates.
     return Array.from(new Map(mailList.map(item => [item.mail_id, item])).values());
@@ -31,26 +27,31 @@ const getUserMails = (userMail) => {
  * @param {string} id
  * @param {string} from
  * @param {list} to
+ * @param {list} toIds
  * @param {string} subject
  * @param {string} body
  * @param {string} label
  */
-const createMail = (id, from, to, subject, body, label) => {
+const createMail = (id, from, to, toIds, subject, body, label) => {
     // Instantly creates a json and adds to mail list.
     const date = new Date();
-    mails.push({"id" : id, "mail_id" : "e".concat(idCounter.toString()), "from" : from, "to" : to, "subject" : subject, "body" : body, date_sent : date.toLocaleString(), "label" : label});
+    const timestamp = date.toLocaleString()
+    mails.push({"id" : id, "mail_id" : "e".concat(idCounter.toString()), "from" : from, "to" : to, "subject" : subject, "body" : body, date_sent : timestamp, "label" : label});
+    for (var i = 0; i < toIds.length; i++) {
+        mails.push({"id" : toIds[i], "mail_id" : "e".concat(idCounter.toString()), "from" : from, "to" : to, "subject" : subject, "body" : body, date_sent : timestamp, "label" : "None"});
+    }
     idCounter++;
 }
 
 
 /**
- * @param {string} userEmail Email of a user.
+ * @param {string} userId Id of a user.
  * @param {string} mailId Unique Id of a mail.
  * @returns Contents of a mail with unique id.
  */
-const getMailById = (userEmail, mailId) => {
+const getMailById = (userId, mailId) => {
     // Filter and return the specific mail.
-    return mails.find(item => item.mail_id === mailId && (item.from === userEmail || item.to.includes(userEmail)));
+    return mails.find(item => item.mail_id === mailId && item.id === userId);
 }
 
 
@@ -65,6 +66,7 @@ const getMailById = (userEmail, mailId) => {
  * @returns True if changed successfully, otherwise false.
  */
 const updateMail = (userEmail, mailId, subject, body, label) => {
+    let isFound = false;
     // Loop over all mails and modify the correct one.
     for (var i = 0; i < mails.length; i++) {
         if (mails[i].mail_id == mailId && mails[i].from === userEmail) {
@@ -75,14 +77,10 @@ const updateMail = (userEmail, mailId, subject, body, label) => {
                 mails[i].body = body;
             if (label != undefined)
                 mails[i].label = label;
-
-            // Mail was found and modified.
-            return true;
         }
     }
 
-    // No early return -> No mail was modified.
-    return false;
+    return isFound;
 }
 
 
