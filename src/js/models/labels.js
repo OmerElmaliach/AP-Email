@@ -4,7 +4,7 @@
 const labels_DB = []
 
 let currentId = 1;
-//add label to data base- in our case the array and set its id 
+//add label to data base - in our case the array and set its id 
 const addLabel = (label) =>{
     label.id = currentId++
     labels_DB.push(label)

@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 
-//lis of local js includes
+//list of local js includes
 const mails = require('./routes/mails');
 const users = require('./routes/users');
 const users = require('./routes/labels');
