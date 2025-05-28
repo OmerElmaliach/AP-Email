@@ -11,7 +11,7 @@ const createLabel = (req, res)=>{
     color,        
     } = req.body
 
-    //mandatory fields check:
+    //mandatory fields check
     if (!id || !name || !userId || !color) {
         return res.status(400).json({ error: 'Missing mandatory field' });
     }
