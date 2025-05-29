@@ -4,8 +4,8 @@ const controller = require('../controllers/users')
 
 router.route('/')
     .post(controller.createUser)
-    //FOR DEBUGGING- TO BE REMOVED******************** yo uses enter in bash: curl -X GET http://localhost:9000/api/users
-    .get(controller.getAllUsers)
+    //FOR DEBUGGING-  curl -X GET http://localhost:9000/api/users
+    //.get(controller.getAllUsers) // get all users in DB
 
 router.route('/:id')
     .get(controller.getUser)
