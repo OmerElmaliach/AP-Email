@@ -13,7 +13,7 @@ const checkIfUser = (req,res) =>{
     }
     
     const { id } = user
-    return res.status(200).json({ id , userName})
+    return res.status(200).json({ id , userName })
 }
 
 module.exports= {checkIfUser }
