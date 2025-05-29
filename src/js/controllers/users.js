@@ -27,11 +27,11 @@ const createUser = (req, res)=>{
     if (model.getUser('email',email)) {
         return res.status(409).json({ error: 'Email already in use' });
     }
+
     // check usename address isnt taken 
     if (model.getUser('userName',userName)) {
         return res.status(409).json({ error: 'userName already in use' });
     }
-
     // all looks good, make user json and send to models
     const newUser ={
         fullName,
@@ -58,12 +58,10 @@ const getUser = (req,res) =>{
     return res.status(200).json({ fullName, email, gender, picture })
 }
 
-//DEBUGGING-TO BE REMOVRD**************************************************************************************************
+/* for DEBUGGING
 const getAllUsers = (req, res) => {
   const users = model.getAllUsers()
-  // needs to be this, adding a new line for debugging 
   return res.status(200).json(users)
- // res.status(200).send(JSON.stringify(users) + '\n')
 }
-
-module.exports= {createUser,getUser,      getAllUsers}
+*/
+module.exports= {createUser,getUser}
