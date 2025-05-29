@@ -1,10 +1,6 @@
 let idCounter = 0;
 const EMAIL_AMOUNT = 50;
-var mails =  [{"id" : "3", "mail_id" : "e65", "from": "omer@gmail.com", "to": ["test@gmail.com"], "subject": "Test1", "body": "This is a test1", "date_sent": "07-06-2025 22:00:00", "label" : "IMPORTANT"},
-                {"id" : "4", "mail_id" : "e65", "from": "omer@gmail.com", "to": ["test@gmail.com"], "subject": "Test1", "body": "This is a test1", "date_sent": "07-06-2025 22:00:00", "label" : "IMPORTANT"},
-                {"id" : "3", "mail_id" : "e64", "from": "omer@gmail.com", "to": ["bob@gmail.com"], "subject": "Test2", "body": "This is a test2", "date_sent": "07-06-2025 23:00:00", "label" : "IMPORTANT"},
-                {"id" : "2", "mail_id" : "e64", "from": "omer@gmail.com", "to": ["bob@gmail.com"], "subject": "Test2", "body": "This is a test2", "date_sent": "07-06-2025 23:00:00", "label" : "IMPORTANT"}
-               ];
+var mails =  [];
 
 
 /**
