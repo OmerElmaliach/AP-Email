@@ -1,3 +1,6 @@
+#jnod libs
+node_modules
+
 # Prerequisites
 *.d
 
