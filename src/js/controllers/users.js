@@ -15,7 +15,8 @@ const createUser = (req, res)=>{
         birthday,
         phoneNumber = null,
         gender = null, 
-        picture = null
+        picture = null,
+        labels = ''
     } = req.body
 
     //mandatory fields check:
@@ -26,6 +27,11 @@ const createUser = (req, res)=>{
     if (model.getUser('email',email)) {
         return res.status(409).json({ error: 'Email already in use' });
     }
+    // check usename address isnt taken 
+    if (model.getUser('userName',userName)) {
+        return res.status(409).json({ error: 'userName already in use' });
+    }
+
     // all looks good, make user json and send to models
     const newUser ={
         fullName,
@@ -35,7 +41,8 @@ const createUser = (req, res)=>{
         birthday,
         phoneNumber,
         gender,
-        picture
+        picture,
+        labels
     }
     model.addUser(newUser )
     return res.status(201).json({ message: 'User created', user: newUser });
@@ -50,6 +57,7 @@ const getUser = (req,res) =>{
     const { fullName, email, gender, picture } = user
     return res.status(200).json({ fullName, email, gender, picture })
 }
+
 //DEBUGGING-TO BE REMOVRD**************************************************************************************************
 const getAllUsers = (req, res) => {
   const users = model.getAllUsers()
