@@ -5,7 +5,7 @@ const controller = require('../controllers/users')
 router.route('/')
     .post(controller.createUser)
     //FOR DEBUGGING-  curl -X GET http://localhost:9000/api/users
-    //.get(controller.getAllUsers) // get all users
+    //.get(controller.getAllUsers) // get all users in DB
 
 router.route('/:id')
     .get(controller.getUser)
