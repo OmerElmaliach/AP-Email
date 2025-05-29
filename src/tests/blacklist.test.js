@@ -1,5 +1,5 @@
 // Quick test for blacklist model
-const { deleteFromBlacklist, getBlacklistedURLById, createBlacklistedURL } = require('./models/blacklist');
+const { deleteFromBlacklist, getBlacklistedURLById, createBlacklistedURL } = require('../js/models/blacklist.js');
 
 async function runTests() {
     const testId = 'http://example.com/test-url';
