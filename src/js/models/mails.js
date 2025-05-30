@@ -99,12 +99,12 @@ const deleteMail = (userId, mailId) => {
 
 
 /**
- * @param {string} userMail
+ * @param {string} userId
  * @param {string} query
  * @returns A mail which includes a specific string in one of its content.
  */
-const findMail = (userMail, query) => {
-    const mailLst = getUserMails(userMail);
+const findMail = (userId, query) => {
+    const mailLst = getUserMails(userId);
     var newLst = [];
     // Loop over all mails
     for (var i = 0; i < mailLst.length; i++) {

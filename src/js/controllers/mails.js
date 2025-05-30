@@ -39,8 +39,6 @@ exports.createMail = async (req, res) => {
         return res.status(404).json({ error : "Invalid input provided" });
     } else if (userDB == undefined) {
         return res.status(404).json({ error : "Invalid user id provided" });
-    } else if ((label != undefined) && Labels.getLabelById(label) == undefined) {
-        return res.status(404).json({ error : "Invalid label provided" });
     }
 
     if (subject == undefined)
@@ -48,7 +46,16 @@ exports.createMail = async (req, res) => {
     if (body == undefined)
         body = "";
     if (label == undefined)
-        label = "";
+        label = [""];
+
+    if (!Array.isArray(label)) {
+        return res.status(404).json({ error : "Invalid label format provided" });
+    } else {
+        for (let i = 0; i < label.length; i++) {
+            if (Labels.getLabelById(label[i]) == undefined)
+                return res.status(404).json({ error : "Invalid label provided" });
+        }
+    }
 
     // List to hold all the 'to' email's id's
     var toIds = [];
@@ -68,16 +75,16 @@ exports.createMail = async (req, res) => {
 
     try {
         // Check for a list of urls if they are blacklisted.
-        if (urlsSubject.length > 0) {
-            let urlsValid = await BlackList.checkURLs(urlsSubject);
-            if (!urlsValid) {
+        for (let i = 0; i < urlsSubject.length; i++) {
+            let urlsValid = await BlackList.getBlacklistedURLById(urlsSubject[i]);
+            if (urlsValid.endsWith("true")) {
                 return res.status(400).json({ error: "Invalid URL provided" });
             }
         }
     
-        if (urlsBody.length > 0) {
-            urlsValid = await BlackList.checkURLs(urlsBody);
-            if (!urlsValid) {
+        for (let i = 0; i < urlsBody.length; i++) {
+            let urlsValid = await BlackList.getBlacklistedURLById(urlsBody[i]);
+            if (urlsValid.endsWith("true")) {
                 return res.status(400).json({ error: "Invalid URL provided" });
             }
         }
@@ -129,8 +136,15 @@ exports.updateMail = (req, res) => {
     const userDB = Model.getUser("id", userId);
     if (userDB == undefined) {
         return res.status(404).json({ error : "Invalid user id provided" });
-    } else if ((label != undefined) && Labels.getLabelById(label) == undefined) {
-        return res.status(404).json({ error : "Invalid label provided" });
+    }
+
+    if (label != undefined && !Array.isArray(label)) {
+        return res.status(404).json({ error : "Invalid label format provided" });
+    } else if (label != undefined && Array.isArray(label)) {
+        for (let i = 0; i < label.length; i++) {
+            if (Labels.getLabelById(label[i]) == undefined)
+                return res.status(404).json({ error : "Invalid label provided" });
+        }
     }
 
     // updateMail returns true if mail was updated successfully, otherwise false.
@@ -181,5 +195,5 @@ exports.findMail = (req, res) => {
         return res.status(404).json({ error : "Invalid user id provided" });
     }
 
-    return res.json(Mails.findMail(userDB.email, query));
+    return res.json(Mails.findMail(userId, query));
 }
