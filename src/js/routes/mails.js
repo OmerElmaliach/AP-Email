@@ -3,7 +3,8 @@ const router = express.Router();
 const controller = require('../controllers/mails');
 
 router.route('/')
-    .get(controller.getMails)
+//g.c - changed from getMails to getUserMails to match controller function
+    .get(controller.getUserMails)
     .post(controller.createMail);
 
 router.route('/:id')

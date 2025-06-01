@@ -20,7 +20,7 @@
 const fs = require('fs');
 const path = require('path');
 const { exec, spawn } = require('child_process');
-const startClientScript = path.join(__dirname, '..', '..', 'start-client.sh');
+const clientScript = path.join(__dirname, '..', '..', 'client_socket.py');
 
 // Note: start-client.sh needs to be run separately with IP and port arguments
 // For now, we'll create a function that runs the client for each command
@@ -46,11 +46,10 @@ const startClientScript = path.join(__dirname, '..', '..', 'start-client.sh');
  */
 // Helper to send a command and get a response from the client process
 function sendCommand(command) {
-    return new Promise((resolve, reject) => {
-        // Start a new client process for each command
-        const clientProc = spawn('bash', [startClientScript, '127.0.0.1', '8091'], {
+    return new Promise((resolve, reject) => {        // Start a new Python client process for each command
+        const clientProc = spawn('python3', [clientScript, 'host.docker.internal', '8091'], {
             stdio: ['pipe', 'pipe', 'pipe'],
-            cwd: path.dirname(startClientScript)
+            cwd: path.dirname(clientScript)
         });
 
         let data = '';

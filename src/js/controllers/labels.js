@@ -11,6 +11,7 @@
  */
 
 const model = require('../models/labels')
+const usersModel = require('../models/users')
 
 /**
  * Creates a new label
@@ -49,9 +50,8 @@ const createLabel = (req, res)=>{
     //mandatory fields check
     if ( !id || !name || !userId || !color) {
         return res.status(400).json({ error: 'Missing mandatory field' });
-    }
-    // check userId exists
-    if (!model.getUser('id', userId)) {
+    }    // check userId exists
+    if (!usersModel.getUser('id', Number(userId))) {
         return res.status(404).json({ error: 'User not found' });
     }
     // check if label with same id already exists
