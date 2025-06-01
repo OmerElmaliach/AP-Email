@@ -15,12 +15,12 @@ const createUser = (req, res)=>{
         birthday,
         phoneNumber = null,
         gender = null, 
-        picture = null,
+        picture,
         labels = ''
     } = req.body
 
     //mandatory fields check:
-    if (!fullName || !email || !userName || !password || !birthday) {
+    if (!fullName || !email || !userName || !password || !birthday || !picture) {
         return res.status(400).json({ error: 'Missing mandatory field' });
     }
     // check email address isnt taken 
@@ -37,7 +37,6 @@ const createUser = (req, res)=>{
     if (passwordError) {
         return res.status(400).json({ error: passwordError });
     }
-
     function validatePassword(password) {
     if (password.length < 8) {
         return "Password must be at least 8 characters long.";
@@ -76,7 +75,7 @@ const createUser = (req, res)=>{
 }
 
 const getUser = (req,res) =>{
-    const id = Number(req.params.id)
+    const id = req.params.id
     const user = model.getUser('id', id)
     if (!user) {
         return res.status(404).json({error:  'User not found' })
