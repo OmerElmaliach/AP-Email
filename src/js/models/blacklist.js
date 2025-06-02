@@ -21,6 +21,7 @@ const fs = require('fs');
 const path = require('path');
 const { exec, spawn } = require('child_process');
 const clientScript = path.join(__dirname, '..', '..', 'client_socket.py');
+const net = require('net');
 
 // Note: start-client.sh needs to be run separately with IP and port arguments
 // For now, we'll create a function that runs the client for each command
@@ -44,36 +45,70 @@ const clientScript = path.join(__dirname, '..', '..', 'client_socket.py');
  *   .then(response => console.log('Server response:', response))
  *   .catch(error => console.error('Command failed:', error));
  */
-// Helper to send a command and get a response from the client process
+// Helper to send a command and get a response from the C++ server via Python client
 function sendCommand(command) {
-    return new Promise((resolve, reject) => {        // Start a new Python client process for each command
-        const clientProc = spawn('python3', [clientScript, 'host.docker.internal', '8091'], {
-            stdio: ['pipe', 'pipe', 'pipe'],
-            cwd: path.dirname(clientScript)
-        });
+    return new Promise((resolve, reject) => {
+        // Parse the command to understand what operation to perform
+        const parts = command.split(' ');
+        const action = parts[0];
+        let serverCommand;
+        const url = parts.slice(1).join(' ');        
+        switch (action) {
+            case 'POST':
+                serverCommand = `POST ${url}`;
+                break;
+            case 'GET':
+                serverCommand = `GET ${url}`;
+                break;
+            case 'DELETE':
+                serverCommand = `DELETE ${url}`;
+                break;
+            default:
+                return reject(new Error(`Unknown command: ${action}`));
+        }
 
-        let data = '';
-        let error = '';
-        
-        clientProc.stdout.on('data', (chunk) => {
-            data += chunk.toString();
-        });
-        
-        clientProc.stderr.on('data', (chunk) => {
-            error += chunk.toString();
-        });
-        
-        clientProc.on('close', (code) => {
-            if (code === 0 && data.trim()) {
-                resolve(data.trim());
-            } else {
-                reject(new Error(`Client process failed with code ${code}. Error: ${error}`));
+        console.log(`[BLACKLIST] Sending server command: ${serverCommand}`);
+
+        // Direct TCP connection to the C++ server
+        const client = new net.Socket();
+        let response = '';
+        let errorOccurred = false;        // Use the Docker container name as the hostname for inter-container communication
+        client.connect(8091, 'docker-server', () => {
+            client.write(serverCommand + '\n');
+        });client.on('data', (data) => {
+            response += data.toString();
+            // Process response immediately when data is received
+            response = response.trim();
+            console.log(`[BLACKLIST] Server response: ${response}`);
+            
+            // Close the connection and resolve the promise
+            client.end();
+            
+            if (errorOccurred) return;
+            
+            if (action === 'POST') {
+                resolve(`URL ${url} added to blacklist`);
+            } else if (action === 'GET') {
+                const isBlacklisted = response.includes('true') || response.includes('1') || response.toLowerCase().includes('yes');
+                resolve(`URL ${url} is blacklisted: ${isBlacklisted}`);
+            } else if (action === 'DELETE') {
+                resolve(`URL ${url} removed from blacklist: true`);
             }
         });
-        
-        // Send the command to the client
-        clientProc.stdin.write(command + '\n');
-        clientProc.stdin.end();
+        client.on('end', () => {
+            // Connection ended - this is now just for cleanup
+        });
+        client.on('error', (err) => {
+            errorOccurred = true;
+            console.error(`[BLACKLIST] TCP error: ${err.message}`);
+            reject(new Error(`TCP connection failed: ${err.message}`));
+        });
+        // Timeout in case server does not respond
+        client.setTimeout(10000, () => {
+            errorOccurred = true;
+            client.destroy();
+            reject(new Error('TCP connection timed out'));
+        });
     });
 }
 
