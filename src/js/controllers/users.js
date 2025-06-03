@@ -14,13 +14,13 @@ const createUser = (req, res)=>{
         password,
         birthday,
         phoneNumber = null,
-        gender = null, 
+        gender , 
         picture,
         labels = ''
     } = req.body
 
     //mandatory fields check:
-    if (!fullName || !email || !userName || !password || !birthday || !picture) {
+    if (!fullName || !email || !userName || !password || !birthday || !picture || !gender) {
         return res.status(400).json({ error: 'Missing mandatory field' });
     }
     // check email address isnt taken 
