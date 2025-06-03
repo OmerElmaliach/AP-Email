@@ -292,6 +292,12 @@ curl -X DELETE http://localhost:9000/api/labels/label_001
 
 Below is an example illustrating how the project runs:
 
+![WhatsApp Image 2025-06-03 at 23 15 30](https://github.com/user-attachments/assets/33eb4a20-64df-432c-9d89-38343cbb73e5)
+
+![WhatsApp Image 2025-06-03 at 23 15 31](https://github.com/user-attachments/assets/5e942572-a152-441a-8f07-7e968391a45a)
+
+![WhatsApp Image 2025-06-03 at 23 15 31 (1)](https://github.com/user-attachments/assets/dca2468b-61a6-4482-8d28-a4181ee101ba)
+
 
 ## Takeaways from task 1 relating to SOLID:
 In general, lack of documentation harmed the ability to work and understand code which was written by other teammates in part Regarding the following questions:
