@@ -138,6 +138,155 @@ The system follows the structure outlined in the provided UML diagrams:
    chmod +x start-js-server.sh
    ./start-js-server.sh
    ```
+## Example Commands:
+
+#Get user's inbox:
+
+curl -i -X GET localhost:9000/api/mails/ \
+-H "Content-Type: application/json" \
+-H "userId: 1"
+
+
+#Create and send an email:
+
+curl -i -X POST localhost:9000/api/mails/ \
+-H "Content-Type: application/json" \
+-H "userId: 1" \
+-d '{"to" : ["email@example.com"], "subject" : "example subject", "body" : "example body", "label" : ["1"]}'
+
+
+#Search for an email by id:
+
+curl -i -X GET localhost:9000/api/mails/e0 \
+-H "Content-Type: application/json" \
+-H "userId: 1"
+
+
+#Update mail's content:
+
+curl -i -X PATCH localhost:9000/api/mails/e0 \
+-H "Content-Type: application/json" \
+-H "userId: 1" \
+-d '{"subject" : "new subject", "body" : "new body", "label" : ["1"]}' // Optional fields
+
+
+#Delete a mail by id:
+
+curl -i -X DELETE localhost:9000/api/mails/e0 \
+-H "Content-Type: application/json" \
+-H "userId: 1"
+
+
+#Find a mail by query search:
+
+curl -i -X GET localhost:9000/api/mails/search/example_query \
+-H "Content-Type: application/json" \
+-H "userId: 1"
+
+#weakpassword- should reject
+curl -X POST http://localhost:9000/api/users   -H "Content-Type: application/json"   -d '{
+    "fullName": "gavrielcohen",
+    "email": "gabi@example.com",
+    "userName": "gabi",
+    "password": "'weakpassword",
+    "birthday": "1995-06-01",
+    "phoneNumber": "1234567890",
+    "gender": "M",
+    "picture": "https://example.com/avatar.jpg",
+}'
+
+#strong password accept
+curl -X POST http://localhost:9000/api/users   -H "Content-Type: application/json"   -d '{
+    "fullName": "gavrielcohen",
+    "email": "gabi@example.com",
+    "userName": "gabi",
+    "password": "'GOODpassword1",
+    "birthday": "1995-06-01",
+    "phoneNumber": "1234567890",
+    "gender": "M",
+    "picture": "https://example.com/avatar.jpg",
+}'
+#new user trying same email- should reject
+curl -X POST http://localhost:9000/api/users   -H "Content-Type: application/json"   -d '{
+    "fullName": "OmerElmaliach",
+    "email": "gabi@example.com",
+    "userName": "omer DaMan",
+    "password": "'GOODpassword1",
+    "birthday": "1995-06-01",
+    "phoneNumber": "125555590",
+    "gender": "M",
+    "picture": "https://example.com/avatar.jpg",
+}'
+
+#valid email choice- accept
+curl -X POST http://localhost:9000/api/users   -H "Content-Type: application/json"   -d '{
+    "fullName": "Omer Elmaliach",
+    "email": "OmerHmelech@example.com",
+    "userName": "omerDaMan",
+    "password": "'AMAZINGpassword1",
+    "birthday": "1997-02-22",
+    "phoneNumber": "1234567890",
+    "gender": "M",
+    "picture": "https://example.com/avatar.jpg",
+}'
+
+#now lets get a specific users
+curl -X GET http://localhost:9000/api/users/1   -H "Content-Type: application/json" 
+
+#check if registered - token 
+#a non user
+curl -X POST http://localhost:9000/api/tokens \
+  -H "Content-Type: application/json" \
+  -d '{
+    "userName": "etl",
+    "password": "imInvincibleYourALoony"
+  }'
+#a user
+curl -X POST http://localhost:9000/api/tokens \
+  -H "Content-Type: application/json" \
+  -d '{
+    "userName": "omerDaMan",
+    "password": "AMAZINGpassword1"
+  }'
+
+#Add URL to blacklist
+curl -X POST http://localhost:9000/api/blacklist \
+  -H "Content-Type: application/json" \
+  -d '{"id": "http://malicious-site.com"}'
+
+#Check if URL is blacklisted
+curl -X GET http://localhost:9000/api/blacklist/http://suspicious-site.com
+
+#Remove URL from blacklist
+curl -X DELETE http://localhost:9000/api/blacklist/http://malicious-site.com
+
+#Create a new label
+curl -X POST http://localhost:9000/api/labels \
+  -H "Content-Type: application/json" \
+  -d '{
+    "id": "label_001",
+    "name": "Important",
+    "userId": "user_123",
+    "color": "#FF5733"
+  }'
+
+#Get all labels for a user
+curl -X GET "http://localhost:9000/api/labels?userId=user_123"
+
+#Get a specific label by ID
+curl -X GET http://localhost:9000/api/labels/label_001
+
+#Update a label
+curl -X PATCH http://localhost:9000/api/labels/label_001 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Very Important",
+    "color": "#FF0000"
+  }'
+
+#Delete a label
+curl -X DELETE http://localhost:9000/api/labels/label_001
+
 ## Example Run:
 
 
