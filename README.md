@@ -184,70 +184,83 @@ curl -i -X GET localhost:9000/api/mails/search/example_query \
 -H "userId: 1"
 
 #weakpassword- should reject
-curl -X POST http://localhost:9000/api/users   -H "Content-Type: application/json"   -d '{
-    "fullName": "gavrielcohen",
+
+curl -i -X POST http://localhost:9000/api/users   -H "Content-Type: application/json"   -d '{
+    "fullName": "gavriel cohen",
     "email": "gabi@example.com",
     "userName": "gabi",
-    "password": "'weakpassword",
+    "password": "weakpassword",
     "birthday": "1995-06-01",
     "phoneNumber": "1234567890",
     "gender": "M",
-    "picture": "https://example.com/avatar.jpg",
+    "picture": "https://example.com/avatar.jpg"
 }'
 
 #strong password accept
-curl -X POST http://localhost:9000/api/users   -H "Content-Type: application/json"   -d '{
-    "fullName": "gavrielcohen",
+
+curl -i -X POST http://localhost:9000/api/users   -H "Content-Type: application/json"   -d '{
+    "fullName": "gavriel cohen",
     "email": "gabi@example.com",
     "userName": "gabi",
-    "password": "'GOODpassword1",
+    "password": "GOODpassword1",
     "birthday": "1995-06-01",
     "phoneNumber": "1234567890",
     "gender": "M",
-    "picture": "https://example.com/avatar.jpg",
+    "picture": "https://example.com/avatar.jpg"
 }'
-#new user trying same email- should reject
-curl -X POST http://localhost:9000/api/users   -H "Content-Type: application/json"   -d '{
-    "fullName": "OmerElmaliach",
+
+# new user trying same email
+
+curl -i -X POST http://localhost:9000/api/users   -H "Content-Type: application/json"   -d '{
+    "fullName": "Omer ",
     "email": "gabi@example.com",
-    "userName": "omer DaMan",
-    "password": "'GOODpassword1",
+    "userName": "gabi",
+    "password": "GOODpassword1",
     "birthday": "1995-06-01",
-    "phoneNumber": "125555590",
+    "phoneNumber": "1234567890",
     "gender": "M",
-    "picture": "https://example.com/avatar.jpg",
+    "picture": "https://example.com/avatar.jpg"
 }'
 
 #valid email choice- accept
-curl -X POST http://localhost:9000/api/users   -H "Content-Type: application/json"   -d '{
+
+curl -i -X POST http://localhost:9000/api/users   -H "Content-Type: application/json"   -d '{
     "fullName": "Omer Elmaliach",
     "email": "OmerHmelech@example.com",
     "userName": "omerDaMan",
-    "password": "'AMAZINGpassword1",
+    "password": "AMAZINGpassword1",
     "birthday": "1997-02-22",
     "phoneNumber": "1234567890",
     "gender": "M",
-    "picture": "https://example.com/avatar.jpg",
-}'
+    "picture": "https://example.com/avatar.jpg"
+}' 
+
+
 
 #now lets get a specific users
-curl -X GET http://localhost:9000/api/users/1   -H "Content-Type: application/json" 
 
-#check if registered - token 
-#a non user
-curl -X POST http://localhost:9000/api/tokens \
+curl -i -X GET http://localhost:9000/api/users/1   -H "Content-Type: application/json"  \
+  -H "userId: 1"
+
+#check if registered - tokens
+
+# a non user
+
+curl -i -X POST http://localhost:9000/api/tokens \
   -H "Content-Type: application/json" \
+  -H "userId: 1"\
   -d '{
     "userName": "etl",
     "password": "imInvincibleYourALoony"
   }'
-#a user
-curl -X POST http://localhost:9000/api/tokens \
+# a user
+
+curl -i -X POST http://localhost:9000/api/tokens \
   -H "Content-Type: application/json" \
+  -H "userId: 1"\
   -d '{
     "userName": "omerDaMan",
     "password": "AMAZINGpassword1"
-  }'
 
 #Add URL to blacklist
 curl -X POST http://localhost:9000/api/blacklist \
