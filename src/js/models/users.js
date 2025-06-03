@@ -6,7 +6,8 @@ const users_DB = []
 let currentId = 1;
 //add user to data base- in our case the array and set its id 
 const addUser = (user) =>{
-    user.id = currentId++
+    user.id = currentId.toString()
+    currentId++
     users_DB.push(user)
 }
 
