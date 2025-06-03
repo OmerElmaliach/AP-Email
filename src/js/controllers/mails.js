@@ -32,7 +32,8 @@ exports.getUserMails = (req, res) => {
  */
 exports.createMail = async (req, res) => {
     const userId = req.headers['userid'];
-    const { to, subject, body, label } = req.body;
+    let { to, subject, body, label } = req.body;
+
     const userDB = Model.getUser("id", userId);
 
     if (to == undefined || typeof to == "string" || to.length == 0) {
@@ -41,13 +42,9 @@ exports.createMail = async (req, res) => {
         return res.status(404).json({ error : "Invalid user id provided" });
     }
 
-    if (subject == undefined)
-        subject = "";
-    if (body == undefined)
-        body = "";
     if (label == undefined)
-        label = [""];
-
+        label = [];
+        
     if (!Array.isArray(label)) {
         return res.status(404).json({ error : "Invalid label format provided" });
     } else {
@@ -56,7 +53,7 @@ exports.createMail = async (req, res) => {
                 return res.status(404).json({ error : "Invalid label provided" });
         }
     }
-
+    
     // List to hold all the 'to' email's id's
     var toIds = [];
 

@@ -1,5 +1,6 @@
 
 const model = require('../models/users')
+const labelsModel = require('../models/labels')
 
 
 
@@ -69,8 +70,18 @@ const createUser = (req, res)=>{
         gender,
         picture,
         labels
-    }
+    }   
     model.addUser(newUser )
+    
+    // g.c - Create default label for the new user with null name and color, using idGenerator for ID
+    const defaultLabel = {
+        id: labelsModel.idGenerator(),
+        name: null,
+        userId: newUser.id.toString(),
+        color: null
+    }
+    labelsModel.createLabel(defaultLabel)
+    
     return res.status(201).json({ message: 'User created', user: newUser });
 }
 
