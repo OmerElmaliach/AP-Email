@@ -16,12 +16,12 @@ const createUser = (req, res)=>{
         birthday,
         phoneNumber = null,
         gender = null, 
-        picture = null,
+        picture,
         labels = ''
     } = req.body
 
     //mandatory fields check:
-    if (!fullName || !email || !userName || !password || !birthday) {
+    if (!fullName || !email || !userName || !password || !birthday || !picture) {
         return res.status(400).json({ error: 'Missing mandatory field' });
     }
     // check email address isnt taken 
@@ -33,6 +33,32 @@ const createUser = (req, res)=>{
     if (model.getUser('userName',userName)) {
         return res.status(409).json({ error: 'userName already in use' });
     }
+    //check password is valid- most be 8 chars and most include number and letters , with atleast one capital 
+    const passwordError = validatePassword(password);
+    if (passwordError) {
+        return res.status(400).json({ error: passwordError });
+    }
+    function validatePassword(password) {
+    if (password.length < 8) {
+        return "Password must be at least 8 characters long.";
+    }
+    if (!/[A-Z]/.test(password)) {
+        return "Password must contain at least one uppercase letter.";
+    }
+    if (!/[a-z]/.test(password)) {
+        return "Password must contain at least one lowercase letter.";
+    }
+    if (!/\d/.test(password)) {
+        return "Password must contain at least one number.";
+    }
+    //  only allow letters and digits
+    if (!/^[a-zA-Z\d]+$/.test(password)) {
+        return "Password can only contain letters and numbers.";
+    }
+    return null; // is valid
+}
+   
+
     // all looks good, make user json and send to models
     const newUser ={
         fullName,
@@ -60,7 +86,7 @@ const createUser = (req, res)=>{
 }
 
 const getUser = (req,res) =>{
-    const id = Number(req.params.id)
+    const id = req.params.id
     const user = model.getUser('id', id)
     if (!user) {
         return res.status(404).json({error:  'User not found' })

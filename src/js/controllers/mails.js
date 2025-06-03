@@ -32,8 +32,8 @@ exports.getUserMails = (req, res) => {
  */
 exports.createMail = async (req, res) => {
     const userId = req.headers['userid'];
-    //g.c - changed from const to let becaause error was thrown (tried to change it)
     let { to, subject, body, label } = req.body;
+
     const userDB = Model.getUser("id", userId);
 
     if (to == undefined || typeof to == "string" || to.length == 0) {
@@ -85,9 +85,9 @@ exports.createMail = async (req, res) => {
                 return res.status(400).json({ error: "Invalid URL provided" });
             }
         }
-        // g.c - changed error to stringify it (from error.message to err.toString())
-          } catch (err) {
-        return res.status(404).json({ error: err.message || err.toString() });
+        
+    } catch (err) {
+        return res.status(404).json({ error: err });
     }
 
     Mails.createMail(userId, userDB.email, to, toIds, subject, body, label)
@@ -126,7 +126,7 @@ exports.getMailById = (req, res) => {
  * @param {json} res - Response.
  * @returns {number} Status code indicating result.
  */
-exports.updateMail = (req, res) => {
+exports.updateMail = async (req, res) => {
     const id = req.params.id;
     const userId = req.headers['userid'];
     const { subject, body, label } = req.body;
@@ -142,6 +142,30 @@ exports.updateMail = (req, res) => {
             if (Labels.getLabelById(label[i]) == undefined)
                 return res.status(404).json({ error : "Invalid label provided" });
         }
+    }
+
+    // Save urls appearing in the mail's subject or body.
+    let urlsSubject = subject.match(urlRegex) || [];
+    let urlsBody = body.match(urlRegex) || [];
+
+    try {
+        // Check for a list of urls if they are blacklisted.
+        for (let i = 0; i < urlsSubject.length; i++) {
+            let urlsValid = await BlackList.getBlacklistedURLById(urlsSubject[i]);
+            if (urlsValid.endsWith("true")) {
+                return res.status(400).json({ error: "Invalid URL provided" });
+            }
+        }
+    
+        for (let i = 0; i < urlsBody.length; i++) {
+            let urlsValid = await BlackList.getBlacklistedURLById(urlsBody[i]);
+            if (urlsValid.endsWith("true")) {
+                return res.status(400).json({ error: "Invalid URL provided" });
+            }
+        }
+        
+    } catch (err) {
+        return res.status(404).json({ error: err });
     }
 
     // updateMail returns true if mail was updated successfully, otherwise false.
