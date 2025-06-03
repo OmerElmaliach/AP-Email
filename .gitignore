@@ -34,3 +34,4 @@ node_modules
 *.exe
 *.out
 *.app
+.vscode/
