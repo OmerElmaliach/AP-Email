@@ -34,7 +34,8 @@ const createMail = (id, from, to, toIds, subject, body, label) => {
     const timestamp = date.toLocaleString()
     mails.push({"id" : id, "mail_id" : "e".concat(idCounter.toString()), "from" : from, "to" : to, "subject" : subject, "body" : body, date_sent : timestamp, "label" : label});
     for (var i = 0; i < toIds.length; i++) {
-        mails.push({"id" : toIds[i], "mail_id" : "e".concat(idCounter.toString()), "from" : from, "to" : to, "subject" : subject, "body" : body, date_sent : timestamp, "label" : ""});
+        if (toIds[i] != id)
+            mails.push({"id" : toIds[i], "mail_id" : "e".concat(idCounter.toString()), "from" : from, "to" : to, "subject" : subject, "body" : body, date_sent : timestamp, "label" : ""});
     }
     idCounter++;
 }
