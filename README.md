@@ -9,80 +9,139 @@ the flow process of our work and SCRUM meeting summaries can all be found under 
 
 ## Overview
 
-This project implements a URL filtering system using a Bloom filter. The system allows users to add and remove URLs to a blacklist and check if a given URL is potentially blacklisted. It leverages the speed and memory efficiency of Bloom filters to quickly determine potential membership in the blacklist. The communication is done through a TCP protocol server/client implementation.
+This project implements a RESTful EMAIL server, with a C++ blacklisting server which uses bloom filter logic. The server allows user management, mail creation/retrieval, labeling, and real-time URL validation against the blacklist server.
 
 ## Architecture
 
 The system follows the structure outlined in the provided UML diagrams:
 
-![UML diagram](https://github.com/user-attachments/assets/1245ecc6-7f5c-4943-bf17-f817982fa043)
+![uml-diagram](https://github.com/user-attachments/assets/14cd9162-7d54-4aee-94e0-6461772b8234)
 
-![UML part 2](https://github.com/user-attachments/assets/7f11e4fe-d166-46b0-bbdb-5e4d2a9c9387)
+**C++ Blacklist Server Components:**
+* **main()**: Entry point that initializes the server with port and Bloom filter parameters
+* **Server**: TCP server that manages client connections, handles socket communication, and delegates processing to the App layer
+* **App**: Application coordinator that creates and manages the CLI interface for each client connection
+* **CLI**: Command-line interface that processes incoming commands (POST/GET/DELETE) and manages command registration
+* **BloomFilter**: Core probabilistic data structure using multiple hash functions for efficient URL membership testing
+* **MyHash**: Hash function provider supporting multiple hash algorithms for the Bloom filter
+* **bloomFilterStorage**: Specialized storage manager handling persistence of Bloom filter data, URLs, and configuration
+* **fileStorage**: File-based storage implementation providing save/load operations for persistent data
+* **IStorage**: Storage interface defining standard operations (save, load, exists, remove)
+* **ICommand Interface & Commands**: Command pattern implementation with AddURLCommand, CheckURLCommand, and DeleteURLCommand for modular operation handling
 
-
-* **main()**: Entry point, initializes server.
-* **App**: Manages the application flow and uses the `CLI`.
-* **CLI**: Provides the command-line interface, allowing users to `addURL` and `checkURL`. It utilizes the `BloomFilter` and `BloomFilterStorage`. Works through the server's connection.
-* **BloomFilter**: The core probabilistic data structure. It uses `myHash` for hashing URLs and provides `insert` and `query` operations.
-* **myHash**: Provides the hashing function(s) needed by the `BloomFilter`.
-* **BloomFilterStorage**: Handles saving and loading the Bloom filter state to persistent storage (extending `FileStorage`).
-* **FileStorage**: Implements the `IStorage` interface for file-based persistence.
-* **IStorage**: Interface defining `save`, `load` etc. operations.
-* **ICommand**: Interface for command pattern implementation (e.g., `AddURL`, `CheckURL`).
-* **AddURL / CheckURL / DeleteURL**: Concrete command classes implementing `execute` based on the `ICommand` interface.
-* **Server** - handles the connection with the client, data storage and app running.
-* **client** - runs the client side whcih passes commands through the socket.
+**JavaScript Email Server Components:**
+* **JSApp**: Express.js application server running on port 9000, handling HTTP requests and routing
+* **Routes Layer**: RESTful API endpoints for mails, blacklist, users, labels, and authentication tokens
+* **Controllers Layer**: Business logic handlers that process HTTP requests and coordinate between routes and models
+* **Models Layer**: Data access layer managing email operations, user management, and blacklist communication
+* **BlacklistModel**: Specialized component that communicates with the C++ server via TCP sockets for URL validation
 
 ## How it Works
 
-1.  **Initialization**: On startup, the server loads any previously saved Bloom filter state from storage and waits for a connection with an available client. The port, Bloom filter's size and the hash functions used are configured initially.
-2.  **Adding URLs (Blacklisting)**: When a user adds a URL via the `addURL` command, the URL is hashed multiple times using the configured hash functions. The bits in the Bloom filter array corresponding to the hash results are set to 1[cite: 20, 23]. The updated filter state is saved.
-3.  **Checking URLs**: When a user checks a URL via the `checkURL` command, the URL is hashed using the same hash functions. The system checks if *all* corresponding bits in the Bloom filter array are set to 1.
-    * If any corresponding bit is 0, the URL is definitively *not* blacklisted.
-    * If all corresponding bits are 1, the URL *might* be blacklisted. Bloom filters can produce false positives (indicating a URL is blacklisted when it isn't) but never false negatives. These are checked manually through the URL storage in the bloomFilterStorage.
-4. **Deleting URLs**: When a user wants to remove a URL from the storage, he uses `deleteURL` command. This removes the data from the storage, but does not change the bits in the filter.
+### System Initialization
+1. **Blacklist Server Startup**: The C++ server initializes on a specified port (default 8091) with Bloom filter parameters (size, hash functions, seeds)
+2. **Data Persistence Loading**: Server loads previously saved Bloom filter state, URL storage, and configuration from persistent storage
+3. **Email Server Startup**: JavaScript Express server starts on port 9000, establishing RESTful API endpoints
+4. **Docker Network**: Both services connect through a Docker bridge network enabling inter-container communication
+
+### Email Creation & Validation Process
+1. **Email Composition**: User submits email via POST /api/mails endpoint with recipients, subject, body, and optional labels
+2. **URL Extraction**: System uses regex patterns to extract all URLs from email subject and body content
+3. **Real-time Blacklist Validation**: For each extracted URL:
+   - JavaScript BlacklistModel establishes TCP connection to C++ server (port 8091)
+   - Sends GET command with URL to blacklist server
+   - C++ server processes command through CLI → Command pattern → BloomFilter query
+   - Returns validation result via TCP response
+4. **Email Blocking/Approval**: If any URL is blacklisted, email creation fails with error; otherwise, email is processed and sent
+
+### Blacklist Management
+1. **Adding URLs**: POST /api/blacklist endpoint → TCP POST command → Bloom filter insertion + storage persistence
+2. **Checking URLs**: GET /api/blacklist/:url endpoint → TCP GET command → Bloom filter query + storage verification
+3. **Removing URLs**: DELETE /api/blacklist/:url endpoint → TCP DELETE command → Storage removal (Bloom filter bits remain set)
+
+### Bloom Filter Logic
+- **Insertion**: URLs are hashed using multiple hash functions, corresponding bits set to 1 in filter array
+- **Query**: URL hashed with same functions, all corresponding bits checked:
+  - If any bit is 0: URL definitely NOT blacklisted
+  - If all bits are 1: URL MIGHT be blacklisted (verified against storage for accuracy)
+- **False Positives**: Possible but rare; manual storage check provides definitive answer
+- **False Negatives**: Impossible due to Bloom filter mathematical properties
 
 ## Setup & Running
 
 **Prerequisites:** Docker must be installed and running.
+### Method 1: Using Docker Compose (Recommended)
 
-**Using script:**
 
-If you have the `start-server.sh` and `start-client.sh` scripts, you can run them directly:
+1. **Run the Complete System:**
+   ```bash
+   docker-compose up --build
+   ```
+   
+2. **Access the Services:**
+   - Email API: `http://localhost:9000/api/`
+   - Blacklist Server: TCP connection on `localhost:8091`
 
-```bash
-chmod +x start-server.sh
-./start-server.sh
+3. **Stop the System:**
+   ```bash
+   docker-compose down
+   ```
 
-*In a separate window:*
+### Method 2: Manual Docker Setup
 
-chmod +x start-client.sh
-./start-client.sh
-```
-**Alternative: using a docker image directly:**
-1.  **Build the Docker Image:**
-    Open a terminal in the project's root directory (where `DockerMain` is located) and run:
-    ```bash
-    docker build -f config/DockerServer -t docker-server .
-    docker build -f config/DockerClient -t docker-client .
-    ```
+1. **Build Docker Images:**
+   ```bash
+   # Navigate to src directory
+   cd src
+   
+   # Build blacklist server
+   docker build -f config/DockerServer -t docker-server .
+   
+   # Build JavaScript server
+   docker build -f config/DockerJs -t docker-js .
+   ```
 
-2.  **Run the Application:**
-    ```bash
-    docker run -it --network=host -v "Ap-Email/data:/Ap_Email/data" docker-server {PORT} {BLOOM FILTER INPUT (example 8 2 1)}
-    docker run -it --network=host docker-client {IP} {PORT}
-    ```
-    * The `-it` flags allow you to interact with the application (provide input).
-    * The `--network=host` flag allows to access local host outside the docker.
-    * The application expects commands (`POST [URL]` to add, `GET [URL]` to check and `DELETE [URL]` to delete).
+2. **Create Docker Network:**
+   ```bash
+   docker network create ap-email-net
+   ```
 
+3. **Run Blacklist Server:**
+   ```bash
+   # Create data directory for persistence
+   mkdir -p ../data
+   
+   # Run blacklist server with Bloom filter settings: port=8091, size=32, hash_functions=2, seed=5
+   docker run -d --name docker-server --network ap-email-net \
+     -p 8091:8091 -v "$(pwd)/../data:/Ap_Email/data" \
+     docker-server 8091 32 2 5
+   ```
+
+4. **Run JavaScript Email Server:**
+   ```bash
+   docker run -d --name docker-js --network ap-email-net \
+     -p 9000:9000 docker-js
+   ```
+
+### Method 3: Using Provided Scripts
+
+1. **Start Blacklist Server:**
+   ```bash
+   cd src
+   chmod +x start-server.sh
+   ./start-server.sh
+   ```
+
+2. **Start JavaScript Server (in separate terminal):**
+   ```bash
+   cd src
+   chmod +x start-js-server.sh
+   ./start-js-server.sh
+   ```
 ## Example Run:
 
 
-Below is an example illustrating how the Bloom filter operates:
-
-
-![Example](https://github.com/user-attachments/assets/ee2add73-5fee-4d03-8d21-4988a0df9f2b)
+Below is an example illustrating how the project runs:
 
 
 ## Takeaways from task 1 relating to SOLID:
