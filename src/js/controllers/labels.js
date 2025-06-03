@@ -45,12 +45,10 @@ const createLabel = (req, res)=>{
     name = null,
     userId,
     color = null,
-    } = req.body
-
-    //mandatory fields check
-    if ( !id || !name || !userId || !color) {
+    } = req.body    //mandatory fields check - only id and userId are truly required
+    if ( !id || !userId) {
         return res.status(400).json({ error: 'Missing mandatory field' });
-    }    // check userId exists
+    }// check userId exists
     if (!usersModel.getUser('id', Number(userId))) {
         return res.status(404).json({ error: 'User not found' });
     }

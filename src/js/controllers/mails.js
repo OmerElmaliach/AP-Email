@@ -42,28 +42,28 @@ exports.createMail = async (req, res) => {
         return res.status(404).json({ error : "Invalid input provided" });
     } else if (userDB == undefined) {
         return res.status(404).json({ error : "Invalid user id provided" });
-    }    if (subject == undefined)
-        subject = "";
-    if (body == undefined)
-        body = "";    if (label == undefined || label.length === 0 || (label.length === 1 && label[0] === "")) {
-        // Use default label for the user
-        const defaultLabel = Labels.getDefaultLabelForUser(userId);
-        if (defaultLabel) {
-            label = [defaultLabel.id];
-        } else {
-            return res.status(404).json({ error: "No default label found for user" });
-        }
-    }
+    }    
+    if (label == undefined)
+        label = [];
 
     if (!Array.isArray(label)) {
-        return res.status(404).json({ error : "Invalid label format provided" });
+        return res.status(404).json({ error: "Invalid label format provided" });
     } else {
-        for (let i = 0; i < label.length; i++) {
-            if (Labels.getLabelById(label[i]) == undefined)
-                return res.status(404).json({ error : "Invalid label provided" });
+        if (label.length == 0) {
+            const defaultLabel = Labels.getDefaultLabelForUser(userId);
+            if (defaultLabel) {
+                label = [defaultLabel.id];
+            } else {
+                return res.status(404).json({ error: "No default label found for user" });
+            }
+        } else {
+            for (let i = 0; i < label.length; i++) {
+                if (Labels.getLabelById(label[i]) == undefined)
+                    console.log("Label not found: " + label[i]);
+                    return res.status(404).json({ error: "Invalid label provided" });
+            }
         }
     }
-
     // List to hold all the 'to' email's id's
     var toIds = [];
 
