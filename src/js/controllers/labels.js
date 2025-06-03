@@ -42,15 +42,13 @@ const usersModel = require('../models/users')
 const createLabel = (req, res)=>{
     const  { 
     id,
-    name,
+    name = null,
     userId,
-    color,        
-    } = req.body
-
-    //mandatory fields check
-    if ( !id || !name || !userId || !color) {
+    color = null,
+    } = req.body    //mandatory fields check - only id and userId are truly required
+    if ( !id || !userId) {
         return res.status(400).json({ error: 'Missing mandatory field' });
-    }    // check userId exists
+    }// check userId exists
     if (!usersModel.getUser('id', Number(userId))) {
         return res.status(404).json({ error: 'User not found' });
     }
@@ -65,7 +63,7 @@ const createLabel = (req, res)=>{
         name,
         color
     }
-    model.addLabel(newLabel)
+    model.createLabel(newLabel)
     return res.status(201).json({ message: 'Label created', label: newLabel });
 }
 

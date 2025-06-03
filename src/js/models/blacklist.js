@@ -17,9 +17,7 @@
 
 // This file defines the model for managing blacklisted URLs in the application.
 
-const fs = require('fs');
 const path = require('path');
-const { exec, spawn } = require('child_process');
 const clientScript = path.join(__dirname, '..', '..', 'client_socket.py');
 const net = require('net');
 
@@ -67,7 +65,6 @@ function sendCommand(command) {
                 return reject(new Error(`Unknown command: ${action}`));
         }
 
-        console.log(`[BLACKLIST] Sending server command: ${serverCommand}`);
 
         // Direct TCP connection to the C++ server
         const client = new net.Socket();
@@ -79,7 +76,6 @@ function sendCommand(command) {
             response += data.toString();
             // Process response immediately when data is received
             response = response.trim();
-            console.log(`[BLACKLIST] Server response: ${response}`);
             
             // Close the connection and resolve the promise
             client.end();
@@ -100,7 +96,6 @@ function sendCommand(command) {
         });
         client.on('error', (err) => {
             errorOccurred = true;
-            console.error(`[BLACKLIST] TCP error: ${err.message}`);
             reject(new Error(`TCP connection failed: ${err.message}`));
         });
         // Timeout in case server does not respond
