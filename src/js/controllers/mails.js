@@ -12,8 +12,7 @@ const urlRegex = /(?<![a-zA-Z0-9])((https?:\/\/)?(www\.)?([a-zA-Z0-9-]+\.)+[a-zA
  * @returns {json} Fifty Mails in json structure.
  */
 exports.getUserMails = (req, res) => {
-    //g.c - added Number conversion to userId
-    const userId = Number(req.headers['userid']);
+    const userId = req.headers['userid'];
     // Receive json containing information of a given user.
     const userDB = Model.getUser("id", userId);
     if (userDB == undefined) {
@@ -32,8 +31,7 @@ exports.getUserMails = (req, res) => {
  * @returns {number} Status code indicating result.
  */
 exports.createMail = async (req, res) => {
-    //g.c - added Number conversion to userId
-    const userId = Number(req.headers['userid']);
+    const userId = req.headers['userid'];
     //g.c - changed from const to let becaause error was thrown (tried to change it)
     let { to, subject, body, label } = req.body;
     const userDB = Model.getUser("id", userId);
@@ -42,28 +40,20 @@ exports.createMail = async (req, res) => {
         return res.status(404).json({ error : "Invalid input provided" });
     } else if (userDB == undefined) {
         return res.status(404).json({ error : "Invalid user id provided" });
-    }    
+    }
+
     if (label == undefined)
         label = [];
-
+        
     if (!Array.isArray(label)) {
-        return res.status(404).json({ error: "Invalid label format provided" });
+        return res.status(404).json({ error : "Invalid label format provided" });
     } else {
-        if (label.length == 0) {
-            const defaultLabel = Labels.getDefaultLabelForUser(userId);
-            if (defaultLabel) {
-                label = [defaultLabel.id];
-            } else {
-                return res.status(404).json({ error: "No default label found for user" });
-            }
-        } else {
-            for (let i = 0; i < label.length; i++) {
-                if (Labels.getLabelById(label[i]) == undefined)
-                    console.log("Label not found: " + label[i]);
-                    return res.status(404).json({ error: "Invalid label provided" });
-            }
+        for (let i = 0; i < label.length; i++) {
+            if (Labels.getLabelById(label[i]) == undefined)
+                return res.status(404).json({ error : "Invalid label provided" });
         }
     }
+    
     // List to hold all the 'to' email's id's
     var toIds = [];
 
@@ -114,8 +104,7 @@ exports.createMail = async (req, res) => {
  */
 exports.getMailById = (req, res) => {
     const id = req.params.id;
-    //g.c - added Number conversion to userId
-    const userId = Number(req.headers['userid']);
+    const userId = req.headers['userid'];
     const userDB = Model.getUser("id", userId);
     if (userDB == undefined) {
         return res.status(404).json({ error : "Invalid user id provided" });
@@ -139,8 +128,7 @@ exports.getMailById = (req, res) => {
  */
 exports.updateMail = (req, res) => {
     const id = req.params.id;
-    //g.c - added Number conversion to userId
-    const userId = Number(req.headers['userid']);
+    const userId = req.headers['userid'];
     const { subject, body, label } = req.body;
     const userDB = Model.getUser("id", userId);
     if (userDB == undefined) {
@@ -175,8 +163,7 @@ exports.updateMail = (req, res) => {
  */
 exports.deleteMail = (req, res) => {
     const id = req.params.id;
-    //g.c - added Number conversion to userId
-    const userId = Number(req.headers['userid']);
+    const userId = req.headers['userid'];
     const userDB = Model.getUser("id", userId);
     if (userDB == undefined) {
         return res.status(404).json({ error : "Invalid user id provided" });
@@ -199,8 +186,7 @@ exports.deleteMail = (req, res) => {
  */
 exports.findMail = (req, res) => {
     const query = req.params.query;
-    //g.c - added Number conversion to userId
-    const userId = Number(req.headers['userid']);
+    const userId = req.headers['userid'];
     const userDB = Model.getUser("id", userId);
     if (userDB == undefined) {
         return res.status(404).json({ error : "Invalid user id provided" });
