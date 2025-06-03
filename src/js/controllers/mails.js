@@ -42,14 +42,18 @@ exports.createMail = async (req, res) => {
         return res.status(404).json({ error : "Invalid input provided" });
     } else if (userDB == undefined) {
         return res.status(404).json({ error : "Invalid user id provided" });
-    }
-
-    if (subject == undefined)
+    }    if (subject == undefined)
         subject = "";
     if (body == undefined)
-        body = "";
-    if (label == undefined)
-        label = [""];
+        body = "";    if (label == undefined || label.length === 0 || (label.length === 1 && label[0] === "")) {
+        // Use default label for the user
+        const defaultLabel = Labels.getDefaultLabelForUser(userId);
+        if (defaultLabel) {
+            label = [defaultLabel.id];
+        } else {
+            return res.status(404).json({ error: "No default label found for user" });
+        }
+    }
 
     if (!Array.isArray(label)) {
         return res.status(404).json({ error : "Invalid label format provided" });

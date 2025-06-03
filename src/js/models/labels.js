@@ -38,7 +38,7 @@ const idGenerator = (() => {
 /**
  * Adds a new label to the database
  * 
- * @function addLabel
+ * @function createLabel
  * @description Stores a label object in the in-memory database array.
  * 
  * @param {Object} label - The label object to add
@@ -48,7 +48,7 @@ const idGenerator = (() => {
  * @param {string} label.color - Color code for the label (e.g., "#FF0000")
  * 
  * @example
- * addLabel({
+ * createLabel({
  *   id: "label1",
  *   name: "Important",
  *   userId: "user123",
@@ -56,7 +56,7 @@ const idGenerator = (() => {
  * });
  */
 //add label to data base - in our case the array
-const addLabel = (label) =>{
+const createLabel = (label) =>{
     labels_DB.push(label)
 }
 
@@ -181,21 +181,24 @@ const deleteLabel = (id) => {
 }
 
 /**
- * Retrieves a user by field and value (placeholder function)
+ * Retrieves the default label for a specific user
  * 
- * @function getUser
- * @description Placeholder function for user retrieval. Currently returns null.
- * This function should be implemented to validate user existence.
+ * @function getDefaultLabelForUser
+ * @description Finds and returns the default label for a user using their ID.
+ * The default label has null name and color and belongs to the specified user.
  * 
- * @param {string} field - The field name to search by
- * @param {*} value - The value to search for
+ * @param {string|number} userId - The ID of the user whose default label to retrieve
  * 
- * @returns {null} Always returns null (not implemented)
+ * @returns {Object|undefined} The default label object if found, undefined otherwise
  * 
- * @todo Implement actual user retrieval logic
+ * @example
+ * const defaultLabel = getDefaultLabelForUser('123');
+ * if (defaultLabel) {
+ *   console.log(`Default label ID: ${defaultLabel.id}`);
+ * }
  */
-const getUser = (field, value) => {
-  // ...existing code...
+const getDefaultLabelForUser = (userId) => {
+  return labels_DB.find(label => label.userId === userId.toString() && label.name === null && label.color === null);
 }
 
-module.exports = {addLabel, getLabels, getAllLabels, getLabelById, updateLabel, deleteLabel, getUser, idGenerator}
+module.exports = {createLabel, getLabels, getAllLabels, getLabelById, updateLabel, deleteLabel, idGenerator, getDefaultLabelForUser}

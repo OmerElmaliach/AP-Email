@@ -42,9 +42,9 @@ const usersModel = require('../models/users')
 const createLabel = (req, res)=>{
     const  { 
     id,
-    name,
+    name = null,
     userId,
-    color,        
+    color = null,
     } = req.body
 
     //mandatory fields check
@@ -65,7 +65,7 @@ const createLabel = (req, res)=>{
         name,
         color
     }
-    model.addLabel(newLabel)
+    model.createLabel(newLabel)
     return res.status(201).json({ message: 'Label created', label: newLabel });
 }
 
