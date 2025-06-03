@@ -28,17 +28,14 @@ void CLI::registerCommand(string& input, Icommand* command) {
 
 
 void CLI::executeCommand(string& input, string& str) {
-    string output;
-    const char* buffer;
+    string output_msg;
     if (m_cmdMap.find(input) != m_cmdMap.end()) {
         // Command number was found in map, can perform command.
-        output = m_cmdMap[input]->executeCommand(str);
-        buffer = output.c_str();
-        int sent_bytes = send(m_sock, buffer, strlen(buffer), 0);
+        output_msg = m_cmdMap[input]->executeCommand(str);
+        int sent_bytes = send(m_sock, output_msg.c_str(), strlen(output_msg.c_str()), 0);
         // Socket is not valid anymore, exiting...
-        if (sent_bytes <= 0) {
+        if (sent_bytes <= 0)
             CLI::exit();
-        }
     }
 }
 
@@ -70,7 +67,6 @@ CLI::CLI(int sock, bloomFilterStorage* p_bloomFilterStorage)
     registerCommand(del_str, cmd_del);
 
     Icommand* cmd_get = new CheckURLCommand(stor_ref, m_bloomFilter); // GET Command
-
     string get_str = "GET";
     registerCommand(get_str, cmd_get);
 
@@ -81,51 +77,37 @@ CLI::CLI(int sock, bloomFilterStorage* p_bloomFilterStorage)
 void CLI::run() {
     // Menu state is permenantly true since no exit protocol defined.
     m_menuState = true;
-    bool sock_valid = true, valid_input_recv = false;
     const char* bad_req_msg = "400 Bad Request";
 
     while (isRunning()) {
-        valid_input_recv = false;
-        char buffer[4096];
-        memset(buffer, 0,  MSG_SIZE);
-        do {
+        char buffer[MSG_SIZE] = {0};
+        while(true) {
             // Loop until input is in the proper format for performing commands.
-            int read_bytes = recv(m_sock, buffer, MSG_SIZE, 0);
+            int read_bytes = recv(m_sock, buffer, MSG_SIZE - 1, 0);
             // Socket is not valid anymore, exiting...
-            if (read_bytes <= 0) {
-                sock_valid = false;
-                CLI::exit();
-                break;
-            }
+            if (read_bytes <= 0)
+                return;
             
             // Check if input is in the right format.
             if (!checkRegex(string(buffer))) {
                 int sent_bytes = send(m_sock, bad_req_msg, strlen(bad_req_msg), 0);
                 // Socket is not valid anymore, exiting...
-                if (sent_bytes <= 0) {
-                    sock_valid = false;
-                    CLI::exit();
-                    break;
-                }
-                memset(buffer, 0, MSG_SIZE);    
+                if (sent_bytes <= 0)
+                    return;
                 
-            } else {
-                valid_input_recv = true;
+                memset(buffer, 0, MSG_SIZE);
+                continue; // Receive input again.
             }
-          
-        } while(!valid_input_recv);
 
-
-        if (sock_valid) {
-
-            vector<string> str_vec = split(string(buffer));
+            break;
+        }
         
-           //printf("after split\n");
-           //
-           //cout << "1:"<< str_vec[0]<<endl;
-           //cout<< "2:"<< str_vec[1]<<endl;
-            // Execute the command associated with num in map.
+        try {
+            vector<string> str_vec = split(string(buffer));
             executeCommand(str_vec[0], str_vec[1]);
+        } catch (const exception& e) {
+            throw runtime_error("Failed to parse and execute command\n");
+            return;
         }
     }
 }

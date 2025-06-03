@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  blacklist-server:
+    build:
+      context: ./src
+      dockerfile: config/DockerServer
+    container_name: docker-server
+    ports:
+      - "8091:8091"
+    volumes:
+      - ../data:/Ap_Email/data
+    command: ["8091", "32", "2", "5"]
+    networks:
+      - ap-email-net
+
+  js-server:
+    build:
+      context: ./src
+      dockerfile: config/DockerJs
+    container_name: docker-js
+    ports:
+      - "9000:9000"
+    depends_on:
+      - blacklist-server
+    networks:
+      - ap-email-net
+
+networks:
+  ap-email-net:
+    driver: bridge

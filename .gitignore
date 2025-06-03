@@ -1,6 +1,10 @@
+#jnod libs
+node_modules
+
 # Prerequisites
 *.d
 
+node_modules
 # Compiled Object files
 *.slo
 *.lo
@@ -30,3 +34,4 @@
 *.exe
 *.out
 *.app
+.vscode/
