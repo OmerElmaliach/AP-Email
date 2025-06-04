@@ -185,46 +185,51 @@ curl -i -X GET localhost:9000/api/mails/search/example_query \
 
 #weakpassword- should reject
 
-curl -i -X POST http://localhost:9000/api/users   -H "Content-Type: application/json"   -d '{
-    "fullName": "gavriel cohen",
-    "email": "gabi@example.com",
-    "userName": "gabi",
-    "password": "weakpassword",
-    "birthday": "1995-06-01",
-    "phoneNumber": "1234567890",
-    "gender": "M",
+curl -i -X POST http://localhost:9000/api/users  \
+-H "Content-Type: application/json"  \
+-d '{"fullName": "gavriel cohen", 
+    "email": "gabi@example.com", 
+    "userName": "gabi", 
+    "password": "weakpassword", 
+    "birthday": "1995-06-01", 
+    "phoneNumber": "1234567890", 
+    "gender": "M", 
     "picture": "https://example.com/avatar.jpg"
 }'
 
 #strong password accept
 
-curl -i -X POST http://localhost:9000/api/users   -H "Content-Type: application/json"   -d '{
-    "fullName": "gavriel cohen",
+curl -i -X POST http://localhost:9000/api/users  \
+-H "Content-Type: application/json"  \
+ -d '{"fullName": "gavriel cohen", 
     "email": "gabi@example.com",
-    "userName": "gabi",
-    "password": "GOODpassword1",
-    "birthday": "1995-06-01",
-    "phoneNumber": "1234567890",
-    "gender": "M",
+    "userName": "gabi", 
+    "password": "GOODpassword1", 
+    "birthday": "1995-06-01", 
+    "phoneNumber": "1234567890", 
+    "gender": "M", 
     "picture": "https://example.com/avatar.jpg"
 }'
 
 # new user trying same email
 
-curl -i -X POST http://localhost:9000/api/users   -H "Content-Type: application/json"   -d '{
-    "fullName": "Omer ",
-    "email": "gabi@example.com",
-    "userName": "gabi",
-    "password": "GOODpassword1",
-    "birthday": "1995-06-01",
-    "phoneNumber": "1234567890",
-    "gender": "M",
-    "picture": "https://example.com/avatar.jpg"
+curl -i -X POST http://localhost:9000/api/users \
+-H "Content-Type: application/json"  \
+-d '{"fullName": "Omer ", 
+    "email": "gabi@example.com", 
+    "userName": "gabi", 
+    "password": "GOODpassword1", 
+    "birthday": "1995-06-01", 
+    "phoneNumber": "1234567890", 
+    "gender": "M", 
+    "picture": "https://example.com/avatar.jpg" 
 }'
 
 #valid email choice- accept
 
-curl -i -X POST http://localhost:9000/api/users   -H "Content-Type: application/json"   -d '{
+curl -i -X POST http://localhost:9000/api/users  \
+-H "Content-Type: application/json" \
+-d '{
     "fullName": "Omer Elmaliach",
     "email": "OmerHmelech@example.com",
     "userName": "omerDaMan",
@@ -311,6 +316,7 @@ Below is an example illustrating how the project runs:
 
 ![WhatsApp Image 2025-06-03 at 23 15 31 (1)](https://github.com/user-attachments/assets/dca2468b-61a6-4482-8d28-a4181ee101ba)
 
+![Screenshot 2025-06-04 230644](https://github.com/user-attachments/assets/aafb1055-7f04-4087-ad56-02414a6abddd)
 
 ## Takeaways from task 1 relating to SOLID:
 In general, lack of documentation harmed the ability to work and understand code which was written by other teammates in part Regarding the following questions:
