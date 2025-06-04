@@ -16,7 +16,7 @@ const addUser = (user) =>{
    **MUST CHECK RETURN VAL** 
    */
 const getUser =  (field, value ) =>{
-    return users_DB.find(user => user[field] === value)
+    return users_DB.find(user => user[field] == value)
 }
 
 /*
