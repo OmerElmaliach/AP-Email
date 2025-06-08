@@ -4,24 +4,52 @@ function App() {
   return (
     <>
       <div className="topbar">
-        <span className="top-group">
-          <img src="favicon.png" className="logo-icon" alt="AP-Email" />
+        <div className="topbar-left">
+          <img src="favicon.png" className="logo top" alt="AP-Email" />
           <strong>Inbox</strong>
-        </span>
-        <input type="text" placeholder="Search mail..." />
+          <input type="text" placeholder="Search mail..." />
+          <button className="create-button">+ Create</button>
+        </div>
+        <img src="misc/temp.png" className="topbar-pfp" alt="Profile" />
       </div>
 
       <div className="sidebar">
-        <p className="clickable">Primary</p>
-        <p className="clickable">Social</p>
-        <p className="clickable">Promotions</p>
+        <div className="sidebar-item">
+          <img src="misc/inbox_icon.png" alt="Show Inbox" />
+          <span>Inbox</span>
+        </div>
+        
+        <div className="sidebar-item">
+          <img src="misc/star_icon.png" alt="Show Starred" />
+          <span>Starred</span>
+        </div>
+
+        <div className="sidebar-item">
+          <img src="misc/send_icon.png" alt="Show Sent" />
+          <span>Sent</span>
+        </div>
+
+        <div className="sidebar-item">
+          <img src="misc/draft_icon.png" alt="Show Sent" />
+          <span>Draft</span>
+        </div>
+
+        <div className="sidebar-item">
+          <img src="misc/spam_icon.png" alt="Show Sent" />
+          <span>Spam</span>
+        </div>
+
+        <div className="sidebar-item">
+          <img src="misc/delete_icon.png" alt="Show Sent" />
+          <span>Trash</span>
+        </div>
       </div>
 
       <div className="main">
         <div className="tabs">
-          <div className="tab active">Primary</div>
-          <div className="tab">Social</div>
-          <div className="tab">Promotions</div>
+          <div className="tab active" onClick={(e) => swapMenu(e.target)}>Primary</div>
+          <div className="tab" onClick={(e) => swapMenu(e.target)}>Social</div>
+          <div className="tab" onClick={(e) => swapMenu(e.target)}>Promotions</div>
         </div>
 
         <div className="email-list">
@@ -34,6 +62,14 @@ function App() {
       </div>
     </>
   );
+}
+
+function swapMenu(el) {
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.classList.remove('active');
+  });
+
+  el.classList.add('active');
 }
 
 export default App;
