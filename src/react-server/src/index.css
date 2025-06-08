@@ -9,25 +9,60 @@ body {
     padding: 10px 20px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
+}
+
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 .topbar input {
-    margin-left: 20px;
     padding: 5px;
     width: 300px;
     border: none;
     border-radius: 4px;
 }
 
+.topbar-pfp {
+    width: 24px;
+    height: 24px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: none;
+    background-color: #e0e0e0;
+    color: #333;
+    cursor: pointer;
+}
+
 .sidebar {
-    background: #f1f3f4;
+    background: #cccccc;
     width: 200px;
     height: 100vh;
     position: fixed;
     top: 84px;
-    left: 0;
-    padding: 20px;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    padding-left: 44px;
+    justify-content: flex-start;
+}
+
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    cursor: pointer;
+    border-bottom: 2px solid #7382b1;
+    margin-left: 42x;
+    margin-right: 46px;
+}
+
+.sidebar-item:hover {
+    background-color: #ceebff;
 }
 
 .main {
@@ -102,11 +137,23 @@ body {
     font-size: 18px;
 }
 
-.logo-icon {
+.logo.top {
     width: 64px;
     height: 64px;
 }
 
-.clickable {
+.create-button {
+    background-color: #609dff;
+    font-weight: bold;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    padding: 5px 16px;
+    display: flex;
+}
+
+.create-button:hover {
+    background-color: #acccff;
     cursor: pointer;
 }
