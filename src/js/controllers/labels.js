@@ -89,7 +89,7 @@ const createLabel = (req, res)=>{
  * // Response: [{ "id": "label1", "name": "Important", "userId": "user123", "color": "#FF0000" }]
  */
 const getLabels = (req,res) =>{
-    const { userId } = req.query;
+    const { userId } = req.body;
 
     // Check if userId is provided
     if (!userId) {

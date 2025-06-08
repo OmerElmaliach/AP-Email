@@ -152,7 +152,8 @@ curl -i -X GET localhost:9000/api/mails/ \
 curl -i -X POST localhost:9000/api/mails/ \
 -H "Content-Type: application/json" \
 -H "userId: 1" \
--d '{"to" : ["email@example.com"], "subject" : "example subject", "body" : "example body", "label" : ["1"]}'
+-d '{"to" : ["gabi@example.com"], "subject" : "example subject", "body" : "example query", "label" : [1]}'
+
 
 
 #Search for an email by id:
@@ -167,7 +168,7 @@ curl -i -X GET localhost:9000/api/mails/e0 \
 curl -i -X PATCH localhost:9000/api/mails/e0 \
 -H "Content-Type: application/json" \
 -H "userId: 1" \
--d '{"subject" : "new subject", "body" : "new body", "label" : ["1"]}' // Optional fields
+-d '{"subject" : "new subject", "body" : "new body", "label" : [1]}' // additional optional fields exist
 
 
 #Delete a mail by id:
@@ -185,46 +186,51 @@ curl -i -X GET localhost:9000/api/mails/search/example_query \
 
 #weakpassword- should reject
 
-curl -i -X POST http://localhost:9000/api/users   -H "Content-Type: application/json"   -d '{
-    "fullName": "gavriel cohen",
-    "email": "gabi@example.com",
-    "userName": "gabi",
-    "password": "weakpassword",
-    "birthday": "1995-06-01",
-    "phoneNumber": "1234567890",
-    "gender": "M",
+curl -i -X POST http://localhost:9000/api/users  \
+-H "Content-Type: application/json"  \
+-d '{"fullName": "gavriel cohen", 
+    "email": "gabi@example.com", 
+    "userName": "gabi", 
+    "password": "weakpassword", 
+    "birthday": "1995-06-01", 
+    "phoneNumber": "1234567890", 
+    "gender": "M", 
     "picture": "https://example.com/avatar.jpg"
 }'
 
 #strong password accept
 
-curl -i -X POST http://localhost:9000/api/users   -H "Content-Type: application/json"   -d '{
-    "fullName": "gavriel cohen",
+curl -i -X POST http://localhost:9000/api/users  \
+-H "Content-Type: application/json"  \
+ -d '{"fullName": "gavriel cohen", 
     "email": "gabi@example.com",
-    "userName": "gabi",
-    "password": "GOODpassword1",
-    "birthday": "1995-06-01",
-    "phoneNumber": "1234567890",
-    "gender": "M",
+    "userName": "gabi", 
+    "password": "GOODpassword1", 
+    "birthday": "1995-06-01", 
+    "phoneNumber": "1234567890", 
+    "gender": "M", 
     "picture": "https://example.com/avatar.jpg"
 }'
 
 # new user trying same email
 
-curl -i -X POST http://localhost:9000/api/users   -H "Content-Type: application/json"   -d '{
-    "fullName": "Omer ",
-    "email": "gabi@example.com",
-    "userName": "gabi",
-    "password": "GOODpassword1",
-    "birthday": "1995-06-01",
-    "phoneNumber": "1234567890",
-    "gender": "M",
-    "picture": "https://example.com/avatar.jpg"
+curl -i -X POST http://localhost:9000/api/users \
+-H "Content-Type: application/json"  \
+-d '{"fullName": "Omer ", 
+    "email": "gabi@example.com", 
+    "userName": "gabi", 
+    "password": "GOODpassword1", 
+    "birthday": "1995-06-01", 
+    "phoneNumber": "1234567890", 
+    "gender": "M", 
+    "picture": "https://example.com/avatar.jpg" 
 }'
 
 #valid email choice- accept
 
-curl -i -X POST http://localhost:9000/api/users   -H "Content-Type: application/json"   -d '{
+curl -i -X POST http://localhost:9000/api/users  \
+-H "Content-Type: application/json" \
+-d '{
     "fullName": "Omer Elmaliach",
     "email": "OmerHmelech@example.com",
     "userName": "omerDaMan",
@@ -239,7 +245,7 @@ curl -i -X POST http://localhost:9000/api/users   -H "Content-Type: application/
 
 #now lets get a specific users
 
-curl -i -X GET http://localhost:9000/api/users/1   -H "Content-Type: application/json"  \
+curl -i -X GET http://localhost:9000/api/users/1 \
   -H "userId: 1"
 
 #check if registered - tokens
@@ -261,30 +267,35 @@ curl -i -X POST http://localhost:9000/api/tokens \
   -d '{
     "userName": "omerDaMan",
     "password": "AMAZINGpassword1"
+  }'
 
 #Add URL to blacklist
-curl -X POST http://localhost:9000/api/blacklist \
-  -H "Content-Type: application/json" \
-  -d '{"id": "http://malicious-site.com"}'
+curl -i -X POST http://localhost:9000/api/blacklist  \
+ -H "Content-Type: application/json" \
+ -d '{"id": "http://evil-malware-site.com"}'
 
 #Check if URL is blacklisted
-curl -X GET http://localhost:9000/api/blacklist/http://suspicious-site.com
+curl -X GET "http://localhost:9000/api/blacklist/http%3A%2F%2Fevil-malware-site.com"
 
 #Remove URL from blacklist
-curl -X DELETE http://localhost:9000/api/blacklist/http://malicious-site.com
+curl -X DELETE "http://localhost:9000/api/blacklist/http%3A%2F%2Fevil-malware-site.com"
 
 #Create a new label
 curl -X POST http://localhost:9000/api/labels \
   -H "Content-Type: application/json" \
+  -H "userId:1" \
   -d '{
     "id": "label_001",
     "name": "Important",
-    "userId": "user_123",
+    "userId": "1",
     "color": "#FF5733"
   }'
 
 #Get all labels for a user
-curl -X GET "http://localhost:9000/api/labels?userId=user_123"
+curl -X GET "http://localhost:9000/api/labels" \
+  -H "Content-Type: application/json" \
+  -H "userId: 1" \
+  -d '{"userId":"1"}'
 
 #Get a specific label by ID
 curl -X GET http://localhost:9000/api/labels/label_001
