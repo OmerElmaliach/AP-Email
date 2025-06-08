@@ -10,6 +10,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    height: 64px; 
+    overflow: hidden;
 }
 
 .topbar-left {
@@ -138,8 +140,9 @@ body {
 }
 
 .logo.top {
-    width: 64px;
-    height: 64px;
+    width: 104px;
+    height: 104px;
+    padding: 32px;
 }
 
 .create-button {
