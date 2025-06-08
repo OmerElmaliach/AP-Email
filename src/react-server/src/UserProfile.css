@@ -215,26 +215,55 @@
   word-break: break-word;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .profile-dropdown {
-    right: -20px;
-    min-width: 260px;
-  }
-  
-  .settings-popup {
-    right: -250px;
-    margin-right: 0;
-  }
+/* Help Modal Styles */
+.help-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  backdrop-filter: blur(4px);
 }
 
-/* Animation for dropdown appearance */
-.profile-dropdown {
-  animation: dropdownFadeIn 0.2s ease-out;
+.help-modal-content {
+  background: white;
+  border-radius: 12px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: auto;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: modalFadeIn 0.3s ease-out;
 }
 
-.settings-popup {
-  animation: slideInFromRight 0.2s ease-out;
+.help-modal-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 10001;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.help-modal-close:hover {
+  background: #f0f0f0;
+  transform: scale(1.1);
 }
 
 @keyframes dropdownFadeIn {
@@ -256,5 +285,35 @@
   to {
     opacity: 1;
     transform: translateX(0);
+  }
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .profile-dropdown {
+    right: -20px;
+    min-width: 260px;
+  }
+  
+  .settings-popup {
+    right: -250px;
+    margin-right: 0;
+  }
+
+  .help-modal-content {
+    max-width: 95vw;
+    max-height: 95vh;
+    margin: 10px;
   }
 }

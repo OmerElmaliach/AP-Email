@@ -6,123 +6,58 @@ const ReadmePage = () => {
     <div className="readme-container">
       <div className="readme-header">
         <h1>AP-Email System</h1>
-        <button 
-          className="close-readme"
-          onClick={() => window.close()}
-        >
-          ×
-        </button>
       </div>
-      
       <div className="readme-content">
         <section>
           <h2>Overview</h2>
           <p>
-            AP-Email is an advanced email management system that integrates URL blacklisting 
-            functionality using Bloom filters for efficient spam detection and security.
+            AP-Email is a RESTful email server with a C++ blacklist server using Bloom filter logic. It supports user management, mail creation, labeling, and real-time URL validation against a blacklist.
           </p>
         </section>
-
         <section>
-          <h2>Features</h2>
+          <h2>Architecture</h2>
           <ul>
-            <li>Email inbox management with categorization (Primary, Social, Promotions)</li>
-            <li>URL blacklisting system with Bloom filter technology</li>
-            <li>User authentication and profile management</li>
-            <li>Real-time email filtering and security</li>
-            <li>Modern React-based user interface</li>
+            <li><strong>C++ Blacklist Server:</strong> TCP server with Bloom filter, persistent storage, and command pattern for URL management.</li>
+            <li><strong>JavaScript Email Server:</strong> Express.js REST API for mails, users, labels, and blacklist, communicating with the C++ server for URL checks.</li>
+            <li><strong>React Frontend:</strong> Modern UI for email management and user profile.</li>
           </ul>
         </section>
-
         <section>
-          <h2>System Architecture</h2>
-          <h3>Backend Services</h3>
-          <ul>
-            <li><strong>JavaScript API Server (Port 9000):</strong> Handles HTTP requests and user operations</li>
-            <li><strong>C++ Blacklist Server (Port 8091):</strong> Manages URL blacklisting with Bloom filters</li>
-            <li><strong>React Frontend (Port 3000):</strong> User interface for email management</li>
-          </ul>
+          <h2>How it Works</h2>
+          <ol>
+            <li>Blacklist server starts (C++, port 8091), loads Bloom filter and storage.</li>
+            <li>Email server starts (Node.js, port 9000), exposes REST API.</li>
+            <li>Emails are checked for URLs; each URL is validated via the blacklist server.</li>
+            <li>Blacklisted URLs block email sending; otherwise, emails are sent and stored.</li>
+          </ol>
         </section>
-
-        <section>
-          <h2>Blacklist Management</h2>
-          <h3>Adding URLs</h3>
-          <p>POST /api/blacklist endpoint → TCP POST command → Bloom filter insertion + storage persistence</p>
-          
-          <h3>Checking URLs</h3>
-          <p>GET /api/blacklist/:url endpoint → TCP GET command → Bloom filter query + storage verification</p>
-          
-          <h3>Removing URLs</h3>
-          <p>DELETE /api/blacklist/:url endpoint → TCP DELETE command → Storage removal (Bloom filter bits remain set)</p>
-        </section>
-
         <section>
           <h2>Bloom Filter Logic</h2>
           <ul>
-            <li><strong>Insertion:</strong> URLs are hashed using multiple hash functions, corresponding bits set to 1 in filter array</li>
-            <li><strong>Query:</strong> URL hashed with same functions, all corresponding bits checked:
-              <ul>
-                <li>If any bit is 0: URL definitely NOT blacklisted</li>
-                <li>If all bits are 1: URL MIGHT be blacklisted (verified against storage for accuracy)</li>
-              </ul>
-            </li>
-            <li><strong>False Positives:</strong> Possible but rare; manual storage check provides definitive answer</li>
-            <li><strong>False Negatives:</strong> Impossible due to Bloom filter mathematical properties</li>
+            <li>URLs are hashed with multiple functions; bits set in the filter.</li>
+            <li>Query: If any bit is 0, URL is not blacklisted. If all are 1, check storage for confirmation.</li>
+            <li>False positives possible, false negatives impossible.</li>
           </ul>
         </section>
-
         <section>
-          <h2>Getting Started</h2>
+          <h2>Setup & Running</h2>
           <ol>
-            <li>Ensure Docker is running</li>
-            <li>Start the backend services: <code>docker-compose up</code></li>
-            <li>Access the web interface at <code>http://localhost:3000</code></li>
-            <li>Use the API endpoints for programmatic access</li>
+            <li>Install Docker and run <code>docker-compose up --build</code></li>
+            <li>API: <code>http://localhost:9000/api/</code> | Blacklist TCP: <code>localhost:8091</code></li>
+            <li>Stop: <code>docker-compose down</code></li>
           </ol>
         </section>
-
         <section>
-          <h2>API Endpoints</h2>
-          <div className="api-section">
-            <h3>Blacklist Management</h3>
-            <div className="endpoint">
-              <span className="method post">POST</span>
-              <span className="path">/api/blacklist</span>
-              <span className="desc">Add URL to blacklist</span>
-            </div>
-            <div className="endpoint">
-              <span className="method get">GET</span>
-              <span className="path">/api/blacklist/:url</span>
-              <span className="desc">Check if URL is blacklisted</span>
-            </div>
-            <div className="endpoint">
-              <span className="method delete">DELETE</span>
-              <span className="path">/api/blacklist/:url</span>
-              <span className="desc">Remove URL from blacklist</span>
-            </div>
-          </div>
-
-          <div className="api-section">
-            <h3>User Management</h3>
-            <div className="endpoint">
-              <span className="method post">POST</span>
-              <span className="path">/api/users</span>
-              <span className="desc">Create new user</span>
-            </div>
-            <div className="endpoint">
-              <span className="method get">GET</span>
-              <span className="path">/api/users/:id</span>
-              <span className="desc">Get user information</span>
-            </div>
-          </div>
-        </section>
-
-        <section>
-          <h2>Technical Support</h2>
-          <p>
-            For technical issues or questions, please refer to the project documentation 
-            or contact the development team.
-          </p>
+          <h2>Example API Usage</h2>
+          <ul>
+            <li><code>GET /api/mails/</code> - Get inbox</li>
+            <li><code>POST /api/mails/</code> - Send email</li>
+            <li><code>GET /api/blacklist/:url</code> - Check URL</li>
+            <li><code>POST /api/blacklist</code> - Add URL to blacklist</li>
+            <li><code>DELETE /api/blacklist/:url</code> - Remove URL</li>
+            <li><code>POST /api/users</code> - Register user</li>
+            <li><code>POST /api/tokens</code> - Login</li>
+          </ul>
         </section>
       </div>
     </div>

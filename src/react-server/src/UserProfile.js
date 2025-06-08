@@ -1,33 +1,54 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './UserProfile.css';
+import ReadmePage from './ReadmePage';
 
 const UserProfile = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const dropdownRef = useRef(null);
-  const settingsRef = useRef(null);
-
-  // Mock user data - in a real app, this would come from authentication
+  const settingsRef = useRef(null);  // Fetch user data from authentication service
   useEffect(() => {
-    // Simulate fetching user data
-    const mockUser = {
-      id: '1',
-      fullName: 'John Doe',
-      email: 'john.doe@example.com',
-      userName: 'johndoe',
-      password: 'MyPass123',
-      birthday: '1990-05-15',
-      phoneNumber: '+1-555-0123',
-      gender: 'M',
-      picture: 'https://via.placeholder.com/100/4285f4/white?text=JD'
+    const fetchUserData = async () => {
+      try {
+        setLoading(true);
+        
+        // TODO: Replace with actual JWT authentication service
+        // const token = localStorage.getItem('authToken');
+        // const response = await fetch('http://localhost:9000/api/users/me', {
+        //   headers: { 'Authorization': `Bearer ${token}` }
+        // });
+        // const userData = await response.json();
+        // setUser(userData);
+        
+        // Mock user data for now - will be replaced with JWT service
+        const mockUser = {
+          id: '1',
+          fullName: 'John Doe',
+          email: 'john.doe@example.com',
+          userName: 'johndoe',
+          password: 'MyPass123',
+          birthday: '1990-05-15',
+          phoneNumber: '+1-555-0123',
+          gender: 'M',
+          picture: 'https://via.placeholder.com/100/4285f4/white?text=JD'
+        };
+        
+        // Simulate network delay
+        setTimeout(() => {
+          setUser(mockUser);
+          setLoading(false);
+        }, 500);
+        
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        setLoading(false);
+      }
     };
-    
-    setTimeout(() => {
-      setUser(mockUser);
-      setLoading(false);
-    }, 500);
+
+    fetchUserData();
   }, []);
 
   // Close dropdowns when clicking outside
@@ -54,10 +75,9 @@ const UserProfile = () => {
   const handleSettingsClick = () => {
     setIsSettingsOpen(!isSettingsOpen);
   };
-
   const handleHelp = () => {
-    // Open help documentation in new tab - content managed by teammate
-    window.open('/help', '_blank');
+    // Show help modal instead of opening new tab
+    setIsHelpOpen(true);
     setIsDropdownOpen(false);
   };
   const handleSwitchAccount = () => {
@@ -68,19 +88,19 @@ const UserProfile = () => {
     }));
     // Navigate to login page (handled by teammate)
     window.location.href = '/login';
-  };
-
-  const handleLogout = () => {
+  };  const handleLogout = () => {
+    // TODO: Use JWT authentication service to logout
     // Clear any saved user data
     localStorage.removeItem('savedUser');
     localStorage.removeItem('currentUser');
+    localStorage.removeItem('authToken');
     // Navigate to login page (handled by teammate)
     window.location.href = '/login';
   };
 
-  const maskPassword = (password) => {
-    return '*'.repeat(password.length);
-  };
+//   const maskPassword = (password) => {
+//     return '*'.repeat(password.length);
+//   };
 
   if (loading) {
     return <div className="profile-loading">Loading...</div>;
@@ -88,8 +108,7 @@ const UserProfile = () => {
 
   if (!user) {
     return null;
-  }
-  return (
+  }  return (
     <>
       <div className="user-profile" ref={dropdownRef}>
         <button className="profile-button" onClick={handleProfileClick}>
@@ -156,7 +175,8 @@ const UserProfile = () => {
                       </div>
                       <div className="setting-item">
                         <label>Password:</label>
-                        <span>{maskPassword(user.password)}</span>
+                        {/* <span>{maskPassword(user.password)}</span> */}
+                        <span>{user.password}</span>
                       </div>
                       <div className="setting-item">
                         <label>Birthday:</label>
@@ -187,6 +207,21 @@ const UserProfile = () => {
             </div>          </div>
         )}
       </div>
+
+      {/* Help Modal */}
+      {isHelpOpen && (
+        <div className="help-modal-overlay" onClick={() => setIsHelpOpen(false)}>
+          <div className="help-modal-content" onClick={(e) => e.stopPropagation()}>
+            <button 
+              className="help-modal-close"
+              onClick={() => setIsHelpOpen(false)}
+            >
+              ×
+            </button>
+            <ReadmePage />
+          </div>
+        </div>
+      )}
     </>
   );
 };
