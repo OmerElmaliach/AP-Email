@@ -39,17 +39,17 @@ function App() {
         </div>
 
         <div className="sidebar-item">
-          <img src="misc/draft_icon.png" alt="Show Sent" />
+          <img src="misc/draft_icon.png" alt="Show Draft" />
           <span>Draft</span>
         </div>
 
         <div className="sidebar-item">
-          <img src="misc/spam_icon.png" alt="Show Sent" />
+          <img src="misc/spam_icon.png" alt="Show Spam" />
           <span>Spam</span>
         </div>
 
         <div className="sidebar-item">
-          <img src="misc/delete_icon.png" alt="Show Sent" />
+          <img src="misc/delete_icon.png" alt="Show Deleted" />
           <span>Trash</span>
         </div>
       </div>
