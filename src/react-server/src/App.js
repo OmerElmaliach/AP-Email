@@ -1,16 +1,25 @@
+import { useEffect, useState } from 'react';
 import './App.css';
 
 function App() {
+  // DarkMode Toggle
+  const [darkMode, setDarkMode] = useDarkMode();
+
   return (
     <>
       <div className="topbar">
-        <div className="topbar-left">
+        <div className="topbar-group">
           <img src="favicon.png" className="logo top" alt="AP-Email" />
           <strong>Inbox</strong>
           <input type="text" placeholder="Search mail..." />
           <button className="create-button">+ Create</button>
         </div>
-        <img src="misc/temp.png" className="topbar-pfp" alt="Profile" />
+        <div className="topbar-group">
+          <button onClick={() => setDarkMode(!darkMode)} className="mode-button">
+              {darkMode ? 'Light-Mode' : 'Dark-Mode'}
+          </button>
+          <img src="misc/temp.png" className="topbar-pfp" alt="Profile" />
+        </div>
       </div>
 
       <div className="sidebar">
@@ -47,9 +56,9 @@ function App() {
 
       <div className="main">
         <div className="tabs">
-          <div className="tab active" onClick={(e) => swapMenu(e.target)}>Primary</div>
-          <div className="tab" onClick={(e) => swapMenu(e.target)}>Social</div>
-          <div className="tab" onClick={(e) => swapMenu(e.target)}>Promotions</div>
+          <div className="tab active" onClick={(e) => swapTab(e.target)}>Primary</div>
+          <div className="tab" onClick={(e) => swapTab(e.target)}>Social</div>
+          <div className="tab" onClick={(e) => swapTab(e.target)}>Promotions</div>
         </div>
 
         <div className="email-list">
@@ -64,12 +73,37 @@ function App() {
   );
 }
 
-function swapMenu(el) {
+/**
+ * @brief Swaps mail list type in inbox menu.
+ */
+function swapTab(el) {
   document.querySelectorAll('.tab').forEach(tab => {
     tab.classList.remove('active');
   });
 
   el.classList.add('active');
 }
+
+/**
+ * @brief Dark-Mode Hook
+ */
+function useDarkMode() {
+  const [darkMode, setDarkMode] = useState(false);
+
+  // Define once when used.
+  useEffect(() => {
+    const saved = localStorage.getItem('darkMode');
+    if (saved) setDarkMode(saved === 'true');
+  }, []);
+
+  // Toggles mode effect.
+  useEffect(() => {
+    document.body.classList.toggle('dark', darkMode);
+    localStorage.setItem('darkMode', darkMode);
+  }, [darkMode]);
+
+  return [darkMode, setDarkMode];
+}
+
 
 export default App;
