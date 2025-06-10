@@ -12,7 +12,10 @@ function App() {
           <img src="favicon.png" className="logo top" alt="AP-Email" />
           <strong>Inbox</strong>
           <input type="text" placeholder="Search mail..." />
-          <button className="create-button">+ Create</button>
+          <div className="create-button">
+            <img src="misc/createmail_icon.png" alt="AP-Email" />
+            <span>Compose</span>
+          </div>
         </div>
         <div className="topbar-group">
           <button onClick={() => setDarkMode(!darkMode)} className="mode-button">
