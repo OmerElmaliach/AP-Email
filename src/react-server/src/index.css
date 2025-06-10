@@ -118,15 +118,15 @@ body {
     display: inline-block;
 }
 
-.email-row .subject,
-.email-row .body {
+.email-row .from,
+.email-row .subject {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     margin-right: 10px;
 }
 
-.email-row .subject {
+.email-row .from {
     font-weight: bold;
 }
 

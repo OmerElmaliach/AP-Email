@@ -63,8 +63,8 @@ function App() {
 
         <div className="email-list">
           <button className="email-row">
-            <span className="subject">ETL</span>
-            <span className="body">Equipment Return Instructions</span>
+            <span className="from">ETL</span>
+            <span className="title">Equipment Return Instructions</span>
             <span>Mar 31</span>
           </button>
         </div>
