@@ -1,15 +1,41 @@
+/* Body Font Family */
 body {
     margin: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
 }
 
+/* TOP-BAR */
 .topbar {
     background: #4285f4;
     color: white;
     padding: 10px 20px;
     display: flex;
     align-items: center;
-    gap: 20px;
+    justify-content: space-between;
+    height: 64px;
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+.topbar-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.topbar-pfp {
+    width: 24px;
+    height: 24px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: none;
+    background-color: #e0e0e0;
+    color: #333;
+    cursor: pointer;
 }
 
 /* Enhanced search container */
@@ -17,9 +43,10 @@ body {
     display: flex;
     align-items: center;
     background: white;
-    border-radius: 24px;
+    border-radius: 14px;
     padding: 2px;
     margin-left: 20px;
+    margin-top: 12px;
 }
 
 .search-input {
@@ -70,7 +97,7 @@ body {
 }
 
 .sidebar {
-    background: #f1f3f4;
+    background: #e6e6e6;
     width: 200px;
     height: 100vh;
     position: fixed;
@@ -80,28 +107,58 @@ body {
     box-sizing: border-box;
 }
 
-.clickable {
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     cursor: pointer;
     padding: 8px 12px;
     border-radius: 4px;
+    border-bottom: 2px solid #b9b9b9;
     transition: background-color 0.2s;
 }
 
-.clickable:hover {
+.sidebar-item:hover {
     background-color: #e8f0fe;
 }
 
-.active-label {
+.sidebar-add-label-tab {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+}
+
+.sidebar-add-label-btn {
+    border: none;
+    border-radius: 50%;
+    background: none;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar-add-label-btn:hover {
+    background-color: #d4d4d4;
+    transition: background-color 0.2s;
+}
+
+.sidebar-active-label {
     background-color: #d2e3fc;
     font-weight: bold;
 }
 
+/* MAIN */
 .main {
     margin-left: 200px;
     padding: 20px;
-    margin-top: 50px;
+    margin-top: 75px;
 }
 
+/* TABS */
 .tabs {
     display: flex;
     border-bottom: 2px solid #ccc;
@@ -118,6 +175,7 @@ body {
     font-weight: bold;
 }
 
+/* EMAIL LIST */
 .email-list {
     margin-top: 10px;
 }
@@ -129,6 +187,11 @@ body {
     padding: 8px 16px;
     border-bottom: 1px solid #e8eaed;
     cursor: pointer;
+}
+
+.email-row:hover {
+    background-color: #f1f1f1;
+    transition: background-color 0.2s;
 }
 
 .email-checkbox {
@@ -146,7 +209,7 @@ body {
     min-width: 0;
 }
 
-.email-row .subject {
+.email-row .from {
     font-weight: bold;
     font-size: 14px;
     white-space: nowrap;
@@ -154,7 +217,7 @@ body {
     text-overflow: ellipsis;
 }
 
-.email-row .body {
+.email-row .subject {
     font-size: 13px;
     color: #5f6368;
     white-space: nowrap;
@@ -285,6 +348,7 @@ body {
     z-index: 1000;
     min-width: 200px;
     padding: 8px;
+    position: relative;
 }
 
 .label-input {
@@ -295,6 +359,7 @@ body {
     font-size: 12px;
     margin-bottom: 8px;
     outline: none;
+    box-sizing: border-box;
 }
 
 .label-input:focus {
@@ -322,47 +387,50 @@ body {
     background-color: #f8f9fa;
 }
 
-/* New Email Button */
-.new-email-btn {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background-color: #1a73e8;
-    color: white;
+/* Misc Buttons */
+.new-email-btn,
+.mode-btn {
+    font-size: 16px;
+    gap: 8px;
     border: none;
-    font-size: 24px;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    transition: all 0.3s ease;
+    border-radius: 4px;
+    color: white;
+    padding: 5px 16px;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
+    cursor: pointer;
 }
 
-.new-email-btn:hover {
-    background-color: #1557b0;
-    transform: scale(1.1);
-    box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+.mode-btn {
+    background-color: #5495ff;
+    transition: background-color 0.2s;
 }
 
-.new-email-btn:active {
-    transform: scale(0.95);
+.mode-btn:hover {
+    background-color: #67a0fc;
+}
+
+.new-email-btn {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 10px 16px;
+    color: #636363;
 }
 
 .top-group {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 30px;
     font-size: 18px;
+    flex-shrink: 0;
+}
+
+.top-group strong {
+    min-width: 70px;
 }
 
 .logo-icon {
-    width: 64px;
-    height: 64px;
+    width: 80px;
+    height: 80px;
 }
 
 /* Tab container with select all checkbox */
@@ -392,4 +460,76 @@ body {
     align-items: flex-end;
     gap: 8px;
     min-width: 200px;
+}
+
+/* DARK MODE */
+body.dark {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+body.dark .topbar {
+    background: #1f1f1f;
+    color: white;
+}
+
+body.dark .sidebar {
+    background: #2a2a2a;
+}
+
+body.dark .sidebar-item {
+    border-bottom: 2px solid #444;
+}
+
+body.dark .sidebar-item:hover {
+    background-color: #333;
+}
+
+body.dark .sidebar-add-label-btn:hover {
+    background-color: #313131;
+}
+
+body.dark .sidebar-active-label {
+    background-color: #383838;
+    font-weight: bold;
+}
+
+body.dark .main {
+    background-color: #181818;
+}
+
+body.dark .tab {
+    color: #ccc;
+}
+
+body.dark .tab.active {
+    border-bottom: 3px solid #bbbbbb;
+}
+
+body.dark .email-row {
+    background-color: #222;
+    color: #e0e0e0;
+    border-color: #444;
+}
+
+body.dark .email-row:hover {
+    background-color: #2c2c2c;
+}
+
+body.dark .mode-btn {
+    background-color: #00284b;
+}
+
+body.dark .mode-btn:hover {
+    background-color: #002e69;
+}
+
+body.dark .label-tag {
+    color: white;
+    background-color: #3b3b3b;
+}
+
+body.dark .label-tag:hover {
+    color: white;
+    background-color: #444444;
 }
