@@ -15,6 +15,17 @@ function App() {
   const [newLabelInput, setNewLabelInput] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [darkMode, setDarkMode] = useDarkMode();
+
+  // Default labels for all users.
+  const defaultLabels = [
+    {"name" : "Inbox", "photo_asset" : "misc/inbox_icon.png"},
+    {"name" : "Starred", "photo_asset" : "misc/star_icon.png"},
+    {"name" : "Sent", "photo_asset" : "misc/send_icon.png"},
+    {"name" : "Draft", "photo_asset" : "misc/draft_icon.png"},
+    {"name" : "Spam", "photo_asset" : "misc/spam_icon.png"},
+    {"name" : "Trash", "photo_asset" : "misc/delete_icon.png"}
+  ];
 
   // Load initial data from backend
   useEffect(() => {
@@ -40,6 +51,7 @@ function App() {
         const mockEmails = [
           {
             id: 1,
+            from: "omer@email.com",
             subject: "ETL",
             body: "Equipment Return Instructions",
             date: "Mar 31",
@@ -47,6 +59,7 @@ function App() {
           },
           {
             id: 2,
+            from: "brodi@email.com",
             subject: "Meeting Tomorrow",
             body: "Don't forget about our team meeting at 2 PM",
             date: "Apr 1",
@@ -54,6 +67,7 @@ function App() {
           },
           {
             id: 3,
+            from: "gabi@email.com",
             subject: "Newsletter",
             body: "Weekly tech updates and industry news",
             date: "Apr 2",
@@ -61,6 +75,7 @@ function App() {
           },
           {
             id: 4,
+            from: "bodek@email.com",
             subject: "Project Update",
             body: "Status report on the current development phase",
             date: "Apr 3",
@@ -68,7 +83,7 @@ function App() {
           }
         ];
         
-        const mockLabels = ["Inbox", "Starred", "Sent", "Draft", "Spam", "Trash", "Work", "Important", "Meetings", "Newsletter", "Updates", "Development"];
+        const mockLabels = ["Work", "Important", "Meetings", "Newsletter", "Updates", "Development"];
         
         setAllEmails(mockEmails);
         setEmails(mockEmails);
@@ -80,9 +95,11 @@ function App() {
 
     loadData();
   }, []);  // Search functionality with real-time filtering
+
   useEffect(() => {
     if (searchQuery.trim()) {
       const filteredEmails = allEmails.filter(email =>
+        email.from.toLowerCase().includes(searchQuery.toLowerCase()) ||
         email.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
         email.body.toLowerCase().includes(searchQuery.toLowerCase())
       );
@@ -119,6 +136,7 @@ function App() {
       setSelectedEmails([...selectedEmails, emailId]);
     }
   };
+  
   // Label management
   const addLabelToEmail = async (emailId, labelName) => {
     try {
@@ -217,7 +235,9 @@ function App() {
       setNewLabelInput(prev => ({ ...prev, [emailId]: '' }));
       setShowLabelSuggestions(prev => ({ ...prev, [emailId]: false }));
     }
-  };  // Filter emails by current label
+  };
+  
+  // Filter emails by current label
   const filteredEmailsByLabel = emails.filter(email => {
     if (currentLabel === 'Inbox') return true;
     
@@ -239,10 +259,14 @@ function App() {
   return (
     <>
       <div className="topbar">
-        <span className="top-group">
-          <img src="favicon.png" className="logo-icon" alt="AP-Email" />
-          <strong>{currentLabel}</strong>
-        </span>
+        <div className="top-group">
+          <img src="favicon.png" className="logo-icon" alt="AP-Email"/>
+          <strong>Inbox</strong>
+          <div className="new-email-btn">
+            <img src="misc/new_mail_icon.png" alt="AP-Email"/>
+            <span>Compose</span>
+          </div>
+        </div>
           {/* Fixed search bar */}
         <div className="search-container fixed-search">
           <input 
@@ -257,20 +281,53 @@ function App() {
             🔍
           </button>
         </div>
-      </div>      <div className="sidebar">
+        <div className="topbar-group">
+          <button onClick={() => setDarkMode(!darkMode)} className="mode-btn">
+              {darkMode ? 'Light-Mode' : 'Dark-Mode'}
+          </button>
+          <img src="misc/temp.png" className="topbar-pfp" alt="Profile" />
+        </div>
+      </div>     
+
+      <div className="sidebar">
+        {/* Add default labels and user specific labels */}
+        {defaultLabels.map(label => {
+          const labelName = typeof label === 'string' ? label : label.name;
+          return (
+            <p
+              key={labelName} 
+              className={`sidebar-item ${currentLabel === labelName ? 'sidebar-active-label' : ''}`}
+              onClick={() => handleLabelClick(labelName)}
+            >
+              <img src={label.photo_asset} alt={label.name} />
+              {labelName}
+            </p>
+          );
+        })}
+
+        <p className="sidebar-add-label-tab">
+          <strong>Labels</strong>
+          <button className="sidebar-add-label-btn">
+            <img src="misc/plus_sign.png" alt="Add label" />
+          </button>
+        </p>
+        
         {labels.map(label => {
           const labelName = typeof label === 'string' ? label : label.name;
           return (
             <p 
               key={labelName} 
-              className={`clickable ${currentLabel === labelName ? 'active-label' : ''}`}
+              className={`sidebar-item ${currentLabel === labelName ? 'sidebar-active-label' : ''}`}
               onClick={() => handleLabelClick(labelName)}
             >
+              <img src="misc/def_label_icon.png" alt={label.name} />
               {labelName}
             </p>
           );
         })}
-      </div>      <div className="main">
+      </div>   
+
+      <div className="main">
         {error && (
           <div className="error-message" style={{color: 'red', marginBottom: '10px'}}>
             {error}
@@ -296,10 +353,10 @@ function App() {
                   />
                   <label htmlFor="select-all" className="select-all-label">Select All</label>
                 </div>
-                <div className="tab active">Primary</div>
+                <div className="tab active" onClick={(e) => swapTab(e.target)}>Primary</div>
               </div>
-              <div className="tab">Social</div>
-              <div className="tab">Promotions</div>
+              <div className="tab" onClick={(e) => swapTab(e.target)}>Social</div>
+              <div className="tab" onClick={(e) => swapTab(e.target)}>Promotions</div>
             </div><div className="email-list">
           {filteredEmailsByLabel.map(email => {
             // Handle both backend and frontend label formats
@@ -315,8 +372,8 @@ function App() {
                 />
                 
                 <div className="email-content">
-                  <span className="subject">{email.subject}</span>
-                  <span className="body">{email.body}</span>
+                  <span className="from">{email.from}</span>
+                  <span className="subject">{email.subject} - {email.body}</span>
                 </div>
                 
                 {/* Labels displayed on the right side near the date */}
@@ -414,13 +471,41 @@ function App() {
           </>
         )}
       </div>
-
-      {/* New Email Button */}
-      <button className="new-email-btn" title="New Email">
-        +
-      </button>
     </>
   );
+}
+
+/**
+ * @brief Dark-Mode Hook
+ */
+function useDarkMode() {
+  const [darkMode, setDarkMode] = useState(false);
+
+  // Define once when used.
+  useEffect(() => {
+    const saved = localStorage.getItem('darkMode');
+    if (saved) setDarkMode(saved === 'true');
+  }, []);
+
+  // Toggles mode effect.
+  useEffect(() => {
+    document.body.classList.toggle('dark', darkMode);
+    localStorage.setItem('darkMode', darkMode);
+  }, [darkMode]);
+
+  return [darkMode, setDarkMode];
+}
+
+
+/**
+ * @brief Swaps mail list type in inbox menu.
+ */
+function swapTab(el) {
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.classList.remove('active');
+  });
+
+  el.classList.add('active');
 }
 
 export default App;
