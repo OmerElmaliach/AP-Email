@@ -89,7 +89,7 @@ const createLabel = (req, res)=>{
  * // Response: [{ "id": "label1", "name": "Important", "userId": "user123", "color": "#FF0000" }]
  */
 const getLabels = (req,res) =>{
-    const { userId } = req.body;
+    const userId = req.headers['userid'];
 
     // Check if userId is provided
     if (!userId) {
@@ -98,14 +98,7 @@ const getLabels = (req,res) =>{
 
     // Get labels for the specified user
     const labels = model.getLabels('userId', userId);
-
-    // Check if any labels were found
-    if (labels.length === 0) {
-        return res.status(404).json({ error: 'No labels found for this user' });
-    }
-
     return res.status(200).json(labels);
-    
 }
 
 /**
