@@ -81,11 +81,23 @@ function sendCommand(command) {
             client.end();
             
             if (errorOccurred) return;
-            
-            if (action === 'POST') {
+              if (action === 'POST') {
                 resolve(`URL ${url} added to blacklist`);
             } else if (action === 'GET') {
-                const isBlacklisted = response.includes('true') || response.includes('1') || response.toLowerCase().includes('yes');
+                // Parse C++ server response format correctly
+                // Response format: "200 Ok\n\n{payload}"
+                // Payload can be: "false", "true true", or "true false"
+                const parts = response.split('\n\n');
+                let isBlacklisted = false;
+                
+                if (parts.length > 1) {
+                    const payload = parts[1].trim();
+                    // Only "true true" means actually blacklisted
+                    // "true false" is false positive (in filter but not in storage)
+                    // "false" means definitely not blacklisted
+                    isBlacklisted = payload === 'true true';
+                }
+                
                 resolve(`URL ${url} is blacklisted: ${isBlacklisted}`);
             } else if (action === 'DELETE') {
                 resolve(`URL ${url} removed from blacklist: true`);
