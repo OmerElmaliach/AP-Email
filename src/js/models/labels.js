@@ -17,30 +17,6 @@
 const labels_DB = []
 
 /**
- * Initialize default labels
- * @description Creates default system labels that are available to all users
- */
-const initializeDefaultLabels = () => {
-    const defaultLabels = [
-        { id: "inbox", name: "Inbox", userId: "system", color: "#1a73e8" },
-        { id: "starred", name: "Starred", userId: "system", color: "#fbbc04" },
-        { id: "sent", name: "Sent", userId: "system", color: "#34a853" },
-        { id: "draft", name: "Draft", userId: "system", color: "#9aa0a6" },
-        { id: "spam", name: "Spam", userId: "system", color: "#ea4335" },
-        { id: "trash", name: "Trash", userId: "system", color: "#5f6368" }
-    ];
-    
-    defaultLabels.forEach(label => {
-        if (!labels_DB.find(existing => existing.id === label.id)) {
-            labels_DB.push(label);
-        }
-    });
-}
-
-// Initialize default labels when module loads
-initializeDefaultLabels();
-
-/**
  * Unique ID generator for labels
  * @type {Function}
  * @description Closure-based ID generator that creates sequential unique IDs.
@@ -225,4 +201,4 @@ const getDefaultLabelForUser = (userId) => {
   return labels_DB.find(label => label.userId === userId.toString() && label.name === null && label.color === null);
 }
 
-module.exports = {createLabel, getLabels, getAllLabels, getLabelById, updateLabel, deleteLabel, idGenerator, getDefaultLabelForUser, initializeDefaultLabels}
+module.exports = {createLabel, getLabels, getAllLabels, getLabelById, updateLabel, deleteLabel, idGenerator, getDefaultLabelForUser}
