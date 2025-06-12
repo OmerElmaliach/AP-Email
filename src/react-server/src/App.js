@@ -33,7 +33,6 @@ function App() {
       try {
         setLoading(true);
         setError(null);
-        
         // Load emails and labels from backend
         const [emailsData, labelsData] = await Promise.all([
           ApiService.getUserEmails(),
@@ -55,7 +54,7 @@ function App() {
             subject: "ETL",
             body: "Equipment Return Instructions",
             date: "Mar 31",
-            labels: ["Inbox", "Work"]
+            labels: ["Work"]
           },
           {
             id: 2,
@@ -63,7 +62,7 @@ function App() {
             subject: "Meeting Tomorrow",
             body: "Don't forget about our team meeting at 2 PM",
             date: "Apr 1",
-            labels: ["Inbox", "Important", "Meetings"]
+            labels: ["Important", "Meetings"]
           },
           {
             id: 3,
@@ -71,7 +70,7 @@ function App() {
             subject: "Newsletter",
             body: "Weekly tech updates and industry news",
             date: "Apr 2",
-            labels: ["Inbox", "Newsletter"]
+            labels: ["Newsletter"]
           },
           {
             id: 4,
@@ -79,7 +78,7 @@ function App() {
             subject: "Project Update",
             body: "Status report on the current development phase",
             date: "Apr 3",
-            labels: ["Inbox", "Work", "Updates", "Development"]
+            labels: ["Work", "Updates", "Development"]
           }
         ];
         
@@ -258,20 +257,22 @@ function App() {
 
   return (
     <>
+      {/* Top row display */}
       <div className="topbar">
         <div className="top-group">
-          <img src="favicon.png" className="logo-icon" alt="AP-Email"/>
+          <img src="favicon.png" className="logo-icon" alt="AP-Email" />
           <strong>Inbox</strong>
           <div className="new-email-btn">
-            <img src="misc/new_mail_icon.png" alt="AP-Email"/>
+            <img src="misc/new_mail_icon.png" alt="AP-Email" />
             <span>Compose</span>
           </div>
         </div>
-          {/* Fixed search bar */}
+  
+        {/* Fixed search bar */}
         <div className="search-container fixed-search">
-          <input 
-            type="text" 
-            placeholder="Search mail..." 
+          <input
+            type="text"
+            placeholder="Search mail..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyPress={handleSearchKeyPress}
@@ -281,21 +282,22 @@ function App() {
             🔍
           </button>
         </div>
+  
         <div className="topbar-group">
           <button onClick={() => setDarkMode(!darkMode)} className="mode-btn">
-              {darkMode ? 'Light-Mode' : 'Dark-Mode'}
+            {darkMode ? 'Light-Mode' : 'Dark-Mode'}
           </button>
           <img src="misc/temp.png" className="topbar-pfp" alt="Profile" />
         </div>
-      </div>     
-
+      </div>
+  
       <div className="sidebar">
         {/* Add default labels and user specific labels */}
         {defaultLabels.map(label => {
           const labelName = typeof label === 'string' ? label : label.name;
           return (
             <p
-              key={labelName} 
+              key={labelName}
               className={`sidebar-item ${currentLabel === labelName ? 'sidebar-active-label' : ''}`}
               onClick={() => handleLabelClick(labelName)}
             >
@@ -304,19 +306,19 @@ function App() {
             </p>
           );
         })}
-
+  
         <p className="sidebar-add-label-tab">
           <strong>Labels</strong>
           <button className="sidebar-add-label-btn">
             <img src="misc/plus_sign.png" alt="Add label" />
           </button>
         </p>
-        
+  
         {labels.map(label => {
           const labelName = typeof label === 'string' ? label : label.name;
           return (
-            <p 
-              key={labelName} 
+            <p
+              key={labelName}
               className={`sidebar-item ${currentLabel === labelName ? 'sidebar-active-label' : ''}`}
               onClick={() => handleLabelClick(labelName)}
             >
@@ -325,17 +327,17 @@ function App() {
             </p>
           );
         })}
-      </div>   
-
+      </div>
+  
       <div className="main">
         {error && (
-          <div className="error-message" style={{color: 'red', marginBottom: '10px'}}>
+          <div className="error-message" style={{ color: 'red', marginBottom: '10px' }}>
             {error}
           </div>
         )}
-        
+  
         {loading ? (
-          <div className="loading" style={{textAlign: 'center', padding: '20px'}}>
+          <div className="loading" style={{ textAlign: 'center', padding: '20px' }}>
             Loading emails...
           </div>
         ) : (
@@ -357,122 +359,126 @@ function App() {
               </div>
               <div className="tab" onClick={(e) => swapTab(e.target)}>Social</div>
               <div className="tab" onClick={(e) => swapTab(e.target)}>Promotions</div>
-            </div><div className="email-list">
-          {filteredEmailsByLabel.map(email => {
-            // Handle both backend and frontend label formats
-            const emailLabels = email.labels || (Array.isArray(email.label) ? email.label : (email.label ? [email.label] : []));
-            
-            return (
-              <div key={email.id} className="email-row">
-                <input
-                  type="checkbox"
-                  checked={selectedEmails.includes(email.id)}
-                  onChange={(e) => handleEmailSelect(email.id, e)}
-                  className="email-checkbox"
-                />
-                
-                <div className="email-content">
-                  <span className="from">{email.from}</span>
-                  <span className="subject">{email.subject} - {email.body}</span>
-                </div>
-                
-                {/* Labels displayed on the right side near the date */}
-                <div className="email-right-section">
-                  <div className="email-labels">
-                    {emailLabels.slice(0, 3).map(label => (
-                      <span key={label} className="label-tag" onClick={() => handleLabelClick(label)}>
-                        {label}
-                        <button 
-                          className="remove-label"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            removeLabelFromEmail(email.id, label);
-                          }}
-                        >
-                          ×
-                        </button>
-                      </span>
-                    ))}
-                    
-                    {emailLabels.length > 3 && (
-                      <div className="label-dropdown-container">
-                        <button 
-                          className="more-labels"
-                          onClick={() => toggleLabelDropdown(email.id)}
-                        >
-                          +{emailLabels.length - 3} more
-                        </button>
-                        {showLabelDropdown[email.id] && (
-                          <div className="label-dropdown">
-                            {emailLabels.slice(3).map(label => (
-                              <div key={label} className="dropdown-label">
-                                <span onClick={() => handleLabelClick(label)}>{label}</span>
-                                <button 
-                                  className="remove-label"
-                                  onClick={() => removeLabelFromEmail(email.id, label)}
-                                >
-                                  ×
-                                </button>
+            </div>
+  
+            {/* Load up emails with the proper labels */}
+            <div className="email-list">
+              {filteredEmailsByLabel.map(email => {
+                const emailLabels = email.labels || (Array.isArray(email.label) ? email.label : (email.label ? [email.label] : []));
+  
+                return (
+                  <div key={email.id} className="email-row">
+                    <input
+                      type="checkbox"
+                      checked={selectedEmails.includes(email.id)}
+                      onChange={(e) => handleEmailSelect(email.id, e)}
+                      className="email-checkbox"
+                    />
+  
+                    <div className="email-content">
+                      <span className="from">{email.from}</span>
+                      <span className="subject">{email.subject} - {email.body}</span>
+                    </div>
+  
+                    {/* Labels displayed on the right side near the date */}
+                    <div className="email-right-section">
+                      <div className="email-labels">
+                        {emailLabels.slice(0, 3).map(label => (
+                          <span key={label} className="label-tag" onClick={() => handleLabelClick(label)}>
+                            {label}
+                            <button
+                              className="remove-label"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                removeLabelFromEmail(email.id, label);
+                              }}
+                            >
+                              ×
+                            </button>
+                          </span>
+                        ))}
+  
+                        {emailLabels.length > 3 && (
+                          <div className="label-dropdown-container">
+                            <button
+                              className="more-labels"
+                              onClick={() => toggleLabelDropdown(email.id)}
+                            >
+                              +{emailLabels.length - 3} more
+                            </button>
+                            {showLabelDropdown[email.id] && (
+                              <div className="label-dropdown">
+                                {emailLabels.slice(3).map(label => (
+                                  <div key={label} className="dropdown-label">
+                                    <span onClick={() => handleLabelClick(label)}>{label}</span>
+                                    <button
+                                      className="remove-label"
+                                      onClick={() => removeLabelFromEmail(email.id, label)}
+                                    >
+                                      ×
+                                    </button>
+                                  </div>
+                                ))}
                               </div>
-                            ))}
+                            )}
+                          </div>
+                        )}
+  
+                        <button
+                          className="add-label-btn"
+                          onClick={() => toggleLabelSuggestions(email.id)}
+                        >
+                          + Add Label
+                        </button>
+  
+                        {showLabelSuggestions[email.id] && (
+                          <div className="label-suggestions">
+                            <input
+                              type="text"
+                              placeholder="Enter label name..."
+                              value={newLabelInput[email.id] || ''}
+                              onChange={(e) => setNewLabelInput(prev => ({
+                                ...prev,
+                                [email.id]: e.target.value
+                              }))}
+                              onKeyPress={(e) => handleNewLabelKeyPress(e, email.id)}
+                              className="label-input"
+                            />
+  
+                            <div className="suggestions-list">
+                              {labels
+                                .filter(label => {
+                                  const labelName = typeof label === 'string' ? label : label.name;
+                                  return !emailLabels.includes(labelName);
+                                })
+                                .map(label => {
+                                  const labelName = typeof label === 'string' ? label : label.name;
+                                  return (
+                                    <button
+                                      key={labelName}
+                                      className="suggestion-item"
+                                      onClick={() => addLabelToEmail(email.id, labelName)}
+                                    >
+                                      {labelName}
+                                    </button>
+                                  );
+                                })}
+                            </div>
                           </div>
                         )}
                       </div>
-                    )}                    
-                    <button 
-                      className="add-label-btn"
-                      onClick={() => toggleLabelSuggestions(email.id)}
-                    >
-                      + Add Label
-                    </button>
-                    
-                    {showLabelSuggestions[email.id] && (
-                      <div className="label-suggestions">
-                        <input
-                          type="text"
-                          placeholder="Enter label name..."
-                          value={newLabelInput[email.id] || ''}
-                          onChange={(e) => setNewLabelInput(prev => ({
-                            ...prev,
-                            [email.id]: e.target.value
-                          }))}
-                          onKeyPress={(e) => handleNewLabelKeyPress(e, email.id)}
-                          className="label-input"
-                        />
-                        
-                        <div className="suggestions-list">
-                          {labels
-                            .filter(label => {
-                              const labelName = typeof label === 'string' ? label : label.name;
-                              return !emailLabels.includes(labelName);
-                            })
-                            .map(label => {
-                              const labelName = typeof label === 'string' ? label : label.name;
-                              return (
-                                <button
-                                  key={labelName}
-                                  className="suggestion-item"
-                                  onClick={() => addLabelToEmail(email.id, labelName)}
-                                >
-                                  {labelName}
-                                </button>
-                              );
-                            })}
-                        </div>
-                      </div>
-                    )}
+  
+                      <span className="email-date">{email.date || email.date_sent}</span>
+                    </div>
                   </div>
-                    <span className="email-date">{email.date || email.date_sent}</span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+                );
+              })}
+            </div>
           </>
         )}
       </div>
     </>
-  );
+  );  
 }
 
 /**
