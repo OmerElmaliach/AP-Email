@@ -198,21 +198,6 @@
     position: relative;
 }
 
-.label-input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #dadce0;
-    border-radius: 4px;
-    font-size: 12px;
-    margin-bottom: 8px;
-    outline: none;
-    box-sizing: border-box;
-}
-
-.label-input:focus {
-    border-color: #1a73e8;
-}
-
 .suggestions-list {
     max-height: 150px;
     overflow-y: auto;

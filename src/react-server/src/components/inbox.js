@@ -3,12 +3,11 @@ import '../styles/inbox.css';
 import ApiService from '../ApiService';
 import Topbar from './topbar.js';
 import Sidebar from './sidebar.js';
-import InboxPanel from './inboxpanel.js';
+import InboxPanel from './inboxPanel.js';
 
 const Inbox = () => {
   // State management
   const [searchQuery, setSearchQuery] = useState('');
-  const [darkMode, setDarkMode] = useDarkMode();
   const [selectedEmails, setSelectedEmails] = useState([]);
   const [emails, setEmails] = useState([]);
   const [allEmails, setAllEmails] = useState([]);
@@ -19,6 +18,7 @@ const Inbox = () => {
   const [newLabelInput, setNewLabelInput] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [darkMode, setDarkMode] = useDarkMode();
 
   // Load initial data from backend
   useEffect(() => {

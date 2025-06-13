@@ -109,18 +109,6 @@ const InboxPanel = ({ error, loading, selectedEmails, filteredEmailsByLabel, han
   
                         {showLabelSuggestions[email.id] && (
                           <div className="label-suggestions">
-                            <input
-                              type="text"
-                              placeholder="Enter label name..."
-                              value={newLabelInput[email.id] || ''}
-                              onChange={(e) => setNewLabelInput(prev => ({
-                                ...prev,
-                                [email.id]: e.target.value
-                              }))}
-                              onKeyPress={(e) => handleNewLabelKeyPress(e, email.id)}
-                              className="label-input"
-                            />
-  
                             <div className="suggestions-list">
                               {
                                 labels.filter(label => {
