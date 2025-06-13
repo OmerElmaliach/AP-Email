@@ -2,6 +2,7 @@ const express =  require('express')
 const router = express.Router()
 const controller = require('../controllers/users')
 const multer = require('multer')
+const path = require('path')
 
 
 const storage = multer.diskStorage({
@@ -11,8 +12,7 @@ const storage = multer.diskStorage({
     filename: function(req, file, cb){
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
         // Get the file ext
-        const parts = file.originalname.split('.')
-        const ext = parts.length > 1 ? '.' + parts.pop() : '';
+        const ext = path.extname(file.originalname)
         cb(null, uniqueSuffix + ext); // Filename
     }
 })
