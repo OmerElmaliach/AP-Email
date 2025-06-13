@@ -221,7 +221,6 @@ const Inbox = () => {
         selectedEmails={selectedEmails}
         filteredEmailsByLabel={filteredEmailsByLabel}
         handleSelectAll={handleSelectAll}
-        openEmail={openEmail}
         handleEmailSelect={handleEmailSelect}
         handleLabelClick={handleLabelClick}
         removeLabelFromEmail={removeLabelFromEmail}
@@ -258,13 +257,6 @@ function useDarkMode() {
   }, [darkMode]);
 
   return [darkMode, setDarkMode];
-}
-
-/**
- * @brief Opens page for viewing specific email
- */
-function openEmail(id) {
-
 }
 
 export default Inbox;

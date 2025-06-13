@@ -32,7 +32,21 @@ const EmailDisplay = () => {
             />
         ) : (
             <>
-                {email.from}
+            <div className="topbar">
+                <div className="top-group">
+                    <img src="../favicon.png" className="logo-icon" alt="AP-Email" />
+                    <strong>Inbox</strong>
+                    <div className="new-email-btn">
+                        <img src="../misc/new_mail_icon.png" alt="AP-Email" />
+                        <span>Compose</span>
+                    </div>
+                </div>
+
+                <div className="topbar-group">
+                    
+                    <img src="../misc/temp.png" className="topbar-pfp" alt="Profile" />
+                </div>
+            </div>
             </>
         )}
         </>

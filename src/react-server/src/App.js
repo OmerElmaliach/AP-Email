@@ -8,7 +8,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Inbox />} />
-        <Route path="/mail/:id" element={<EmailDisplay />} />
+        <Route path="/email/:id" element={<EmailDisplay />} />
         <Route path="*" element={<ErrorPage />} />
       </Routes>
     </Router>
