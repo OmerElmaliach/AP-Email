@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/inbox.css';
 import ApiService from '../ApiService';
+import Topbar from './topbar.js';
 
 const Inbox = () => {
   // State management
   const [searchQuery, setSearchQuery] = useState('');
+  const [darkMode, setDarkMode] = useDarkMode();
   const [selectedEmails, setSelectedEmails] = useState([]);
   const [emails, setEmails] = useState([]);
   const [allEmails, setAllEmails] = useState([]);
@@ -15,7 +17,6 @@ const Inbox = () => {
   const [newLabelInput, setNewLabelInput] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [darkMode, setDarkMode] = useDarkMode();
 
   // Default labels for all users.
   const defaultLabels = [
@@ -46,51 +47,6 @@ const Inbox = () => {
         console.error('Failed to load data:', err);
         setError('Failed to load data from server. Using offline mode.');
         
-        // Fallback to mock data
-        const mockEmails = [
-          {
-            id: 1,
-            to: ["gabi@email.com, brodi@email.com"],
-            from: "omer@email.com",
-            subject: "ETL",
-            body: "Equipment Return Instructions",
-            date: "Mar 31",
-            labels: ["Work"]
-          },
-          {
-            id: 2,
-            to: ["gabi@email.com, brodi@email.com"],
-            from: "brodi@email.com",
-            subject: "Meeting Tomorrow",
-            body: "Don't forget about our team meeting at 2 PM",
-            date: "Apr 1",
-            labels: ["Important", "Meetings"]
-          },
-          {
-            id: 3,
-            to: ["gabi@email.com, brodi@email.com"],
-            from: "gabi@email.com",
-            subject: "Newsletter",
-            body: "Weekly tech updates and industry news",
-            date: "Apr 2",
-            labels: ["Newsletter"]
-          },
-          {
-            id: 4,
-            to: ["gabi@email.com, brodi@email.com"],
-            from: "bodek@email.com",
-            subject: "Project Update",
-            body: "Status report on the current development phase",
-            date: "Apr 3",
-            labels: ["Work", "Updates", "Development"]
-          }
-        ];
-        
-        const mockLabels = ["Work", "Important", "Meetings", "Newsletter", "Updates", "Development"];
-        
-        setAllEmails(mockEmails);
-        setEmails(mockEmails);
-        setLabels(mockLabels);
       } finally {
         setLoading(false);
       }
@@ -111,16 +67,6 @@ const Inbox = () => {
       setEmails(allEmails);
     }
   }, [searchQuery, allEmails]);
-
-  const handleSearch = () => {
-    // Search is now handled by useEffect for real-time filtering
-  };
-
-  const handleSearchKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      handleSearch();
-    }
-  };
 
   // Email selection functionality
   const handleSelectAll = (e) => {
@@ -262,39 +208,13 @@ const Inbox = () => {
   return (
     <>
       {/* Top row display */}
-      <div className="topbar">
-        <div className="top-group">
-          <img src="favicon.png" className="logo-icon" alt="AP-Email" />
-          <strong>Inbox</strong>
-          <div className="new-email-btn">
-            <img src="misc/new_mail_icon.png" alt="AP-Email" />
-            <span>Compose</span>
-          </div>
-        </div>
-  
-        {/* Fixed search bar */}
-        <div className="search-container fixed-search">
-          <input
-            type="text"
-            placeholder="Search mail..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyPress={handleSearchKeyPress}
-            className="search-input"
-          />
-          <button onClick={handleSearch} className="search-button">
-            🔍
-          </button>
-        </div>
-  
-        <div className="topbar-group">
-          <button onClick={() => setDarkMode(!darkMode)} className="mode-btn">
-            {darkMode ? 'Light-Mode' : 'Dark-Mode'}
-          </button>
-          <img src="misc/temp.png" className="topbar-pfp" alt="Profile" />
-        </div>
-      </div>
-  
+      <Topbar
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        darkMode={darkMode}
+        setDarkMode={setDarkMode}
+      />
+
       <div className="sidebar">
         {/* Add default labels and user specific labels */}
         {defaultLabels.map(label => {
@@ -489,7 +409,7 @@ const Inbox = () => {
  * @brief Dark-Mode Hook
  */
 function useDarkMode() {
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
 
   // Define once when used.
   useEffect(() => {
@@ -505,7 +425,6 @@ function useDarkMode() {
 
   return [darkMode, setDarkMode];
 }
-
 
 /**
  * @brief Swaps mail list type in inbox menu.
