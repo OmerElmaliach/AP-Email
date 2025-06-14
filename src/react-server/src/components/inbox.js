@@ -4,21 +4,18 @@ import ApiService from '../ApiService';
 import Topbar from './topbar.js';
 import Sidebar from './sidebar.js';
 import InboxPanel from './inboxPanel.js';
+import { useAppContext } from '../context/appContext.js';
 
 const Inbox = () => {
   // State management
-  const [searchQuery, setSearchQuery] = useState('');
+  const { labels, currentLabel, setCurrentLabel, darkMode, setDarkMode, searchQuery, setSearchQuery, setLabels, error, setError } = useAppContext();
   const [selectedEmails, setSelectedEmails] = useState([]);
   const [emails, setEmails] = useState([]);
   const [allEmails, setAllEmails] = useState([]);
-  const [labels, setLabels] = useState([]);
-  const [currentLabel, setCurrentLabel] = useState('Inbox');
   const [showLabelDropdown, setShowLabelDropdown] = useState({});
   const [showLabelSuggestions, setShowLabelSuggestions] = useState({});
   const [newLabelInput, setNewLabelInput] = useState({});
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [darkMode, setDarkMode] = useDarkMode();
 
   // Load initial data from backend
   useEffect(() => {
@@ -200,23 +197,13 @@ const Inbox = () => {
   return (
     <>
       {/* Topbar display */}
-      <Topbar
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        darkMode={darkMode}
-        setDarkMode={setDarkMode}
-      />
+      <Topbar/>
 
       {/* Sidebar display */}
-      <Sidebar
-        currentLabel={currentLabel}
-        handleLabelClick={handleLabelClick}
-        labels={labels}
-      />
+      <Sidebar/>
 
       {/* Inbox Panel display */}
       <InboxPanel
-        error={error}
         loading={loading}
         selectedEmails={selectedEmails}
         filteredEmailsByLabel={filteredEmailsByLabel}
@@ -228,10 +215,6 @@ const Inbox = () => {
         showLabelDropdown={showLabelDropdown}
         toggleLabelSuggestions={toggleLabelSuggestions}
         showLabelSuggestions={showLabelSuggestions}
-        newLabelInput={newLabelInput}
-        setNewLabelInput={setNewLabelInput}
-        handleNewLabelKeyPress={handleNewLabelKeyPress}
-        labels={labels}
         addLabelToEmail={addLabelToEmail}
       />
     </>

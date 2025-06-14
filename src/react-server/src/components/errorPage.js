@@ -1,7 +1,8 @@
 import '../styles/errorPage.css'
+import { useAppContext } from '../context/appContext.js';
 
-const ErrorPage = ({ error }) => {
-    
+const ErrorPage = () => {
+    const { error } = useAppContext();
     return (
         <>
         <div className="center-text">

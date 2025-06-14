@@ -1,9 +1,10 @@
 import '../styles/inboxpanel.css'
 import { useNavigate } from 'react-router-dom';
+import { useAppContext } from '../context/appContext.js';
 
-const InboxPanel = ({ error, loading, selectedEmails, filteredEmailsByLabel, handleSelectAll, toggleLabelSuggestions, showLabelSuggestions, 
-    handleEmailSelect, handleLabelClick, removeLabelFromEmail, toggleLabelDropdown, showLabelDropdown, newLabelInput, setNewLabelInput, handleNewLabelKeyPress,
-    labels, addLabelToEmail }) => {
+const InboxPanel = ({ loading, selectedEmails, filteredEmailsByLabel, handleSelectAll, toggleLabelSuggestions, showLabelSuggestions, 
+    handleEmailSelect, handleLabelClick, removeLabelFromEmail, toggleLabelDropdown, showLabelDropdown, addLabelToEmail }) => {
+      const { error, labels } = useAppContext();
       const navigate = useNavigate();
       return (
           <>
@@ -49,7 +50,7 @@ const InboxPanel = ({ error, loading, selectedEmails, filteredEmailsByLabel, han
                       <input
                         type="checkbox"
                         checked={selectedEmails.includes(email.id)}
-                        onClick={(e) => e.stopPropagation()} // <-- THIS is what actually stops the row click
+                        onClick={(e) => e.stopPropagation()}
                         onChange={(e) => handleEmailSelect(email.id, e)}
                         className="email-checkbox"
                       />
@@ -63,7 +64,10 @@ const InboxPanel = ({ error, loading, selectedEmails, filteredEmailsByLabel, han
                       <div className="email-right-section">
                         <div className="email-labels">
                           {emailLabels.slice(0, 3).map(label => (
-                            <span key={label} className="label-tag" onClick={() => handleLabelClick(label)}>
+                            <span key={label} className="label-tag" onClick={(e) => {
+                              handleLabelClick(label);
+                              e.stopPropagation();
+                              }} >
                               {label}
                               <button
                                 className="remove-label"
@@ -81,7 +85,10 @@ const InboxPanel = ({ error, loading, selectedEmails, filteredEmailsByLabel, han
                             <div className="label-dropdown-container">
                               <button
                                 className="more-labels"
-                                onClick={() => toggleLabelDropdown(email.id)}
+                                onClick={(e) => {
+                                  toggleLabelDropdown(email.id);
+                                  e.stopPropagation();
+                                }}
                               >
                                 +{emailLabels.length - 3} more
                               </button>
@@ -89,10 +96,16 @@ const InboxPanel = ({ error, loading, selectedEmails, filteredEmailsByLabel, han
                                 <div className="label-dropdown">
                                   {emailLabels.slice(3).map(label => (
                                     <div key={label} className="dropdown-label">
-                                      <span onClick={() => handleLabelClick(label)}>{label}</span>
+                                      <span onClick={(e) => {
+                                        handleLabelClick(label);
+                                        e.stopPropagation();
+                                        }}>{label}</span>
                                       <button
                                         className="remove-label"
-                                        onClick={() => removeLabelFromEmail(email.id, label)}
+                                        onClick={(e) => {
+                                          removeLabelFromEmail(email.id, label);
+                                          e.stopPropagation();
+                                        }}
                                       >
                                         ×
                                       </button>
@@ -105,7 +118,10 @@ const InboxPanel = ({ error, loading, selectedEmails, filteredEmailsByLabel, han
     
                           <button
                             className="add-label-btn"
-                            onClick={() => toggleLabelSuggestions(email.id)}
+                            onClick={(e) => {
+                              toggleLabelSuggestions(email.id);
+                              e.stopPropagation();
+                            }}
                           >
                             + Add Label
                           </button>
@@ -124,7 +140,10 @@ const InboxPanel = ({ error, loading, selectedEmails, filteredEmailsByLabel, han
                                       <button
                                         key={labelName}
                                         className="suggestion-item"
-                                        onClick={() => addLabelToEmail(email.id, label.id)}
+                                        onClick={(e) => {
+                                          addLabelToEmail(email.id, label.id);
+                                          e.stopPropagation();
+                                        }}
                                       >
                                         {labelName}
                                       </button>

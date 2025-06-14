@@ -1,14 +1,17 @@
 import '../styles/sidebar.css';
+import { useAppContext } from '../context/appContext.js';
 
-const Sidebar = ({ currentLabel, handleLabelClick, labels }) => {
+const Sidebar = () => {
+    const { labels, currentLabel, setCurrentLabel } = useAppContext();
+
     // Default labels for all users.
     const defaultLabels = [
-        {"name" : "Inbox", "photo_asset" : "misc/inbox_icon.png"},
-        {"name" : "Starred", "photo_asset" : "misc/star_icon.png"},
-        {"name" : "Sent", "photo_asset" : "misc/send_icon.png"},
-        {"name" : "Draft", "photo_asset" : "misc/draft_icon.png"},
-        {"name" : "Spam", "photo_asset" : "misc/spam_icon.png"},
-        {"name" : "Trash", "photo_asset" : "misc/delete_icon.png"}
+        {"name" : "Inbox", "photo_asset" : "../../misc/inbox_icon.png"},
+        {"name" : "Starred", "photo_asset" : "../../misc/star_icon.png"},
+        {"name" : "Sent", "photo_asset" : "../../misc/send_icon.png"},
+        {"name" : "Draft", "photo_asset" : "../../misc/draft_icon.png"},
+        {"name" : "Spam", "photo_asset" : "../../misc/spam_icon.png"},
+        {"name" : "Trash", "photo_asset" : "../../misc/delete_icon.png"}
     ];
 
     return (
@@ -21,7 +24,7 @@ const Sidebar = ({ currentLabel, handleLabelClick, labels }) => {
                     <p
                     key={labelName}
                     className={`sidebar-item ${currentLabel === labelName ? 'sidebar-active-label' : ''}`}
-                    onClick={() => handleLabelClick(labelName)}
+                    onClick={() => setCurrentLabel(labelName)}
                     >
                         <img src={label.photo_asset} alt={label.name} />
                         {labelName}
@@ -32,7 +35,7 @@ const Sidebar = ({ currentLabel, handleLabelClick, labels }) => {
             <p className="sidebar-add-label-tab">
                 <strong>Labels</strong>
                 <button className="sidebar-add-label-btn">
-                    <img src="misc/plus_sign.png" alt="Add label" />
+                    <img src="../../misc/plus_sign.png" alt="Add label" />
                 </button>
             </p>
     
@@ -42,9 +45,9 @@ const Sidebar = ({ currentLabel, handleLabelClick, labels }) => {
                     <p
                     key={labelName}
                     className={`sidebar-item ${currentLabel === labelName ? 'sidebar-active-label' : ''}`}
-                    onClick={() => handleLabelClick(labelName)}
+                    onClick={() => setCurrentLabel(labelName)}
                     >
-                        <img src="misc/def_label_icon.png" alt={label.name} />
+                        <img src="../../misc/def_label_icon.png" alt={label.name} />
                         {labelName}
                     </p>
                 );
