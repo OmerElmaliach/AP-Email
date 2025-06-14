@@ -16,7 +16,7 @@ export const AppProvider = ({ children }) => {
     const [allEmails, setAllEmails] = useState([]);
     const [newLabelInput, setNewLabelInput] = useState({});
 
-    {/* Dark Mode Functionality */}
+    // Dark Mode Functionality 
     // Define once when used.
     useEffect(() => {
         const saved = localStorage.getItem('darkMode');

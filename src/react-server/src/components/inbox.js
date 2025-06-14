@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import '../styles/inbox.css';
 import ApiService from '../ApiService';
 import Topbar from './topbar.js';
@@ -34,7 +34,7 @@ const Inbox = () => {
     };
 
     loadData();
-  }, []);  // Search functionality with real-time filtering
+  }, [setLoading, setError, setAllEmails, setEmails, setLabels]);  // Search functionality with real-time filtering
 
   useEffect(() => {
     if (searchQuery.trim()) {
@@ -47,7 +47,7 @@ const Inbox = () => {
     } else {
       setEmails(allEmails);
     }
-  }, [searchQuery, allEmails]);
+  }, [searchQuery, allEmails, setEmails]);
 
   return (
     <>
