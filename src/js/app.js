@@ -42,11 +42,14 @@ app.use('/api/userPhoto', userPhoto);
 
 
 //any thing else will send to react signin
-app.use('*', (req, res) => {
+app.use((req, res) => {
   res.redirect('http://localhost:3000');
 });
 
-app.listen(9000);
+console.log("About to start server...");
+app.listen(9000, () => {
+  console.log("Server is running on port 9000");
+});
 
 // in react youl put two fetches
 /*
