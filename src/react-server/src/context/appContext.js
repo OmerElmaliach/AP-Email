@@ -8,6 +8,13 @@ export const AppProvider = ({ children }) => {
     const [labels, setLabels] = useState([]);
     const [currentLabel, setCurrentLabel] = useState('Inbox');
     const [error, setError] = useState(undefined);
+    const [loading, setLoading] = useState(true);
+    const [selectedEmails, setSelectedEmails] = useState([]);
+    const [showLabelDropdown, setShowLabelDropdown] = useState({});
+    const [showLabelSuggestions, setShowLabelSuggestions] = useState({});
+    const [emails, setEmails] = useState([]);
+    const [allEmails, setAllEmails] = useState([]);
+    const [newLabelInput, setNewLabelInput] = useState({});
 
     {/* Dark Mode Functionality */}
     // Define once when used.
@@ -28,7 +35,14 @@ export const AppProvider = ({ children }) => {
             searchQuery, setSearchQuery,
             labels, setLabels,
             currentLabel, setCurrentLabel,
-            error, setError
+            error, setError,
+            loading, setLoading,
+            selectedEmails, setSelectedEmails,
+            showLabelDropdown, setShowLabelDropdown,
+            showLabelSuggestions, setShowLabelSuggestions,
+            emails, setEmails,
+            allEmails, setAllEmails,
+            newLabelInput, setNewLabelInput
         }}>
             {children}
         </AppContext.Provider>
