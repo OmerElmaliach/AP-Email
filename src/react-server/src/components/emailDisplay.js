@@ -3,9 +3,12 @@ import ApiService from '../ApiService';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ErrorPage from './errorPage.js'
+import Topbar from './topbar.js'
+import Sidebar from './sidebar.js'
+import { useAppContext } from '../context/appContext.js';
 
 const EmailDisplay = () => {
-    const [error, setError] = useState(undefined);
+    const { error, setError } = useAppContext();
     const [email, setEmail] = useState([]);
     const { id } = useParams(); // Get email id.
 
@@ -27,26 +30,14 @@ const EmailDisplay = () => {
     return (
         <>
         {error != undefined ? (
-            <ErrorPage
-                error={error}
-            />
+            <ErrorPage/>
         ) : (
             <>
-            <div className="topbar">
-                <div className="top-group">
-                    <img src="../favicon.png" className="logo-icon" alt="AP-Email" />
-                    <strong>Inbox</strong>
-                    <div className="new-email-btn">
-                        <img src="../misc/new_mail_icon.png" alt="AP-Email" />
-                        <span>Compose</span>
-                    </div>
-                </div>
+            {/* Topbar display */}
+            <Topbar/>
 
-                <div className="topbar-group">
-                    
-                    <img src="../misc/temp.png" className="topbar-pfp" alt="Profile" />
-                </div>
-            </div>
+            {/* Sidebar display */}
+            <Sidebar/>
             </>
         )}
         </>

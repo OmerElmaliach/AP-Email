@@ -1,14 +1,17 @@
 import '../styles/topbar.css';
+import { useAppContext } from '../context/appContext.js';
 
-const Topbar = ({ searchQuery, setSearchQuery, darkMode, setDarkMode }) => {
+const Topbar = () => {
+    const { searchQuery, setSearchQuery, darkMode, setDarkMode } = useAppContext();
+
     return (
         <>
         <div className="topbar">
             <div className="top-group">
-                <img src="favicon.png" className="logo-icon" alt="AP-Email" />
+                <img src="../../favicon.png" className="logo-icon" alt="AP-Email" />
                 <strong>Inbox</strong>
                 <div className="new-email-btn">
-                    <img src="misc/new_mail_icon.png" alt="AP-Email" />
+                    <img src="../../misc/new_mail_icon.png" alt="AP-Email" />
                     <span>Compose</span>
                 </div>
             </div>
@@ -30,7 +33,7 @@ const Topbar = ({ searchQuery, setSearchQuery, darkMode, setDarkMode }) => {
                 <button onClick={() => setDarkMode(!darkMode)} className="mode-btn">
                     {darkMode ? 'Light-Mode' : 'Dark-Mode'}
                 </button>
-                <img src="misc/temp.png" className="topbar-pfp" alt="Profile" />
+                <img src="../../misc/temp.png" className="topbar-pfp" alt="Profile" />
             </div>
         </div>
         </>
