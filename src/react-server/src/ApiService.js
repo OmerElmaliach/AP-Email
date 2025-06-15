@@ -20,9 +20,10 @@ class ApiService {
         headers: finalHeaders
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+     if (!response.ok) {
+  const errorText = await response.text();
+  throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+}/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       const contentType = response.headers.get('content-type');
       if (contentType && contentType.includes('application/json')) {

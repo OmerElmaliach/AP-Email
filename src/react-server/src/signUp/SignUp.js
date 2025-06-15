@@ -1,6 +1,6 @@
 
 import { useNavigate } from 'react-router-dom';
-
+import ApiService from '../ApiService'
 import { useEffect, useState } from 'react';
 import './SignUp.css';
 //import db from './database';
@@ -64,9 +64,9 @@ function PictureStep({ picture, setPicture, onNext, onBack }) {
 }
 
 //step 3: gender and birthday
-function BirthdayStep({ gender, setGender, birthDay, setBirthDay, onNext, onBack }) {
+function BirthdayStep({ gender, setGender, birthday, setBirthDay, onNext, onBack }) {
   return (
-    <div className="form-floating">
+    <div >
       {/* Gender selector as a popup/dropdown */}
       <label>
         Gender:
@@ -82,13 +82,13 @@ function BirthdayStep({ gender, setGender, birthDay, setBirthDay, onNext, onBack
         Birthday:
         <input
           type="date"
-          value={birthDay}
+          value={birthday}
           onChange={e => setBirthDay(e.target.value)}
         />
       </label>
 
       <button onClick={onBack}>Back</button>
-      <button onClick={onNext} disabled={!gender || !birthDay}>
+      <button onClick={onNext} disabled={!gender || !birthday}>
         Next
       </button>
     </div>
@@ -151,7 +151,7 @@ function SignUp() {
   const [lastName, setLastName] = useState(''); // get last name
   const [picture, setPicture] = useState(null); // get pic
   const [gender , setGender] = useState(''); // get gender
-  const [birthDay, setBirthDay] = useState(''); // get birthday
+  const [birthday, setBirthDay] = useState(''); // get birthday
   const [mailAdress, setEmailAdress] = useState(''); // get email
   const [password, setPassword]  = useState(''); // get password
 
@@ -162,22 +162,29 @@ function SignUp() {
   function prevStep() {
     setStep(step - 1);
   }
-{/**delte this********************************************************************** */}
-function handleCreateUser() {
-    const userData = {
-      firstName,
-      lastName,
-      picture,
-      gender,
-      birthDay,
-      mailAdress,
-      password,
-    };
-   // db.addUser(userData)
-    navigate('/inbox');
-{/**delte this********************************************************************** */}
 
-}
+ function handleCreateUser() {
+  const formData = new FormData();
+  formData.append('firstName', firstName);
+  formData.append('lastName', lastName);
+  formData.append('gender', gender);
+  formData.append('birthday', birthday);
+  formData.append('userName', mailAdress); // backend expects userName = email
+  formData.append('email', mailAdress);
+  formData.append('password', password);
+  if (picture) {
+    formData.append('picture', picture);
+  }
+
+  ApiService.signupUser(formData)
+    .then(() => {
+      navigate('/inbox');
+    })
+    .catch(err => {
+  console.error('Signup failed:', err.message);
+  alert(err.message); // now this shows the backend's error
+});
+ }
 {/*
     fetch('http://localhost:5000/api/signup', {
       method: 'POST',
@@ -207,7 +214,7 @@ function handleCreateUser() {
 
       {step === 2 && <PictureStep picture={picture} setPicture={setPicture} onNext={nextStep} onBack={prevStep} />}
 
-      {step === 3 &&  <BirthdayStep  gender={gender} setGender={setGender} birthDay={birthDay}
+      {step === 3 &&  <BirthdayStep  gender={gender} setGender={setGender} birthday={birthday}
          setBirthDay={setBirthDay} onNext={nextStep} onBack={prevStep} /> }
 
       {step === 4 &&  <EmailPasswordStep mailAdress = {mailAdress} setEmailAdress={setEmailAdress}  password = {password}
