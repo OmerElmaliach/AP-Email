@@ -60,6 +60,13 @@ class ApiService {
     }
 
     // Delete email (move to trash)
+    static getEmailById(emailId) {
+        return this.makeRequest(`/mails/${emailId}`, {
+            method: 'GET'
+        });
+    }
+
+    // Delete email (move to trash)
     static deleteEmail(emailId) {
         return this.makeRequest(`/mails/${emailId}`, {
             method: 'DELETE'
