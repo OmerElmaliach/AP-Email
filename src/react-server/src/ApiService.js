@@ -4,7 +4,7 @@ const API_BASE_URL = 'http://localhost:9000/api';
 const DEFAULT_USER_ID = '1';
 
 class ApiService {
-    // Helper method to make HTTP requests
+  // Helper method to make HTTP requests
   static async makeRequest(url, options = {}, useAuth = true) {
     const finalHeaders = {
       ...(options.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
@@ -17,13 +17,14 @@ class ApiService {
     try {
       const response = await fetch(`${API_BASE_URL}${url}`, {
         ...options,
-        headers: finalHeaders
+        headers: finalHeaders,
+        credentials: 'include'
       });
 
-     if (!response.ok) {
-  const errorText = await response.text();
-  throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
-}/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+      }/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       const contentType = response.headers.get('content-type');
       if (contentType && contentType.includes('application/json')) {
@@ -37,70 +38,91 @@ class ApiService {
     }
   }
 
-    // Get all emails for user
-    static getUserEmails() {
-        return this.makeRequest('/mails');
-    }
+  // Get all emails for user
+  static getUserEmails() {
+    return this.makeRequest('/mails');
+  }
 
-    // Get all labels
-    static getAllLabels() {
-        return this.makeRequest('/labels');
-    }
+  // Get all labels
+  static getAllLabels() {
+    return this.makeRequest('/labels');
+  }
 
-    // Create a new email
-    static createEmail(emailData) {
-        return this.makeRequest('/mails', {
-            method: 'POST',
-            body: JSON.stringify(emailData)
-        });
-    }
+  // Create a new email
+  static createEmail(emailData) {
+    return this.makeRequest('/mails', {
+      method: 'POST',
+      body: JSON.stringify(emailData)
+    });
+  }
 
-    // Update email labels
-    static updateEmail(emailId, updateData) {
-        return this.makeRequest(`/mails/${emailId}`, {
-            method: 'PATCH',
-            body: JSON.stringify(updateData)
-        });
-    }
+  // Update email labels
+  static updateEmail(emailId, updateData) {
+    return this.makeRequest(`/mails/${emailId}`, {
+      method: 'PATCH',
+      body: JSON.stringify(updateData)
+    });
+  }
 
-    // Delete email (move to trash)
-    static deleteEmail(emailId) {
-        return this.makeRequest(`/mails/${emailId}`, {
-            method: 'DELETE'
-        });
-    }
+  // Delete email (move to trash)
+  static deleteEmail(emailId) {
+    return this.makeRequest(`/mails/${emailId}`, {
+      method: 'DELETE'
+    });
+  }
 
-    // Search emails
-    static searchEmails(query) {
-        return this.makeRequest(`/mails/search/${encodeURIComponent(query)}`);
-    }
+  // Search emails
+  static searchEmails(query) {
+    return this.makeRequest(`/mails/search/${encodeURIComponent(query)}`);
+  }
 
-    // Create a new label
-    static createLabel(labelData) {
-        return this.makeRequest('/labels', {
-            method: 'POST',
-            body: JSON.stringify(labelData)
-        });
-    }
+  // Create a new label
+  static createLabel(labelData) {
+    return this.makeRequest('/labels', {
+      method: 'POST',
+      body: JSON.stringify(labelData)
+    });
+  }
 
- //  user signup- no token, with FormData
-  static signupUser(formData) {
-    return this.makeRequest('/signup', {
+  //  user signup- no token, with FormData
+  static async signupUser(formData) {
+    const response = await this.makeRequest('/signup', {
       method: 'POST',
       body: formData
-    }, false); // no token 
+    }, false);              // no token 
+    if (response.token) {
+      localStorage.setItem('token', response.token);
+      return true;
+    } else {
+      return false;
+    }
   }
+
 
   //  login returns token, no token 
-  static loginUser(credentials) {
-    return this.makeRequest('/login', {
+  static async signInUser(credentials) {
+try {
+    const response = await this.makeRequest('/signin', {
       method: 'POST',
       body: JSON.stringify(credentials)
-    }, false); // no token 
-  }
+    }, false); // no token needed
 
-    // get user, will show his info in inbox page
-   static getCurrentUser() {
+    if (response.token) {
+      localStorage.setItem('token', response.token);
+      return true;
+    } else {
+       localStorage.removeItem('token')////////////////////////
+      return false;
+    }
+
+  } catch (err) {
+     localStorage.removeItem('token')
+    return false;  // <- Prevents navigating to /inbox
+  }
+}
+
+  // get user, will show his info in inbox page
+  static getCurrentUser() {
     return this.makeRequest('/signup/me'); // this is where getUser is
   }
 
