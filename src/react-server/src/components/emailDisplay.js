@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 
 const EmailDisplay = () => {
     const [showToast, setShowToast] = useState(false);
-    const { error, setError } = useAppContext();
+    const { error, setError, darkMode } = useAppContext();
     const [email, setEmail] = useState([]);
     const { id } = useParams(); // Get email id.
     const navigate = useNavigate();
@@ -67,10 +67,10 @@ const EmailDisplay = () => {
                 </div>
             )}
                 <div className='toolbar-container'>
-                    <img src='../../misc/arrow_back_icon.png' className='toolbar-btn' onClick={() => navigate('/')} title='Back to Inbox' alt='Go back'/>
+                    <img src={darkMode ? '../../misc/emailDisplay/arrow_back_ic.png' : '../../misc/emailDisplay/light_arrow_back_ic.png'} className='toolbar-btn' onClick={() => navigate('/')} title='Back to Inbox' alt='Go back'/>
                     <div className="vertical-divider"></div>
-                    <img src='../../misc/report_spam_icon.png' className='toolbar-btn' onClick={() => reportSpam(email.mail_id)} title='Report Spam' alt='Report Spam'/>
-                    <img src='../../misc/light_delete_icon.png' className='toolbar-btn' onClick={() => {
+                    <img src={darkMode ? '../../misc/emailDisplay/report_spam_ic.png' : '../../misc/emailDisplay/light_report_spam_ic.png'} className='toolbar-btn' onClick={() => reportSpam(email.mail_id)} title='Report Spam' alt='Report Spam'/>
+                    <img src={darkMode ? '../../misc/emailDisplay/delete_ic.png' : '../../misc/emailDisplay/light_delete_ic.png'} className='toolbar-btn' onClick={() => {
                         showDeleteMessage()
                         deleteEmail(email.id);
                         setTimeout(() => {
@@ -79,11 +79,19 @@ const EmailDisplay = () => {
                         }} title='Delete Email' alt='Delete Email'/>
                 </div>
                 <hr className="line-divider" />
-                <h1>{email.subject}</h1>
-                <p>
-                    From: {email.from} <br />
-                    Body: {email.body}
+                <div className='subject'>
+                    <h1>{email.subject}</h1>
+                    <div className='subject-date'>
+                        Date sent: {email.date_sent}
+                    </div>
+                </div>
+                <p className='undersubject-lines'>
+                    <strong>From:</strong> {email.from} <br />
+                    <strong>Recipients:</strong> {email.to} <br />
                 </p>
+                <div className='email-body-box'>
+                    {email.body}
+                </div>
             </div>
             </>
         )}
