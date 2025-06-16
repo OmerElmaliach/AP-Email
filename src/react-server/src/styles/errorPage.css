@@ -1,0 +1,25 @@
+/* Body Font Family */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+}
+
+.center-text {
+    display: flex;
+    font-size: 120px;
+    color: #424242;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 78vh;
+    flex-direction: column;
+}
+
+.center-text h1 {
+    margin: 0;
+}
+  
+.center-text h2 {
+    margin: 0;
+    font-size: 48px;
+}
