@@ -99,7 +99,7 @@ const createUser = (req, res) => {
         return res.status(404).json({error: 'could not save user' })
     }
     //the token will hold in data userid and his email
-    const data = { id: user.data, email: user.email }
+    const data = { id: user.id, email: user.email }
     const token = jwt.sign(data, SECRET_KEY, { expiresIn: '1h' });
     
 
