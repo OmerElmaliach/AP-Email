@@ -1,0 +1,77 @@
+/* SIDEBAR */
+.sidebar {
+    background: #e6e6e6;
+    width: 200px;
+    height: 100vh;
+    position: fixed;
+    top: 84px;
+    left: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 4px;
+    border-bottom: 2px solid #b9b9b9;
+    transition: background-color 0.2s;
+}
+
+.sidebar-item:hover {
+    background-color: #e8f0fe;
+}
+
+.sidebar-add-label-tab {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+}
+
+.sidebar-add-label-btn {
+    border: none;
+    border-radius: 50%;
+    background: none;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar-add-label-btn:hover {
+    background-color: #d4d4d4;
+    transition: background-color 0.2s;
+}
+
+.sidebar-active-label {
+    background-color: #d2e3fc;
+    font-weight: bold;
+}
+
+/* DARK MODE */
+.dark .sidebar {
+    background: #2a2a2a;
+}
+
+.dark .sidebar-item {
+    border-bottom: 2px solid #444;
+}
+
+.dark .sidebar-item:hover {
+    background-color: #424242;
+}
+
+.dark .sidebar-add-label-btn:hover {
+    background-color: #313131;
+}
+
+.dark .sidebar-active-label {
+    background-color: #383838;
+    font-weight: bold;
+}

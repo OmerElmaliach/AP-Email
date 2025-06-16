@@ -1,7 +1,7 @@
 
 
 
-const users_DB = [{"id" : "1", "name" : "omer"}] // FOR TESTING
+const users_DB = [{"id" : "1", "email" : "omer@gmail.com"}, {"id" : "2", "email" : "brodi@gmail.com"}] // FOR TESTING
 
 let currentId = 1;
 //add user to data base- in our case the array and set its id 
