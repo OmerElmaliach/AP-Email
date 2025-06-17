@@ -13,7 +13,6 @@ const Inbox = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        console.log("im in gabis func")
         setLoading(true);
         setError(null);
         // Load emails and labels from backend
