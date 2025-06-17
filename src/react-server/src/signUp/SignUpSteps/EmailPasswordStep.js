@@ -1,46 +1,105 @@
+import { useState } from 'react';
+import '../SignUpStepsStyle/EmailPasswordStep.css';
 
-import {  useState } from 'react';
+function EmailPasswordStep({
+  mailAdress,
+  setEmailAdress,
+  password,
+  setPassword,
+  handleCreateUser,
+  onBack,
+  loading,
+  setLoading
+}) {
+  const [confirmPassword, setConfirmPassword] = useState('');
+  //makes sure password check is the same ass original password
+  const isMatch = () => password && confirmPassword && password === confirmPassword;
 
+  //password check. why do it in backend..
+  const validatePassword = (password) => {
+    if (password.length < 8) {
+      return 'Password must be at least 8 characters long.';
+    }
+    if (!/[A-Z]/.test(password)) {
+      return 'Password must contain at least one uppercase letter.';
+    }
+    if (!/[a-z]/.test(password)) {
+      return 'Password must contain at least one lowercase letter.';
+    }
+    if (!/\d/.test(password)) {
+      return 'Password must contain at least one number.';
+    }
+    if (!/^[a-zA-Z\d]+$/.test(password)) {
+      return 'Password can only contain letters and numbers.';
+    }
+    return null;
+  };
 
-function EmailPasswordStep({ mailAdress, setEmailAdress, password, setPassword, handleCreateUser, onBack, loading, setLoading }) {
-  
-    const [confirmPassword, setConfirmPassword] = useState('');
-
-  const isMatch = () => password && confirmPassword && (password === confirmPassword);
-
+  const passwordError = validatePassword(password);
   return (
-    <div className="form-floating">
-      <input
-        type="email"
-        value={mailAdress}
-        onChange={e => setEmailAdress(e.target.value)}
-        placeholder="Choose your email"
-        className="text-input"
-      />
+    <div className="input-container">
+      {/* Email input */}
+      <div className="form-floating mb-3 full-width">
+        <input
+          type="email"
+          className="form-control"
+          id="floatingEmail"
+          placeholder="Email Address"
+          value={mailAdress}
+          onChange={e => setEmailAdress(e.target.value)}
+        />
+        <label htmlFor="floatingEmail">Email Address</label>
+      </div>
 
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-        className="text-input"
-      />
+      {/* Password input */}
+      <div className="form-floating mb-3 full-width">
+        <input
+          type="password"
+          className="form-control"
+          id="floatingPassword"
+          placeholder="Password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+        />
+        <label htmlFor="floatingPassword">Password</label>
+      </div>
 
-      <input
-        type="password"
-        placeholder="Confirm Password"
-        value={confirmPassword}
-        onChange={e => setConfirmPassword(e.target.value)}
-        className="text-input"
-      />
+      {/* Confirm password input */}
+      <div className="form-floating mb-3 full-width">
+        <input
+          type="password"
+          className="form-control"
+          id="floatingConfirmPassword"
+          placeholder="Confirm Password"
+          value={confirmPassword}
+          onChange={e => setConfirmPassword(e.target.value)}
+        />
+        <label htmlFor="floatingConfirmPassword">Confirm Password</label>
+      </div>
 
-      {!isMatch() && confirmPassword && <p>Passwords don't match</p>}
+      {/* Error message */}
+      {password && passwordError && (
+        <p className="text-danger">{passwordError}</p>
+      )}
 
-      <button onClick={onBack}>Back</button>
-      <button onClick={handleCreateUser} disabled={!isMatch() || !mailAdress|| loading}>
-         {loading ? 'Creating Account' : 'Create Email!'}
-      </button>
+      {!passwordError && confirmPassword && !isMatch() && (
+        <p className="text-danger">Passwords don't match</p>
+      )}
+      {/* Buttons */}
+      <div className="button-row">
+        <button className="btn btn-primary rounded-pill" onClick={onBack}>
+          Back
+        </button>
+        <button
+          className="btn btn-primary rounded-pill"
+          onClick={handleCreateUser}
+          disabled={!isMatch() || !mailAdress || loading}
+        >
+          {loading ? 'Creating Account...' : 'Create Email!'}
+        </button>
+      </div>
     </div>
   );
 }
-export default EmailPasswordStep
+
+export default EmailPasswordStep;

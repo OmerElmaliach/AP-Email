@@ -62,48 +62,63 @@ function SignUp() {
  }
 
   return (
-     <div className="signup-container">
-      {step === 1 && (
-        <NameStep 
-          firstName={firstName} 
-          setFirstName={setFirstName} 
-          lastName={lastName} 
-          setLastName={setLastName} 
-          onNext={nextStep}
-          />  )}
+     
+  <div className="signup-container">
+    <div className="signup-box">
+      
+      {/* Left side with logo */}
+      <div className="signup-left">
+        <img src="/favicon.png" alt="Logo" className="logo-img" />
+      </div>
 
-      {step === 2 && <
-        PictureStep 
-        picture={picture} 
-        setPicture={setPicture} 
-        onNext={nextStep} 
-        onBack={prevStep} 
-        />}
+      {/* Right side with form step */}
+      <div className="signup-right">
+        {step === 1 && (
+          <NameStep 
+            firstName={firstName} 
+            setFirstName={setFirstName} 
+            lastName={lastName} 
+            setLastName={setLastName} 
+            onNext={nextStep}
+          />
+        )}
 
-      {step === 3 &&  
-        <BirthdayStep  
-          gender={gender} 
-          setGender={setGender} 
-          birthday={birthday}
-          setBirthDay={setBirthDay} 
-          onNext={nextStep} 
-          onBack={prevStep}
-           /> }
+        {step === 2 && (
+          <PictureStep 
+            picture={picture} 
+            setPicture={setPicture} 
+            onNext={nextStep} 
+            onBack={prevStep} 
+          />
+        )}
 
-      {step === 4 &&  
-        <EmailPasswordStep 
-          mailAdress = {mailAdress} 
-          setEmailAdress={setEmailAdress}  
-          password = {password}
-          setPassword = {setPassword} 
-          handleCreateUser={handleCreateUser} 
-          loading={loading}
-          setLoading={setLoading}
-          onBack={prevStep} />}
+        {step === 3 && (
+          <BirthdayStep  
+            gender={gender} 
+            setGender={setGender} 
+            birthday={birthday}
+            setBirthDay={setBirthDay} 
+            onNext={nextStep} 
+            onBack={prevStep}
+          />
+        )}
 
-
+        {step === 4 && (
+          <EmailPasswordStep 
+            mailAdress={mailAdress} 
+            setEmailAdress={setEmailAdress}  
+            password={password}
+            setPassword={setPassword} 
+            handleCreateUser={handleCreateUser} 
+            loading={loading}
+            setLoading={setLoading}
+            onBack={prevStep}
+          />
+        )}
+      </div>
 
     </div>
+  </div>
   );
 }
 
