@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import ApiService from '../ApiService'
 import { useEffect, useState } from 'react';
 import './SignUp.css';
+//import 'bootstrap/dist/css/bootstrap.min.css';
 
 import NameStep from './SignUpSteps/NameStep';
 import PictureStep from './SignUpSteps/PictureStep';
@@ -14,6 +15,18 @@ import EmailPasswordStep from './SignUpSteps/EmailPasswordStep';
 
 // Main signup flow component
 function SignUp() {
+   // Dynamically add Bootstrap CSS only when SignUp is mounted. note to self- DONT USE BOOT STRAP AGAIN!!!!!
+  useEffect(() => {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css';
+    document.head.appendChild(link);
+
+    return () => {
+      document.head.removeChild(link);
+    };
+  }, []);
+
   const navigate = useNavigate();
   //helper functions for page navigation 
   const [loading, setLoading] = useState(false);
