@@ -67,15 +67,27 @@ const EmailDisplay = () => {
                 </div>
             )}
                 <div className='toolbar-container'>
-                    <img src={darkMode ? '../../misc/emailDisplay/arrow_back_ic.png' : '../../misc/emailDisplay/light_arrow_back_ic.png'} className='toolbar-btn' onClick={() => navigate('/')} title='Back to Inbox' alt='Go back'/>
+                    <img src={darkMode ? '../../misc/emailDisplay/arrow_back_ic.png' : '../../misc/emailDisplay/light_arrow_back_ic.png'} 
+                        className='toolbar-btn' 
+                        onClick={() => navigate('/')} 
+                        title='Back to Inbox' 
+                        alt='Go back'
+                    />
                     <div className="vertical-divider"></div>
-                    <img src={darkMode ? '../../misc/emailDisplay/report_spam_ic.png' : '../../misc/emailDisplay/light_report_spam_ic.png'} className='toolbar-btn' onClick={() => reportSpam(email.mail_id)} title='Report Spam' alt='Report Spam'/>
-                    <img src={darkMode ? '../../misc/emailDisplay/delete_ic.png' : '../../misc/emailDisplay/light_delete_ic.png'} className='toolbar-btn' onClick={() => {
-                        showDeleteMessage()
-                        deleteEmail(email.id);
-                        setTimeout(() => {
-                            navigate('/');
-                          }, 750);
+                    <img src={darkMode ? '../../misc/emailDisplay/report_spam_ic.png' : '../../misc/emailDisplay/light_report_spam_ic.png'} 
+                        className='toolbar-btn' 
+                        onClick={() => reportSpam(email.mail_id)} 
+                        title='Report Spam' 
+                        alt='Report Spam'
+                    />
+                    <img src={darkMode ? '../../misc/emailDisplay/delete_ic.png' : '../../misc/emailDisplay/light_delete_ic.png'} 
+                        className='toolbar-btn' 
+                        onClick={() => {
+                            showDeleteMessage()
+                            deleteEmail(email.id);
+                            setTimeout(() => {
+                                navigate('/');
+                            }, 750);
                         }} title='Delete Email' alt='Delete Email'/>
                 </div>
                 <hr className="line-divider" />
