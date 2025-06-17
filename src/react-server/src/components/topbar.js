@@ -1,8 +1,10 @@
 import '../styles/topbar.css';
 import { useAppContext } from '../context/appContext.js';
+import { useNavigate } from 'react-router-dom';
 
 const Topbar = () => {
     const { searchQuery, setSearchQuery, darkMode, setDarkMode } = useAppContext();
+    const navigate = useNavigate();
 
     return (
         <>
@@ -10,7 +12,7 @@ const Topbar = () => {
             <div className="top-group">
                 <img src="../../favicon.png" className="logo-icon" alt="AP-Email" />
                 <strong>Inbox</strong>
-                <div className="new-email-btn">
+                <div className="new-email-btn" onClick={() => navigate('/create-mail')}>
                     <img src="../../misc/new_mail_icon.png" alt="AP-Email" />
                     <span>Compose</span>
                 </div>
