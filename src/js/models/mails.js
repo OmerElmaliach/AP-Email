@@ -2,7 +2,7 @@ let idCounter = 0;
 const EMAIL_AMOUNT = 50;
 var mails =  [
 
-    [// for testing DELTE THIS////////////////////////////////////////////////////////////////////////////////////////      
+    // for testing DELTE THIS////////////////////////////////////////////////////////////////////////////////////////      
   {
     "id": "1",
     "mail_id": "e0",
@@ -93,7 +93,7 @@ var mails =  [
     "date_sent": "6/14/2025, 3:00:00 PM",
     "label": ["Social", "Shopping"]
   }
-]
+
 
 
 ];

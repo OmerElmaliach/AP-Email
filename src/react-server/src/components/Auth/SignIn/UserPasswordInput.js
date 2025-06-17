@@ -1,7 +1,6 @@
 
 function UserPasswordInput({ mailAdress, setEmailAdress, password, setPassword, handleUserSignIn}) {
-  
-console.log("[UserPasswordInput] Rendered with:", { mailAdress, password });
+ 
   return (
     <div className="form-floating">
       <input
