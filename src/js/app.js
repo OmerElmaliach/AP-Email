@@ -46,7 +46,7 @@ app.use((req, res) => {
   res.redirect('http://localhost:3000');
 });
 
-console.log("About to start server...");
+//console.log("About to start server...");
 app.listen(9000, () => {
   console.log("Server is running on port 9000");
 });

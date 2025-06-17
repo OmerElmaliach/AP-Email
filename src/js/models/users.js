@@ -2,14 +2,14 @@
 
 
 const users_DB = [ // TEST USERS REMEMBER TO DELETE
-  [
+  
   {
-    "id": "1",
+    "id": "1", 
     "firstName": "Alice",
     "lastName": "Cohen",
-    "email": "alice@example.com",
-    "userName": "alice@example.com",
-    "password": "Alice1234",
+    "email": "aa",          //  aa                                //  alice@example.com// Alice1234
+    "userName": "aa", 
+    "password": "aa",       //  aa 
     "birthday": "1995-06-01",
     "phoneNumber": "0501234567",
     "gender": "W",
@@ -20,9 +20,9 @@ const users_DB = [ // TEST USERS REMEMBER TO DELETE
     "id": "2",
     "firstName": "Ben",
     "lastName": "Tzur",
-    "email": "ben@example.com",
-    "userName": "ben@example.com",
-    "password": "BenTzur99",
+    "email": "bb",
+    "userName": "bb", // ben@example.com // BenTzur99
+    "password": "bb",
     "birthday": "1990-03-12",
     "phoneNumber": "0527654321",
     "gender": "M",
@@ -33,18 +33,18 @@ const users_DB = [ // TEST USERS REMEMBER TO DELETE
     "id": "3",
     "firstName": "Dana",
     "lastName": "Levi",
-    "email": "dana@example.com",
-    "userName": "dana@example.com",
-    "password": "DanaL123",
+    "email": "cc",
+    "userName": "cc", // dana@example.com   DanaL123
+    "password": "cc",
     "birthday": "2000-09-25",
     "phoneNumber": null,
     "gender": "W",
     "picture": "/images/dana.png",
     "labels": ""
   }
-]] // FOR TESTING
+] // FOR TESTING
 
-let currentId = 1;
+let currentId = 4;
 //add user to data base- in our case the array and set its id 
 const addUser = (user) =>{
     user.id = currentId.toString()
@@ -56,9 +56,10 @@ const addUser = (user) =>{
   /* function to get a user- enter key *string* to search and what val for that key 
    **MUST CHECK RETURN VAL** 
    */
-const getUser =  (field, value ) =>{
-    return users_DB.find(user => user[field] == value)
-}
+const getUser = (field, value) => {
+  if (value === undefined || value === null || value === '') return undefined;
+  return users_DB.find(user => user[field] == value);
+};
 
 /*
 updates a field of a user in users_DB
