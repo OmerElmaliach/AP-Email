@@ -32,11 +32,22 @@
     border: 1px solid #ccc;
     border-radius: 6px;
     font-size: 14px;
-    resize: vertical;
-    min-height: 200px;
+    outline: none;
 }
 
 .compose-input:focus,
 .compose-body:focus {
     border-color: #1a73e8;
+}
+
+.dark .compose-input {
+    color: white;
+    background-color: #333;
+    border-color: #444444;
+}
+
+.dark .compose-body {
+    color: white;
+    background-color: #333;
+    border-color: #444444;
 }
