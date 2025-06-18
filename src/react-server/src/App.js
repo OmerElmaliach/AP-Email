@@ -7,6 +7,8 @@ import SignUp from './signUp/SignUp';
 import SignIn from './signIn/SignIn.js';
 import ApiService from './ApiService';
 import ProtectedRoute from "./components/Auth/ProtectedRoute"
+import EmailCreate from './components/emailCreate.js';
+
 function App() {
   
   return (
@@ -31,7 +33,16 @@ function App() {
             </ProtectedRoute>
           }
         />
+                <Route
+                 path="/create-mail"
+                  element={
+                  <ProtectedRoute>
+                  <EmailCreate />
+                  </ProtectedRoute>
+                  }/>
+
         <Route path="/" element={<Navigate to="/inbox" />} />
+
         <Route path="*" element={<ErrorPage />} />
       </Routes>
     </Router>
