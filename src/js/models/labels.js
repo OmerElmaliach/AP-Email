@@ -14,7 +14,43 @@
  * @type {Array<Object>}
  * @description Array containing all label objects in the system
  */
-const labels_DB = []
+const labels_DB = [{ id: "33", name: "banana", userId: "1", color: "#1a73e8" }, {  
+    "id": "label-a1",
+    "name": "Work",
+    "userId": "1",
+    "color": "#FF5733"
+  },
+  {
+    "id": "label-a2",
+    "name": "Family",
+    "userId": "1",
+    "color": "#33B5FF"
+  },
+  {
+    "id": "label-b1",
+    "name": "Important",
+    "userId": "2",
+    "color": "#FFD700"
+  },
+  {
+    "id": "label-b2",
+    "name": "Bills",
+    "userId": "2",
+    "color": "#B833FF"
+  },
+  {
+    "id": "label-c1",
+    "name": "Social",
+    "userId": "3",
+    "color": "#FF33A6"
+  },
+  {
+    "id": "label-c2",
+    "name": "Shopping",
+    "userId": "3",
+    "color": "#33FF8D"
+  }
+]
 
 /**
  * Initialize default labels
@@ -28,6 +64,8 @@ const initializeDefaultLabels = () => {
         { id: "draft", name: "Draft", userId: "system", color: "#9aa0a6" },
         { id: "spam", name: "Spam", userId: "system", color: "#ea4335" },
         { id: "trash", name: "Trash", userId: "system", color: "#5f6368" }
+  // for testing DELTE THIS////////////////////////////////////////////////////////////////////////////////////////      
+ 
     ];
     
     defaultLabels.forEach(label => {

@@ -25,7 +25,7 @@ const usersModel = require('../models/users')
  * @param {Object} req.body - Request body containing label data
  * @param {string} req.body.id - Unique identifier for the label
  * @param {string} req.body.name - Display name of the label
- * @param {string} req.body.userId - ID of the user who owns the label
+ * @param {string} req.user.id - ID of the user who owns the label
  * @param {string} req.body.color - Color code for the label (e.g., "#FF0000")
  * @param {Object} res - Express response object
  * 
@@ -40,7 +40,7 @@ const usersModel = require('../models/users')
  * // Response: { "message": "Label created", "label": {...} }
  */
 const createLabel = (req, res)=>{
-    const userId = req.headers['userid'];
+    const userId = req.user.id;
     const  { 
     id,
     name = null,
@@ -76,7 +76,7 @@ const createLabel = (req, res)=>{
  * 
  * @param {Object} req - Express request object
  * @param {Object} req.query - Query parameters
- * @param {string} req.query.userId - ID of the user whose labels to retrieve
+ * @param {string} req.user.id - ID of the user whose labels to retrieve
  * @param {Object} res - Express response object
  * 
  * @returns {Object} HTTP response with status and JSON data
@@ -89,7 +89,7 @@ const createLabel = (req, res)=>{
  * // Response: [{ "id": "label1", "name": "Important", "userId": "user123", "color": "#FF0000" }]
  */
 const getLabels = (req,res) =>{
-    const userId = req.headers['userid'];
+    const userId = req.user.id;
 
     // Check if userId is provided
     if (!userId) {
