@@ -14,22 +14,7 @@
  * @type {Array<Object>}
  * @description Array containing all label objects in the system
  */
-const labels_DB = []
-
-/**
- * Initialize default labels
- * @description Creates default system labels that are available to all users
- */
-const initializeDefaultLabels = () => {
-    const defaultLabels = [
-        { id: "inbox", name: "Inbox", userId: "system", color: "#1a73e8" },
-        { id: "starred", name: "Starred", userId: "system", color: "#fbbc04" },
-        { id: "sent", name: "Sent", userId: "system", color: "#34a853" },
-        { id: "draft", name: "Draft", userId: "system", color: "#9aa0a6" },
-        { id: "spam", name: "Spam", userId: "system", color: "#ea4335" },
-        { id: "trash", name: "Trash", userId: "system", color: "#5f6368" },
-  // for testing DELTE THIS////////////////////////////////////////////////////////////////////////////////////////      
-  {  
+const labels_DB = [{ id: "33", name: "banana", userId: "1", color: "#1a73e8" }, {  
     "id": "label-a1",
     "name": "Work",
     "userId": "1",
@@ -65,7 +50,22 @@ const initializeDefaultLabels = () => {
     "userId": "3",
     "color": "#33FF8D"
   }
+]
 
+/**
+ * Initialize default labels
+ * @description Creates default system labels that are available to all users
+ */
+const initializeDefaultLabels = () => {
+    const defaultLabels = [
+        { id: "inbox", name: "Inbox", userId: "system", color: "#1a73e8" },
+        { id: "starred", name: "Starred", userId: "system", color: "#fbbc04" },
+        { id: "sent", name: "Sent", userId: "system", color: "#34a853" },
+        { id: "draft", name: "Draft", userId: "system", color: "#9aa0a6" },
+        { id: "spam", name: "Spam", userId: "system", color: "#ea4335" },
+        { id: "trash", name: "Trash", userId: "system", color: "#5f6368" }
+  // for testing DELTE THIS////////////////////////////////////////////////////////////////////////////////////////      
+ 
     ];
     
     defaultLabels.forEach(label => {
