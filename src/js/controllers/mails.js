@@ -12,7 +12,7 @@ const urlRegex = /(?<![a-zA-Z0-9])((https?:\/\/)?(www\.)?([a-zA-Z0-9-]+\.)+[a-zA
  * @returns {json} Fifty Mails in json structure.
  */
 exports.getUserMails = (req, res) => {
-    const userId = req.headers['userid'];
+    const userId = req.user.id;
     // Receive json containing information of a given user.
     const userDB = Model.getUser("id", userId);
     if (userDB == undefined) {
@@ -31,7 +31,7 @@ exports.getUserMails = (req, res) => {
  * @returns {number} Status code indicating result.
  */
 exports.createMail = async (req, res) => {
-    const userId = req.headers['userid'];
+    const userId = req.user.id;
     let { to, subject, body, label } = req.body;
 
     const userDB = Model.getUser("id", userId);
@@ -117,7 +117,7 @@ exports.createMail = async (req, res) => {
  */
 exports.getMailById = (req, res) => {
     const id = req.params.id;
-    const userId = req.headers['userid'];
+    const userId = req.user.id;
     const userDB = Model.getUser("id", userId);
     if (userDB == undefined) {
         return res.status(404).json({ error : "Invalid user id provided" });
@@ -141,7 +141,7 @@ exports.getMailById = (req, res) => {
  */
 exports.updateMail = async (req, res) => {
     const id = req.params.id;
-    const userId = req.headers['userid'];
+    const userId = req.user.id;
     const { subject, body, label } = req.body;
     const userDB = Model.getUser("id", userId);
     if (userDB == undefined) {
@@ -212,7 +212,7 @@ exports.updateMail = async (req, res) => {
  */
 exports.deleteMail = (req, res) => {
     const id = req.params.id;
-    const userId = req.headers['userid'];
+    const userId = req.user.id;
     const userDB = Model.getUser("id", userId);
     if (userDB == undefined) {
         return res.status(404).json({ error : "Invalid user id provided" });
@@ -252,7 +252,7 @@ exports.deleteMail = (req, res) => {
  */
 exports.findMail = (req, res) => {
     const query = req.params.query;
-    const userId = req.headers['userid'];
+    const userId = req.user.id;
     const userDB = Model.getUser("id", userId);
     if (userDB == undefined) {
         return res.status(404).json({ error : "Invalid user id provided" });

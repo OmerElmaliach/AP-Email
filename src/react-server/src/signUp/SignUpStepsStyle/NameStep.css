@@ -1,0 +1,19 @@
+/* Input container inside the form */
+.input-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Make inputs fill full width */
+.full-width {
+  width: 100%;
+}
+
+/* Align the Next button to the bottom right of the form */
+.next-button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: auto;
+}
+
