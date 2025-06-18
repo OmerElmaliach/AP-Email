@@ -4,87 +4,174 @@ const API_BASE_URL = 'http://localhost:9000/api';
 const DEFAULT_USER_ID = '1';
 
 class ApiService {
-    // Helper method to make HTTP requests
-    static async makeRequest(url, options = {}) {
-        try {
-            const response = await fetch(`${API_BASE_URL}${url}`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'userid': DEFAULT_USER_ID,
-                    ...options.headers
-                },
-                ...options
-            });
+  // Helper method to make HTTP requests
+  static async makeRequest(url, options = {}, useAuth = true) {
+  console.log(`🌐 Making request to: ${API_BASE_URL}${url}`);
+  console.log('📋 Request options:', options);
+  
+  const finalHeaders = {
+    ...(options.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
+    ...(useAuth && localStorage.getItem('token')
+      ? { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      : {}),
+    ...options.headers
+  };
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+  console.log('📝 Final headers:', finalHeaders);
 
-            // Handle different response types
-            const contentType = response.headers.get('content-type');
-            if (contentType && contentType.includes('application/json')) {
-                return await response.json();
-            } else {
-                return await response.text();
-            }
-        } catch (error) {
-            console.error(`API request failed: ${url}`, error);
-            throw error;
-        }
+  try {
+    const response = await fetch(`${API_BASE_URL}${url}`, {
+      ...options,
+      headers: finalHeaders,
+      credentials: 'include'
+    });
+
+    console.log('📡 Response status:', response.status);
+    console.log('📡 Response ok:', response.ok);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.log('❌ Error response text:', errorText);
+      throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
     }
 
-    // Get all emails for user
-    static getUserEmails() {
-        return this.makeRequest('/mails');
+    const contentType = response.headers.get('content-type');
+    console.log('📄 Content type:', contentType);
+    
+    if (contentType && contentType.includes('application/json')) {
+      const jsonResponse = await response.json();
+      console.log('📦 JSON response:', jsonResponse);
+      return jsonResponse;
+    } else {
+      const textResponse = await response.text();
+      console.log('📄 Text response:', textResponse);
+      return textResponse;
     }
+  } catch (error) {
+    console.error(`💥 API request failed: ${url}`, error);
+    throw error;
+  }
+}
 
-    // Get all labels
-    static getAllLabels() {
-        return this.makeRequest('/labels');
-    }
+  // Get all emails for user
+  static getUserEmails() {
+    console.log("APISERVICE making mails req")
+    return this.makeRequest('/mails');
+  }
 
-    // Create a new email
-    static createEmail(emailData) {
-        return this.makeRequest('/mails', {
-            method: 'POST',
-            body: JSON.stringify(emailData)
-        });
-    }
+  // Get all labels
+  static getAllLabels() {
+    return this.makeRequest('/labels');
+  }
 
-    // Update email labels
-    static updateEmail(emailId, updateData) {
-        return this.makeRequest(`/mails/${emailId}`, {
-            method: 'PATCH',
-            body: JSON.stringify(updateData)
-        });
-    }
+  // Create a new email
+  static createEmail(emailData) {
+    return this.makeRequest('/mails', {
+      method: 'POST',
+      body: JSON.stringify(emailData)
+    });
+  }
 
-    // Delete email (move to trash)
+  // Update email labels
+  static updateEmail(emailId, updateData) {
+    return this.makeRequest(`/mails/${emailId}`, {
+      method: 'PATCH',
+      body: JSON.stringify(updateData)
+    });
+  }
+
+
+
+  // get a specific email
     static getEmailById(emailId) {
         return this.makeRequest(`/mails/${emailId}`, {
             method: 'GET'
         });
     }
 
-    // Delete email (move to trash)
-    static deleteEmail(emailId) {
-        return this.makeRequest(`/mails/${emailId}`, {
-            method: 'DELETE'
-        });
-    }
+  // Delete email (move to trash)
+  static deleteEmail(emailId) {
+    return this.makeRequest(`/mails/${emailId}`, {
+      method: 'DELETE'
+    });
+  }
 
-    // Search emails
-    static searchEmails(query) {
-        return this.makeRequest(`/mails/search/${encodeURIComponent(query)}`);
-    }
+  // Search emails
+  static searchEmails(query) {
+    return this.makeRequest(`/mails/search/${encodeURIComponent(query)}`);
+  }
 
-    // Create a new label
-    static createLabel(labelData) {
-        return this.makeRequest('/labels', {
-            method: 'POST',
-            body: JSON.stringify(labelData)
-        });
+  // Create a new label
+  static createLabel(labelData) {
+    return this.makeRequest('/labels', {
+      method: 'POST',
+      body: JSON.stringify(labelData)
+    });
+  }
+
+  //  user signup- no token, with FormData
+  static async signupUser(formData) {
+    const response = await this.makeRequest('/signup', {
+      method: 'POST',
+      body: formData
+    }, false);              // no token 
+    if (response.token) {
+      localStorage.setItem('token', response.token);
+      return true;
+    } else {
+      return false;
     }
+  }
+
+
+  //  login returns token, no token 
+  static async signInUser(credentials) {
+  console.log('🔍 SignIn attempt with:', credentials);
+  
+  try {
+    console.log('📡 Making request to /signin');
+    const response = await this.makeRequest('/signin', {
+      method: 'POST',
+      body: JSON.stringify(credentials)
+    }, false);
+
+    console.log('📬 Response received:', response);
+
+    if (response.token) {
+      console.log('✅ Token received, storing in localStorage');
+      localStorage.setItem('token', response.token);
+      return true;
+    } else {
+      console.log('❌ No token in response');
+      localStorage.removeItem('token');
+      return false;
+    }
+  } catch (err) {
+    console.log('💥 Error in signInUser:', err);
+    localStorage.removeItem('token');
+    return false;
+  }
 }
+
+// Also debug the makeRequest method
+
+
+  // get user, will show his info in inbox page
+  static getCurrentUser() {
+    return this.makeRequest('/signup/me'); // this is where getUser is
+  }
+
+  //to log out delete his token
+  static logout() {
+    localStorage.removeItem('token');
+  }
+
+
+}
+
+
+
+
+
 
 export default ApiService;
