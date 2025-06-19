@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import '../styles/UserProfile.css';
 //import ReadmePage from './ReadmePage';
 import ApiService from '../ApiService';
+import backupPhoto from '../styles/backup_photo.jpg'
 
 const UserProfile = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -14,10 +15,21 @@ const UserProfile = () => {
   const settingsRef = useRef(null);  // Fetch user data from authentication service
   useEffect(() => {
     const fetchUserData = async () => {
+
       try {
         setLoading(true);
         const userData = await ApiService.getCurrentUser();
-        setUser(userData);
+        let photoUrl = null;
+
+         try {
+        const photoBlob = await ApiService.getUserPhotoBlob();
+        photoUrl = URL.createObjectURL(photoBlob);
+      } catch (photoErr) {
+        console.warn('No profile photo found, using fallback.', photoErr);
+        // optionally set a fallback image like:
+        // photoUrl = '/default-user-icon.png';
+      }
+      setUser({ ...userData, picture: photoUrl });
         setLoading(false);
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -66,18 +78,15 @@ const UserProfile = () => {
     // Navigate to login page (handled by teammate)
     window.location.href = '/login';
   };  const handleLogout = () => {
-    // TODO: Use JWT authentication service to logout
+
     // Clear any saved user data
     localStorage.removeItem('savedUser');
     localStorage.removeItem('currentUser');
-    localStorage.removeItem('authToken');
-    // Navigate to login page (handled by teammate)
-    window.location.href = '/login';
+    localStorage.removeItem('token');
+
+    window.location.href = '/SignIn';
   };
 
-//   const maskPassword = (password) => {
-//     return '*'.repeat(password.length);
-//   };
 
   if (loading) {
     return <div className="profile-loading">Loading...</div>;
@@ -90,7 +99,8 @@ const UserProfile = () => {
       <div className="user-profile" ref={dropdownRef}>
         <button className="profile-button" onClick={handleProfileClick}>
           <img 
-            src={user.picture} 
+            src={user.picture|| backupPhoto}
+            onError={(e) => { e.target.onerror = null; e.target.src = backupPhoto; }} 
             alt={user.fullName}
             className="profile-picture"
           />
@@ -109,7 +119,8 @@ const UserProfile = () => {
             <div className="user-info-section">
               <div className="user-email">{user.email}</div>
               <img 
-                src={user.picture} 
+                src={user.picture|| backupPhoto}
+                onError={(e) => { e.target.onerror = null; e.target.src = backupPhoto; }}
                 alt={user.fullName}
                 className="dropdown-picture"
               />
@@ -123,7 +134,8 @@ const UserProfile = () => {
                 Help
               </button>
 
-              <div className="menu-item-container" ref={settingsRef}>                <button className="menu-item" onClick={handleSettingsClick}>
+              <div className="menu-item-container" ref={settingsRef}>               
+                 <button className="menu-item" onClick={handleSettingsClick}>
                   <span className="menu-icon">⚙️</span>
                   User Settings
                   <span className="menu-arrow">◀</span>
