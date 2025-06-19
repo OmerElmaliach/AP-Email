@@ -160,28 +160,28 @@ exports.updateMail = async (req, res) => {
     let urlsBody = body ? body.match(urlRegex) || [] : [];
     let hasBlacklistedURL = false;
 
-    try {
-        // Check for a list of urls if they are blacklisted.
-        for (let i = 0; i < urlsSubject.length; i++) {
-            let urlsValid = await BlackList.getBlacklistedURLById(urlsSubject[i]);
-            if (urlsValid.endsWith("true")) {
-                hasBlacklistedURL = true;
-                break;
-            }
-        }
-    
-        if (!hasBlacklistedURL) {
-            for (let i = 0; i < urlsBody.length; i++) {
-                let urlsValid = await BlackList.getBlacklistedURLById(urlsBody[i]);
+        try {
+            // Check for a list of urls if they are blacklisted.
+            for (let i = 0; i < urlsSubject.length; i++) {
+                let urlsValid = await BlackList.getBlacklistedURLById(urlsSubject[i]);
                 if (urlsValid.endsWith("true")) {
                     hasBlacklistedURL = true;
                     break;
                 }
             }
-        }
         
-    } catch (err) {
-        return res.status(404).json({ error: err });
+            if (!hasBlacklistedURL) {
+                for (let i = 0; i < urlsBody.length; i++) {
+                    let urlsValid = await BlackList.getBlacklistedURLById(urlsBody[i]);
+                    if (urlsValid.endsWith("true")) {
+                        hasBlacklistedURL = true;
+                        break;
+                    }
+                }
+            }
+            
+        } catch (err) {
+            return res.status(404).json({ error: err });
     }
 
     // If email contains blacklisted URLs, mark as spam and remove inbox label
@@ -229,14 +229,18 @@ exports.deleteMail = (req, res) => {
     // Add trash label if not present
     if (!currentLabels.includes("trash")) {
         currentLabels.push("trash");
-    }
-    
-    // Remove inbox label if present
-    currentLabels = currentLabels.filter(l => l !== "inbox");
+        // Remove inbox label if present
+        currentLabels = currentLabels.filter(l => l !== "inbox");
 
-    const updateResult = Mails.updateMail(userDB.email, id, undefined, undefined, currentLabels);
-    if (!updateResult) {
-        return res.status(404).json({ error : "Invalid mail id provided" });
+        const updateResult = Mails.updateMail(userDB.email, id, undefined, undefined, currentLabels);
+        if (!updateResult) {
+            return res.status(404).json({ error : "Invalid mail id provided" });
+        }
+    } else {
+        const updateResult = Mails.deleteMail(userId, id);
+        if (!updateResult) {
+            return res.status(404).json({ error : "Invalid mail id provided" });
+        }
     }
 
     return res.sendStatus(204);
