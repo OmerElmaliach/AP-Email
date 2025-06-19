@@ -71,13 +71,19 @@ const EmailDisplay = () => {
     };
 
     // Reports an email as spam.
-    const reportSpam = (emailId) => {
+    const reportSpam = () => {
         // TODO
     }
 
     // Deletes an email.
-    const deleteEmail = (emailId) => {
-        // TODO
+    const deleteEmail = async () => {
+        try {
+            // Update backend
+            await ApiService.deleteEmail(email.mail_id);
+            setShowLabelSuggestions(false);
+        } catch (error) {
+            console.error('Failed to remove email:', error);
+        }
     }
 
     const showDeleteMessage = () => {
@@ -124,7 +130,7 @@ const EmailDisplay = () => {
                         className='toolbar-btn' 
                         onClick={() => {
                             showDeleteMessage()
-                            deleteEmail(email.id);
+                            deleteEmail();
                             setTimeout(() => {
                                 navigate('/');
                             }, 750);
@@ -135,7 +141,7 @@ const EmailDisplay = () => {
                     <div className='subject-main'>
                     <h1>{email.subject}</h1>
                     <div className="email-labels">
-                      {emailLabels.slice(0, 3).map(label => (
+                      {emailLabels.map(label => (
                         <span key={label.id} className="label-tag">
                           {label.name}
                           <button
