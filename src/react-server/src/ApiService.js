@@ -64,6 +64,13 @@ class ApiService {
     return this.makeRequest('/labels');
   }
 
+  // Get specific label by id
+  static getLabelById(labelId) {
+    return this.makeRequest(`/labels/${labelId}`, {
+      method: 'GET'
+  });
+  }
+
   // Create a new email
   static createEmail(emailData) {
     return this.makeRequest('/mails', {

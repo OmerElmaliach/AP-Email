@@ -10,7 +10,8 @@ import { useNavigate } from 'react-router-dom';
 
 const EmailDisplay = () => {
     const [showToast, setShowToast] = useState(false);
-    const { error, setError, darkMode } = useAppContext();
+    const [emailLabels, setEmailLabels] = useState([]);
+    const { error, setError, darkMode, showLabelSuggestions, setShowLabelSuggestions, labels} = useAppContext();
     const [email, setEmail] = useState([]);
     const { id } = useParams(); // Get email id.
     const navigate = useNavigate();
@@ -22,6 +23,14 @@ const EmailDisplay = () => {
                     ApiService.getEmailById(id)
                 ]);
                 setEmail(emailData);
+
+                const labelResponses = await Promise.all(
+                    (emailData.label || []).map(labelId =>
+                        ApiService.getLabelById(labelId)
+                    )
+                );
+                setEmailLabels(labelResponses);
+                
             } catch (err) {
                 setError("Request Failed");
             }
@@ -29,6 +38,37 @@ const EmailDisplay = () => {
 
         loadData();
     }, [id, setError]);
+
+    const removeLabelFromEmail = async (labelName) => {
+        try {
+            const newLabels = emailLabels.filter(label => label.name !== labelName);
+            const newLabelIds = newLabels.map(label => label.id);
+            
+            // Update backend
+            await ApiService.updateEmail(email.mail_id, { label: newLabelIds });
+            
+            // Update local state
+            setEmailLabels(newLabels);
+        } catch (error) {
+            console.error('Failed to remove label:', error);
+        }
+    };
+  
+    // Label management
+    const addLabelToEmail = async (label) => {
+        try {
+            const newLabels = [...emailLabels, label]
+            const newLabelIds = newLabels.map(label => label.id);
+            
+            // Update backend
+            await ApiService.updateEmail(email.mail_id, { label: newLabelIds });
+            
+            // Update local state
+            setEmailLabels(newLabels);
+        } catch (error) {
+            console.error('Failed to add label:', error);
+        }
+    };
 
     // Reports an email as spam.
     const reportSpam = (emailId) => {
@@ -92,7 +132,56 @@ const EmailDisplay = () => {
                 </div>
                 <hr className="line-divider" />
                 <div className='subject'>
+                    <div className='subject-main'>
                     <h1>{email.subject}</h1>
+                    <div className="email-labels">
+                      {emailLabels.slice(0, 3).map(label => (
+                        <span key={label.id} className="label-tag">
+                          {label.name}
+                          <button
+                            className="remove-label"
+                            onClick={() => {
+                              removeLabelFromEmail(label.name);
+                            }}
+                          >
+                            ×
+                          </button>
+                        </span>
+                      ))}
+
+                      <button
+                        className="add-label-btn"
+                        onClick={() => {
+                            setShowLabelSuggestions(!showLabelSuggestions)
+                        }}
+                      >
+                        + Add Label
+                      </button>
+
+                      {showLabelSuggestions && (
+                        <div className="label-suggestions">
+                            <div className="suggestions-list">
+                            {
+                                labels.filter(label => {
+                                    return !emailLabels.some(existing => existing.id === label.id);
+                                })
+                                .map(label => (
+                                    <button
+                                    key={label.id}
+                                    className="suggestion-item"
+                                    onClick={() => {
+                                        addLabelToEmail(label);
+                                    }}
+                                    >
+                                    {label.name}
+                                    </button>
+                                ))
+                            }
+                            </div>
+                        </div>
+                        )}
+                    </div>
+                    </div>
                     <div className='subject-date'>
                         Date sent: {email.date_sent}
                     </div>
