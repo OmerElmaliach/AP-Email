@@ -40,14 +40,14 @@
 }
 
 .profile-dropdown {
-  position: absolute;
-  top: 50px;
-  right: 0;
+  position: fixed;             
+  top: 60px;                   
+  right: 20px;                 
   background: white;
   border-radius: 8px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
   min-width: 280px;
-  z-index: 1000;
+  z-index: 9999;               
   border: 1px solid #e0e0e0;
   overflow: visible;
 }

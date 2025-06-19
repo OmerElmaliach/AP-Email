@@ -2,7 +2,7 @@ import '../styles/topbar.css';
 import { useAppContext } from '../context/appContext.js';
 import { useNavigate, useLocation, useMatch } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import UserProfile from './UserProfile';
+import UserProfile from './UserProfile.js';
 
 const Topbar = () => {
     const { searchQuery, setSearchQuery, darkMode, setDarkMode } = useAppContext();
