@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import '../styles/UserProfile.css';
-//import ReadmePage from './ReadmePage';
+import ReadmePage from './ReadmePage';
 import ApiService from '../ApiService';
 import backupPhoto from '../styles/backup_photo.jpg'
 
@@ -136,8 +136,9 @@ const UserProfile = () => {
 
               <div className="menu-item-container" ref={settingsRef}>               
                  <button className="menu-item" onClick={handleSettingsClick}>
+                                            {/* gabi is something spused to go here?*/}            
                   <span className="menu-icon">⚙️</span>
-                  User Settings
+                  User info
                   <span className="menu-arrow">◀</span>
                 </button>
 
@@ -159,21 +160,8 @@ const UserProfile = () => {
                         <span>{user.email}</span>
                       </div>
                       <div className="setting-item">
-                        <label>Username:</label>
-                        <span>{user.userName}</span>
-                      </div>
-                      <div className="setting-item">
-                        <label>Password:</label>
-                        {/* <span>{maskPassword(user.password)}</span> */}
-                        <span>{user.password}</span>
-                      </div>
-                      <div className="setting-item">
                         <label>Birthday:</label>
                         <span>{user.birthday}</span>
-                      </div>
-                      <div className="setting-item">
-                        <label>Phone:</label>
-                        <span>{user.phoneNumber || 'Not provided'}</span>
                       </div>
                       <div className="setting-item">
                         <label>Gender:</label>
@@ -184,10 +172,10 @@ const UserProfile = () => {
                 )}
               </div>
 
-              <button className="menu-item" onClick={handleSwitchAccount}>
+              {/*<button className="menu-item" onClick={handleSwitchAccount}>
                 <span className="menu-icon">🔄</span>
                 Switch Account
-              </button>
+              </button>*/}
 
               <button className="menu-item logout" onClick={handleLogout}>
                 <span className="menu-icon">🚪</span>
@@ -207,7 +195,7 @@ const UserProfile = () => {
             >
               ×
             </button>
-           
+           <ReadmePage />
           </div>
         </div>
       )}
@@ -216,4 +204,3 @@ const UserProfile = () => {
 };
 
 export default UserProfile;
-// <ReadmePage />
