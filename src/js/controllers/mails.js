@@ -160,28 +160,28 @@ exports.updateMail = async (req, res) => {
     let urlsBody = body ? body.match(urlRegex) || [] : [];
     let hasBlacklistedURL = false;
 
-        try {
-            // Check for a list of urls if they are blacklisted.
-            for (let i = 0; i < urlsSubject.length; i++) {
-                let urlsValid = await BlackList.getBlacklistedURLById(urlsSubject[i]);
+    try {
+        // Check for a list of urls if they are blacklisted.
+        for (let i = 0; i < urlsSubject.length; i++) {
+            let urlsValid = await BlackList.getBlacklistedURLById(urlsSubject[i]);
+            if (urlsValid.endsWith("true")) {
+                hasBlacklistedURL = true;
+                break;
+            }
+        }
+    
+        if (!hasBlacklistedURL) {
+            for (let i = 0; i < urlsBody.length; i++) {
+                let urlsValid = await BlackList.getBlacklistedURLById(urlsBody[i]);
                 if (urlsValid.endsWith("true")) {
                     hasBlacklistedURL = true;
                     break;
                 }
             }
+        }
         
-            if (!hasBlacklistedURL) {
-                for (let i = 0; i < urlsBody.length; i++) {
-                    let urlsValid = await BlackList.getBlacklistedURLById(urlsBody[i]);
-                    if (urlsValid.endsWith("true")) {
-                        hasBlacklistedURL = true;
-                        break;
-                    }
-                }
-            }
-            
-        } catch (err) {
-            return res.status(404).json({ error: err });
+    } catch (err) {
+        return res.status(404).json({ error: err });
     }
 
     // If email contains blacklisted URLs, mark as spam and remove inbox label
