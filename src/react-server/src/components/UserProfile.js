@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import '../styles/UserProfile.css';
-import ReadmePage from './ReadmePage';
+//import ReadmePage from './ReadmePage';
+import ApiService from '../ApiService';
 
 const UserProfile = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -15,34 +16,9 @@ const UserProfile = () => {
     const fetchUserData = async () => {
       try {
         setLoading(true);
-
-        // TODO: Replace with actual JWT authentication service
-        // const token = localStorage.getItem('authToken');
-        // const response = await fetch('http://localhost:9000/api/users/me', {
-        //   headers: { 'Authorization': `Bearer ${token}` }
-        // });
-        // const userData = await response.json();
-        // setUser(userData);
-
-        // Mock user data for now - will be replaced with JWT service
-        const mockUser = {
-          id: '1',
-          fullName: 'John Doe',
-          email: 'john.doe@example.com',
-          userName: 'johndoe',
-          password: 'MyPass123',
-          birthday: '1990-05-15',
-          phoneNumber: '+1-555-0123',
-          gender: 'M',
-          picture: 'https://via.placeholder.com/100/4285f4/white?text=JD'
-        };
-
-        // Simulate network delay
-        setTimeout(() => {
-          setUser(mockUser);
-          setLoading(false);
-        }, 500);
-
+        const userData = await ApiService.getCurrentUser();
+        setUser(userData);
+        setLoading(false);
       } catch (error) {
         console.error('Error fetching user data:', error);
         setLoading(false);
@@ -219,7 +195,7 @@ const UserProfile = () => {
             >
               ×
             </button>
-            <ReadmePage />
+           
           </div>
         </div>
       )}
@@ -228,3 +204,4 @@ const UserProfile = () => {
 };
 
 export default UserProfile;
+// <ReadmePage />
