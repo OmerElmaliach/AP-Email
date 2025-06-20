@@ -73,7 +73,7 @@ const EmailDisplay = () => {
 
     // Reports an email as spam.
     const reportSpam = async () => {
-        if (!emailLabels.some(label => label.id == "spam")) {
+        if (!emailLabels.some(label => label.id === "spam")) {
             let spamLabel = await ApiService.getLabelById("spam");
             const newLabels = [...emailLabels, spamLabel]
             const newLabelIds = newLabels.map(label => label.id);
@@ -218,7 +218,7 @@ const EmailDisplay = () => {
                 </div>
                 <p className='undersubject-lines'>
                     <strong>From:</strong> {email.from} <br />
-                    <strong>Recipients:</strong> {email.to} <br />
+                    <strong>Recipients:</strong> {Array(email.to).join(",")} <br />
                 </p>
                 <div className='email-body-box'>
                     {email.body}
