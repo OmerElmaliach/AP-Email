@@ -1,8 +1,5 @@
 const API_BASE_URL = 'http://localhost:9000/api';
 
-// Default user ID for demo purposes
-const DEFAULT_USER_ID = '1';
-
 class ApiService {
   // Helper method to make HTTP requests
   static async makeRequest(url, options = {}, useAuth = true) {
@@ -87,8 +84,6 @@ class ApiService {
     });
   }
 
-
-
   // get a specific email
     static getEmailById(emailId) {
         return this.makeRequest(`/mails/${emailId}`, {
@@ -100,6 +95,14 @@ class ApiService {
   static deleteEmail(emailId) {
     return this.makeRequest(`/mails/${emailId}`, {
       method: 'DELETE'
+    });
+  }
+
+  // Add a url to the blacklist
+  static addToBlacklist(url) {
+    return this.makeRequest('/blacklist', {
+      method: 'POST',
+      body: JSON.stringify(url)
     });
   }
 

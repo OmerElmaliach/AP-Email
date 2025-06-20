@@ -7,6 +7,7 @@ import Topbar from './topbar.js'
 import Sidebar from './sidebar.js'
 import { useAppContext } from '../context/appContext.js';
 import { useNavigate } from 'react-router-dom';
+const urlRegex = /(?<![a-zA-Z0-9])((https?:\/\/)?(www\.)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(\/\S*)?/g;
 
 const EmailDisplay = () => {
     const [showToast, setShowToast] = useState(false);
@@ -71,8 +72,31 @@ const EmailDisplay = () => {
     };
 
     // Reports an email as spam.
-    const reportSpam = () => {
-        // TODO
+    const reportSpam = async () => {
+        if (!emailLabels.some(label => label.id == "spam")) {
+            let spamLabel = await ApiService.getLabelById("spam");
+            const newLabels = [...emailLabels, spamLabel]
+            const newLabelIds = newLabels.map(label => label.id);
+
+            // Save urls appearing in the mail's subject or body.
+            let urlsSubject = email.subject.match(urlRegex) || [];
+            let urlsBody = email.body.match(urlRegex) || [];
+            
+            try {
+                for (let i = 0; i < urlsSubject.length; i++) {
+                    await ApiService.addToBlacklist({ "id" : urlsSubject[i] });
+                }
+        
+                for (let i = 0; i < urlsBody.length; i++) {
+                    await ApiService.addToBlacklist({ "id" : urlsBody[i] });
+                }
+
+                await ApiService.updateEmail(email.mail_id, { label : newLabelIds });
+                setEmailLabels(newLabels);
+            } catch (e) {
+                console.log("Failed to report spam");
+            }
+        }
     }
 
     // Deletes an email.
@@ -122,7 +146,7 @@ const EmailDisplay = () => {
                     <div className="vertical-divider"></div>
                     <img src={darkMode ? '../../misc/emailDisplay/report_spam_ic.png' : '../../misc/emailDisplay/light_report_spam_ic.png'} 
                         className='toolbar-btn' 
-                        onClick={() => reportSpam(email.mail_id)} 
+                        onClick={() => reportSpam()} 
                         title='Report Spam' 
                         alt='Report Spam'
                     />
