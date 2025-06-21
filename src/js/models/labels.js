@@ -161,6 +161,7 @@ const getLabels = (field, value) => {
  * console.log(`Total labels: ${allLabels.length}`);
  */
 const getAllLabels = () => {
+  console.log("models",{labels_DB})
   return labels_DB
 }
 
