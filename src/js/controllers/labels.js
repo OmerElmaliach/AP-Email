@@ -120,6 +120,7 @@ const getLabels = (req,res) =>{
  */
 const getAllLabels = (req, res) => {
   const labels = model.getAllLabels()
+  console.log("the labels sent are",{labels})
   return res.status(200).json(labels)
 }
 
