@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');  
 const { isLoggedIn } = require('./middleware/auth');
 
+
 const app = express();
 
 app.use(cors({
@@ -20,7 +21,6 @@ const userPhoto = require('./routes/userPhoto');
 
 const model = require('./models/labels'); 
 model.initializeDefaultLabels(); 
-
 
 
 app.use(express.json())

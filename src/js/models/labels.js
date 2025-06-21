@@ -76,7 +76,7 @@ const initializeDefaultLabels = () => {
 }
 
 // Initialize default labels when module loads
-initializeDefaultLabels();
+//initializeDefaultLabels();
 
 /**
  * Unique ID generator for labels
@@ -260,8 +260,8 @@ const deleteLabel = (id) => {
  *   console.log(`Default label ID: ${defaultLabel.id}`);
  * }
  */
-const getDefaultLabelForUser = (userId) => {
-  return labels_DB.find(label => label.userId === userId.toString() && label.name === null && label.color === null);
-}
+const getDefaultLabelForUser = () => {
+  return labels_DB.filter(label => label.userId === 'system');
+};
 
 module.exports = {createLabel, getLabels, getAllLabels, getLabelById, updateLabel, deleteLabel, idGenerator, getDefaultLabelForUser, initializeDefaultLabels}
