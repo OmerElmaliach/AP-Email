@@ -13,7 +13,7 @@ const users_DB = [ // TEST USERS REMEMBER TO DELETE
     "birthday": "1995-06-01",
     "phoneNumber": "0501234567",
     "gender": "W",
-    "picture": "/images/alice.jpg",
+    "picture": "dora.png",
     "labels": ""
   },
   {

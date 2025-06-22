@@ -115,10 +115,10 @@ const getUser = (req, res) => {
         return res.status(404).json({ error: 'User not found' })
     }
     //this gives the user his token for entering his inbox
-    const { firstName, lastName, email, gender, picture } = user
+    const { firstName, lastName, email, gender, picture, birthday } = user
     // taskes first and last and joins trings to one with space. if one is missing its  ok
     const fullName = [firstName, lastName].filter(Boolean).join(' ') 
-    return res.status(200).json({ fullName, email, gender, picture })
+    return res.status(200).json({ fullName, email, gender, picture,birthday })
 }
 
 /* for DEBUGGING

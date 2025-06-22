@@ -2,6 +2,7 @@ import '../styles/topbar.css';
 import { useAppContext } from '../context/appContext.js';
 import { useNavigate, useLocation, useMatch } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import UserProfile from './UserProfile.js';
 
 const Topbar = () => {
     const { searchQuery, setSearchQuery, darkMode, setDarkMode } = useAppContext();
@@ -49,7 +50,7 @@ const Topbar = () => {
                 <button onClick={() => setDarkMode(!darkMode)} className="mode-btn">
                     {darkMode ? 'Light-Mode' : 'Dark-Mode'}
                 </button>
-                <img src="../../misc/temp.png" className="topbar-pfp" alt="Profile" />
+                <UserProfile />
             </div>
         </div>
         </>

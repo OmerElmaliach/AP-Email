@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');  
 const { isLoggedIn } = require('./middleware/auth');
 
-
 const app = express();
 
 app.use(cors({
@@ -21,6 +20,7 @@ const userPhoto = require('./routes/userPhoto');
 
 const model = require('./models/labels'); 
 model.initializeDefaultLabels(); 
+
 
 
 app.use(express.json())
@@ -47,3 +47,4 @@ app.use((req, res) => {
 app.listen(9000, () => {
   console.log("Server is running on port 9000");
 });
+
