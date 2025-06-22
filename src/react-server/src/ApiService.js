@@ -71,6 +71,7 @@ class ApiService {
       body: JSON.stringify(emailData)
     });
   }
+  
 
   // Update email labels
   static updateEmail(emailId, updateData) {

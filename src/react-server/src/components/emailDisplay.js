@@ -47,6 +47,8 @@ const EmailDisplay = () => {
         }, 2000);
     };
 
+
+
     return (
         <>
         {error ? (
@@ -89,6 +91,15 @@ const EmailDisplay = () => {
                                 navigate('/');
                             }, 750);
                         }} title='Delete Email' alt='Delete Email'/>
+                    {Array.isArray(email.labels) && email.labels.includes('draft') && (
+                    <img
+                      src={darkMode ? '../../misc/emailDisplay/box_edit_dark.png' : '../../misc/emailDisplay/box_edit_light.png'}
+                      className='toolbar-btn'
+                      onClick={() => navigate('/create-mail', { state: { email } })}
+                      title='Edit draft'
+                      alt='Edit draft'
+                    />)}
+                    
                 </div>
                 <hr className="line-divider" />
                 <div className='subject'>
