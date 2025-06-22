@@ -194,7 +194,7 @@ exports.updateMail = async (req, res) => {
     }
 
     // updateMail returns true if mail was updated successfully, otherwise false.
-    const mailCon = Mails.updateMail(userDB.email, id, subject, body, label);
+    const mailCon = Mails.updateMail(userId, id, subject, body, label);
     if (!mailCon) {
         return res.status(404).json({ error : "Invalid mail id provided" });
     }

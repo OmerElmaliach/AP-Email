@@ -12,7 +12,7 @@ const urlRegex = /(?<![a-zA-Z0-9])((https?:\/\/)?(www\.)?([a-zA-Z0-9-]+\.)+[a-zA
 const EmailDisplay = () => {
     const [showToast, setShowToast] = useState(false);
     const [emailLabels, setEmailLabels] = useState([]);
-    const { error, setError, darkMode, showLabelSuggestions, setShowLabelSuggestions, labels} = useAppContext();
+    const { error, setError, darkMode, showLabelSuggestions, setShowLabelSuggestions, labels } = useAppContext();
     const [email, setEmail] = useState([]);
     const { id } = useParams(); // Get email id.
     const navigate = useNavigate();
