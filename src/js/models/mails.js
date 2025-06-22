@@ -46,6 +46,8 @@ const createMail = (id, from, to, toIds, subject, body, label) => {
             }
         }
         
+        if (toIds.includes(id))
+            senderLabels.push("inbox");
         mails.push({"id" : id, "mail_id" : "e".concat(idCounter.toString()), "from" : from, "to" : to, "subject" : subject, "body" : body, date_sent : timestamp, "label" : senderLabels});
         
         // For receivers: add "inbox" label unless it's spam or trash

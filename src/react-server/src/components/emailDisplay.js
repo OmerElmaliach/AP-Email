@@ -99,6 +99,22 @@ const EmailDisplay = () => {
         }
     }
 
+    // Reports an email as spam.
+    const starEmail = async () => {
+        if (!emailLabels.some(label => label.id === "starred")) {
+            let starLabel = await ApiService.getLabelById("starred");
+            const newLabels = [...emailLabels, starLabel]
+            const newLabelIds = newLabels.map(label => label.id);
+            
+            try {
+                await ApiService.updateEmail(email.mail_id, { label : newLabelIds });
+                setEmailLabels(newLabels);
+            } catch (e) {
+                console.log("Failed to star email");
+            }
+        }
+    }
+
     // Deletes an email.
     const deleteEmail = async () => {
         try {
@@ -149,6 +165,12 @@ const EmailDisplay = () => {
                         onClick={() => reportSpam()} 
                         title='Report Spam' 
                         alt='Report Spam'
+                    />
+                    <img src={darkMode ? '../../misc/emailDisplay/star_ic.png' : '../../misc/emailDisplay/light_star_ic.png'} 
+                        className='toolbar-btn' 
+                        onClick={() => starEmail()} 
+                        title='Star Email' 
+                        alt='Star'
                     />
                     <img src={darkMode ? '../../misc/emailDisplay/delete_ic.png' : '../../misc/emailDisplay/light_delete_ic.png'} 
                         className='toolbar-btn' 
