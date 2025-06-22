@@ -12,6 +12,7 @@
 
 const model = require('../models/labels')
 const usersModel = require('../models/users');
+var labelCounter = 0;
 
 /**
  * Creates a new label
@@ -41,12 +42,12 @@ const usersModel = require('../models/users');
  */
 const createLabel = (req, res)=>{
     const userId = req.user.id;
+    const id = labelCounter.toString();
     const  {
-        id,
         name = null,
         color = null,
     } = req.body    //mandatory fields check - only id and userId are truly required
-    if ( !id || !userId) {
+    if (!userId) {
         return res.status(400).json({ error: 'Missing mandatory field' });
     }// check userId exists
     if (usersModel.getUser("id", userId) == undefined) {
@@ -63,6 +64,7 @@ const createLabel = (req, res)=>{
         name,
         color
     }
+    labelCounter++;
     model.createLabel(newLabel)
     return res.status(201).json({ message: 'Label created', label: newLabel });
 }
