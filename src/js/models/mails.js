@@ -88,11 +88,11 @@ const getMailById = (userId, mailId) => {
  * @param {string} label
  * @returns True if changed successfully, otherwise false.
  */
-const updateMail = (userEmail, mailId, subject, body, label) => {
+const updateMail = (userId, mailId, subject, body, label) => {
     let isFound = false;
     // Loop over all mails and modify the correct one.
     for (var i = 0; i < mails.length; i++) {
-        if (mails[i].mail_id == mailId && mails[i].from === userEmail) {
+        if (mails[i].mail_id == mailId && mails[i].id === userId) {
             isFound = true;
             if (subject != undefined)
                 mails[i].subject = subject;
