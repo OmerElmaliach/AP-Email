@@ -12,6 +12,8 @@ const Inbox = () => {
   // Load initial data from backend
   useEffect(() => {
     const loadData = async () => {
+      const defaultLabels = ["Inbox", "Starred", "Sent", "Draft", "Spam", "Trash"];
+      
       try {
         setLoading(true);
         setError(null);
@@ -20,10 +22,12 @@ const Inbox = () => {
           ApiService.getUserEmails(),
           ApiService.getAllLabels()
         ]);
+
+        const filteredLabels = labelsData.filter(label => !defaultLabels.includes(label.name));
         
         setAllEmails(emailsData || []);
         setEmails(emailsData || []);
-        setLabels(labelsData || []);
+        setLabels(filteredLabels || []);
       } catch (err) {
         console.error('Failed to load data:', err);
         setError('Failed to load data from server. Using offline mode.');
