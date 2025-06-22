@@ -127,6 +127,7 @@ const getLabels = (field, value) => {
 const getAllLabels = () => {
 console.log("models",{labels_DB})
 return labels_DB
+
 }
 
 /**

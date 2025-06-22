@@ -10,7 +10,7 @@ const getPhoto = (req, res) => {
     if (!user || !user.picture) {
         return res.status(404).json({ error: 'Photo not found' });
     }
-  const photoPath = path.join(__dirname, '../models/userPhotos/', user.picture)
+  const photoPath = path.join(__dirname, '../models/userPhoto/', user.picture)
     res.sendFile(photoPath, (err) => {
   if (err) {
     console.error('Error sending photo:', err)
