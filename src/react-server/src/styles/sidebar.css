@@ -1,5 +1,7 @@
 /* SIDEBAR */
 .sidebar {
+    overflow-y: auto;
+    max-height: 100vh;
     background: #e6e6e6;
     width: 200px;
     height: 100vh;
@@ -8,6 +10,7 @@
     left: 0;
     padding: 20px;
     box-sizing: border-box;
+    padding-bottom: 5rem; 
 }
 
 .sidebar-item {
@@ -52,6 +55,38 @@
 .sidebar-active-label {
     background-color: #d2e3fc;
     font-weight: bold;
+}
+
+.newlabel-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+  
+.newlabel {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    width: 300px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+}
+  
+.newlabel input {
+    width: 93%;
+    padding: 0.5rem;
+    margin: 0.75rem 0;
+}
+  
+.newlabel-buttons {
+    display: flex;
+    justify-content: space-between;
 }
 
 /* DARK MODE */

@@ -7,11 +7,11 @@ export const AppProvider = ({ children }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [labels, setLabels] = useState([]);
     const [currentLabel, setCurrentLabel] = useState('Inbox');
+    const [emailLabels, setEmailLabels] = useState([]);
     const [error, setError] = useState(undefined);
     const [loading, setLoading] = useState(true);
     const [selectedEmails, setSelectedEmails] = useState([]);
-    const [showLabelDropdown, setShowLabelDropdown] = useState({});
-    const [showLabelSuggestions, setShowLabelSuggestions] = useState({});
+    const [showLabelSuggestions, setShowLabelSuggestions] = useState(false);
     const [emails, setEmails] = useState([]);
     const [allEmails, setAllEmails] = useState([]);
     const [newLabelInput, setNewLabelInput] = useState({});
@@ -38,11 +38,11 @@ export const AppProvider = ({ children }) => {
             error, setError,
             loading, setLoading,
             selectedEmails, setSelectedEmails,
-            showLabelDropdown, setShowLabelDropdown,
             showLabelSuggestions, setShowLabelSuggestions,
             emails, setEmails,
             allEmails, setAllEmails,
-            newLabelInput, setNewLabelInput
+            newLabelInput, setNewLabelInput,
+            emailLabels, setEmailLabels
         }}>
             {children}
         </AppContext.Provider>
