@@ -12,6 +12,7 @@
 
 const model = require('../models/labels')
 const usersModel = require('../models/users');
+const Mails = require('../models/mails');
 var labelCounter = 0;
 
 /**
@@ -215,6 +216,16 @@ const updateLabel = (req, res) => {
  */
 const deleteLabel = (req, res) => {
     const { id } = req.params;
+    const userId = req.user.id;
+    const labelMails = Mails.getUserMails(userId);
+    const filteredMails = labelMails.filter(mail => mail.label.includes(id));
+    for (let i = 0; i < filteredMails.length; i++) {
+        let MailLabels = filteredMails[i].label;
+        let idx = MailLabels.indexOf(id);
+        MailLabels.splice(idx, 1);
+        Mails.updateMail(userId, filteredMails[i].mail_id, undefined, undefined, MailLabels);
+    }
+
     const deletedLabel = model.deleteLabel(id);
     if (!deletedLabel) {
         return res.status(404).json({ error: 'Label not found' });

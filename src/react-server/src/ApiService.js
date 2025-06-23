@@ -98,6 +98,13 @@ class ApiService {
     });
   }
 
+  // Delete a label.
+  static deleteLabel(labelId) {
+    return this.makeRequest(`/labels/${labelId}`, {
+      method: 'DELETE'
+    });
+  }
+
   // Add a url to the blacklist
   static addToBlacklist(url) {
     return this.makeRequest('/blacklist', {
