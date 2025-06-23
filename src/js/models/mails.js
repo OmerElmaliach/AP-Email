@@ -1,102 +1,7 @@
 let idCounter = 0;
+let draftCounter = 0;
 const EMAIL_AMOUNT = 50;
-var mails = [
-
-    // for testing DELTE THIS////////////////////////////////////////////////////////////////////////////////////////      
-    {
-        "id": "1",
-        "mail_id": "e0",
-        "from": "alice@example.com",
-        "to": ["ben@example.com"],
-        "subject": "Quarterly Report",
-        "body": "Hi Ben, please review the Q2 report by Friday.",
-        "date_sent": "6/16/2025, 9:00:00 AM",
-        "label": ["Work"]
-    },
-    {
-        "id": "1",
-        "mail_id": "e1",
-        "from": "alice@example.com",
-        "to": ["dana@example.com"],
-        "subject": "Dinner at Mom’s",
-        "body": "Dana, are you free Sunday evening for dinner?",
-        "date_sent": "6/15/2025, 5:30:00 PM",
-        "label": ["Family"]
-    },
-    {
-        "id": "1",
-        "mail_id": "e2",
-        "from": "alice@example.com",
-        "to": ["ben@example.com", "dana@example.com"],
-        "subject": "Team Meeting",
-        "body": "Let’s meet Monday morning to sync.",
-        "date_sent": "6/14/2025, 10:00:00 AM",
-        "label": ["Work"]
-    },
-    {
-        "id": "2",
-        "mail_id": "e3",
-        "from": "ben@example.com",
-        "to": ["alice@example.com"],
-        "subject": "Bill Reminder",
-        "body": "Don’t forget to pay the phone bill.",
-        "date_sent": "6/16/2025, 11:15:00 AM",
-        "label": ["Bills"]
-    },
-    {
-        "id": "2",
-        "mail_id": "e4",
-        "from": "ben@example.com",
-        "to": ["dana@example.com"],
-        "subject": "Urgent: Server Down",
-        "body": "Dana, can you check the logs ASAP?",
-        "date_sent": "6/15/2025, 2:45:00 PM",
-        "label": ["Important"]
-    },
-    {
-        "id": "2",
-        "mail_id": "e5",
-        "from": "ben@example.com",
-        "to": ["alice@example.com", "dana@example.com"],
-        "subject": "Shared Calendar",
-        "body": "I've added everyone to the shared Google Calendar.",
-        "date_sent": "6/14/2025, 9:00:00 AM",
-        "label": ["Important"]
-    },
-    {
-        "id": "3",
-        "mail_id": "e6",
-        "from": "dana@example.com",
-        "to": ["alice@example.com"],
-        "subject": "Weekend Shopping",
-        "body": "Hey Alice, want to go shopping on Saturday?",
-        "date_sent": "6/16/2025, 4:00:00 PM",
-        "label": ["Shopping"]
-    },
-    {
-        "id": "3",
-        "mail_id": "e7",
-        "from": "dana@example.com",
-        "to": ["ben@example.com"],
-        "subject": "Birthday Party!",
-        "body": "You’re invited to my birthday bash Friday night!",
-        "date_sent": "6/15/2025, 6:30:00 PM",
-        "label": ["Social"]
-    },
-    {
-        "id": "3",
-        "mail_id": "e8",
-        "from": "dana@example.com",
-        "to": ["alice@example.com", "ben@example.com"],
-        "subject": "Picnic Ideas",
-        "body": "Let's plan a group picnic for next weekend.",
-        "date_sent": "6/14/2025, 3:00:00 PM",
-        "label": ["Social", "Shopping"]
-    }
-
-
-
-];
+var mails =  [];
 
 
 /**
@@ -125,49 +30,40 @@ const getUserMails = (userId) => {
  * @param {string} label
  */
 const createMail = (id, from, to, toIds, subject, body, label) => {
-    // Instantly creates a json and adds to mail list.
-    const date = new Date();
-    const timestamp = date.toLocaleString()
-
-    // For sender: add "sent" label unless it's spam or trash
-    let senderLabels = Array.isArray(label) ? [...label] : (label ? [label] : []);
-    //if a draft- domnt send and just add the users mail    
-    const isDraft = senderLabels.includes("draft");
-
-    if (!isDraft && !senderLabels.includes("spam") && !senderLabels.includes("trash")) {
-        if (!senderLabels.includes("sent")) {
-            senderLabels.push("sent");
-        }
-    }
-
-    mails.push({
-        "id": id,
-        "mail_id": "e".concat(idCounter.toString()),
-        "from": from,
-        "to": to,
-        "subject": subject,
-        "body": body,
-        date_sent: timestamp,
-        "label": senderLabels
-    });
-    // if its a draft were done
-    if (isDraft) {
-        idCounter++;
-        return;
-    }
-    // For receivers: add "inbox" label unless it's spam or trash
-    for (var i = 0; i < toIds.length; i++) {
-        if (toIds[i] != id) {
-            let receiverLabels = Array.isArray(label) ? [...label] : (label ? [label] : []);
-            if (!receiverLabels.includes("spam") && !receiverLabels.includes("trash")) {
-                if (!receiverLabels.includes("inbox")) {
-                    receiverLabels.push("inbox");
-                }
+    if (label.includes("draft")) {
+        mails.push({"id" : id, "mail_id" : "e".concat(draftCounter.toString().concat("d")), "from" : from, "to" : to, "subject" : subject, "body" : body, date_sent : "N/A", "label" : ["draft"]});
+        draftCounter++;
+    } else {
+        // Instantly creates a json and adds to mail list.
+        const date = new Date();
+        const timestamp = date.toLocaleString()
+        
+        // For sender: add "sent" label unless it's spam or trash
+        let senderLabels = Array.isArray(label) ? [...label] : (label ? [label] : []);
+        if (!senderLabels.includes("spam") && !senderLabels.includes("trash")) {
+            if (!senderLabels.includes("sent")) {
+                senderLabels.push("sent");
             }
-            mails.push({ "id": toIds[i], "mail_id": "e".concat(idCounter.toString()), "from": from, "to": to, "subject": subject, "body": body, date_sent: timestamp, "label": receiverLabels });
         }
+        
+        if (toIds.includes(id))
+            senderLabels.push("inbox");
+        mails.push({"id" : id, "mail_id" : "e".concat(idCounter.toString()), "from" : from, "to" : to, "subject" : subject, "body" : body, date_sent : timestamp, "label" : senderLabels});
+        
+        // For receivers: add "inbox" label unless it's spam or trash
+        for (var i = 0; i < toIds.length; i++) {
+            if (toIds[i] != id) {
+                let receiverLabels = Array.isArray(label) ? [...label] : (label ? [label] : []);
+                if (!receiverLabels.includes("spam") && !receiverLabels.includes("trash")) {
+                    if (!receiverLabels.includes("inbox")) {
+                        receiverLabels.push("inbox");
+                    }
+                }
+                mails.push({"id" : toIds[i], "mail_id" : "e".concat(idCounter.toString()), "from" : from, "to" : to, "subject" : subject, "body" : body, date_sent : timestamp, "label" : receiverLabels});
+            }
+        }
+        idCounter++;
     }
-    idCounter++;
 }
 
 
@@ -192,11 +88,11 @@ const getMailById = (userId, mailId) => {
  * @param {string} label
  * @returns True if changed successfully, otherwise false.
  */
-const updateMail = (userEmail, mailId, subject, body, label) => {
+const updateMail = (userId, mailId, subject, body, label) => {
     let isFound = false;
     // Loop over all mails and modify the correct one.
     for (var i = 0; i < mails.length; i++) {
-        if (mails[i].mail_id == mailId && mails[i].from === userEmail) {
+        if (mails[i].mail_id == mailId && mails[i].id === userId) {
             isFound = true;
             if (subject != undefined)
                 mails[i].subject = subject;

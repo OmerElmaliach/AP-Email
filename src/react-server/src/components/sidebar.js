@@ -1,8 +1,12 @@
 import '../styles/sidebar.css';
 import { useAppContext } from '../context/appContext.js';
+import { useState } from 'react';
+import ApiService from '../ApiService.js';
 
 const Sidebar = () => {
-    const { labels, currentLabel, setCurrentLabel } = useAppContext();
+    const { labels, setLabels, currentLabel, setCurrentLabel } = useAppContext();
+    const [showLabelCreation, setShowLabelCreation] = useState(false);
+    const [newLabelName, setNewLabelName] = useState('');
 
     // Default labels for all users.
     const defaultLabels = [
@@ -14,9 +18,39 @@ const Sidebar = () => {
         {"name" : "Trash", "photo_asset" : "../../misc/delete_icon.png"}
     ];
 
+    const createLabel = async (labelName) => {
+        try {
+            let res = await ApiService.createLabel({ name : labelName, color : "#FFFFFF" });
+            let newLabels = [...labels, res.label];
+            setLabels(newLabels);
+        } catch (err) {
+            console.log("Failed to create label");
+        }
+    }
+
     return (
         <>
         <div className="sidebar">
+            {showLabelCreation && (
+            <div className="newlabel-overlay">
+                <div className="newlabel">
+                    <h3>New label</h3>
+                    <input
+                        type="text"
+                        placeholder="Enter label name"
+                        value={newLabelName}
+                        onChange={(e) => setNewLabelName(e.target.value)}
+                    />
+                    <div className="newlabel-buttons">
+                        <button onClick={() => setShowLabelCreation(false)}>Cancel</button>
+                        <button onClick={() => {
+                            createLabel(newLabelName);
+                            setShowLabelCreation(false);
+                        }}>Create</button>
+                    </div>
+                </div>
+            </div>
+            )}
             {/* Add default labels and user specific labels */}
             {defaultLabels.map(label => {
                 const labelName = typeof label === 'string' ? label : label.name;
@@ -34,7 +68,7 @@ const Sidebar = () => {
     
             <p className="sidebar-add-label-tab">
                 <strong>Labels</strong>
-                <button className="sidebar-add-label-btn">
+                <button className="sidebar-add-label-btn" title='Add Label' onClick={() => setShowLabelCreation(true)}>
                     <img src="../../misc/plus_sign.png" alt="Add label" />
                 </button>
             </p>
