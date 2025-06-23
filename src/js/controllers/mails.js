@@ -194,7 +194,7 @@ exports.updateMail = async (req, res) => {
     }
 
     // updateMail returns true if mail was updated successfully, otherwise false.
-    const mailCon = Mails.updateMail(userDB.email, id, subject, body, label);
+    const mailCon = Mails.updateMail(userId, id, subject, body, label);
     if (!mailCon) {
         return res.status(404).json({ error : "Invalid mail id provided" });
     }
@@ -229,14 +229,18 @@ exports.deleteMail = (req, res) => {
     // Add trash label if not present
     if (!currentLabels.includes("trash")) {
         currentLabels.push("trash");
-    }
-    
-    // Remove inbox label if present
-    currentLabels = currentLabels.filter(l => l !== "inbox");
+        // Remove inbox label if present
+        currentLabels = currentLabels.filter(l => l !== "inbox");
 
-    const updateResult = Mails.updateMail(userDB.email, id, undefined, undefined, currentLabels);
-    if (!updateResult) {
-        return res.status(404).json({ error : "Invalid mail id provided" });
+        const updateResult = Mails.updateMail(userDB.email, id, undefined, undefined, currentLabels);
+        if (!updateResult) {
+            return res.status(404).json({ error : "Invalid mail id provided" });
+        }
+    } else {
+        const updateResult = Mails.deleteMail(userId, id);
+        if (!updateResult) {
+            return res.status(404).json({ error : "Invalid mail id provided" });
+        }
     }
 
     return res.sendStatus(204);

@@ -11,7 +11,8 @@
  */
 
 const model = require('../models/labels')
-const usersModel = require('../models/users')
+const usersModel = require('../models/users');
+var labelCounter = 0;
 
 /**
  * Creates a new label
@@ -41,12 +42,12 @@ const usersModel = require('../models/users')
  */
 const createLabel = (req, res)=>{
     const userId = req.user.id;
-    const  { 
-    id,
-    name = null,
-    color = null,
+    const id = labelCounter.toString();
+    const  {
+        name = null,
+        color = null,
     } = req.body    //mandatory fields check - only id and userId are truly required
-    if ( !id || !userId) {
+    if (!userId) {
         return res.status(400).json({ error: 'Missing mandatory field' });
     }// check userId exists
     if (usersModel.getUser("id", userId) == undefined) {
@@ -63,6 +64,7 @@ const createLabel = (req, res)=>{
         name,
         color
     }
+    labelCounter++;
     model.createLabel(newLabel)
     return res.status(201).json({ message: 'Label created', label: newLabel });
 }
@@ -88,7 +90,7 @@ const createLabel = (req, res)=>{
  * // GET /api/labels?userId=user123
  * // Response: [{ "id": "label1", "name": "Important", "userId": "user123", "color": "#FF0000" }]
  */
-const getLabels = (req,res) =>{
+const getLabels = (req, res) => {
     const userId = req.user.id;
 
     // Check if userId is provided
@@ -98,7 +100,12 @@ const getLabels = (req,res) =>{
 
     // Get labels for the specified user
     const labels = model.getLabels('userId', userId);
-    return res.status(200).json(labels);
+    const defaultLabel = model.getDefaultLabelForUser(userId);
+
+    const allLabels = [...labels, ...defaultLabel];
+
+    console.log("all labels:",{allLabels})
+    res.json(allLabels);
 }
 
 /**
@@ -119,8 +126,10 @@ const getLabels = (req,res) =>{
  * // Response: [{ "id": "label1", "name": "Important", "userId": "user123", "color": "#FF0000" }, ...]
  */
 const getAllLabels = (req, res) => {
-  const labels = model.getAllLabels()
-  return res.status(200).json(labels)
+    const labels = model.getAllLabels()
+    console.log("the labels sent are", { labels })
+    return res.status(200).json(labels)
+
 }
 
 /**
@@ -213,4 +222,4 @@ const deleteLabel = (req, res) => {
     return res.status(200).json({ message: 'Label deleted', label: deletedLabel });
 }
 
-module.exports = {createLabel, getLabels, getAllLabels, getLabelById, updateLabel, deleteLabel}
+module.exports = { createLabel, getLabels, getAllLabels, getLabelById, updateLabel, deleteLabel }
