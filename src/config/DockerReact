@@ -1,0 +1,12 @@
+FROM node:18-alpine
+
+# Setup files for docker.
+WORKDIR /Ap_Email/src/react-server
+COPY react-server/ .
+RUN npm install
+
+# Expose the port for outside connection.
+EXPOSE 3000
+
+# Run commands.
+CMD ["npm", "start"]
