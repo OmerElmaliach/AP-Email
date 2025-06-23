@@ -89,6 +89,25 @@
     justify-content: space-between;
 }
 
+.label-button {
+    background-color: #6ecbff;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    border-radius: 20px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+  
+.label-button:hover {
+    background-color: #58c2fa;
+    transform: translateY(-2px);
+}
+
 /* DARK MODE */
 .dark .sidebar {
     background: #2a2a2a;
@@ -109,4 +128,12 @@
 .dark .sidebar-active-label {
     background-color: #383838;
     font-weight: bold;
+}
+
+.dark .label-button {
+    background-color: #5a5a5a;
+}
+
+.dark .newlabel {
+    color: black
 }

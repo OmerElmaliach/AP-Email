@@ -201,11 +201,11 @@ return null;
 * }
 */
 const deleteLabel = (id) => {
-const index = labels_DB.findIndex(label => label.id === id);
-if (index !== -1) {
-  return labels_DB.splice(index, 1)[0];
-}
-return null;
+  const index = labels_DB.findIndex(label => label.id === id);
+  if (index !== -1) {
+    return labels_DB.splice(index, 1)[0];
+  }
+  return null;
 }
 
 /**
