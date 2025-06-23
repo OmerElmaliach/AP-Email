@@ -24,6 +24,18 @@ services:
       - blacklist-server
     networks:
       - ap-email-net
+  
+  react-server:
+    build:
+      context: ./src
+      dockerfile: config/DockerReact
+    container_name: docker-react
+    ports:
+      - "3000:3000"
+    depends_on:
+      - js-server
+    networks:
+      - ap-email-net
 
 networks:
   ap-email-net:
