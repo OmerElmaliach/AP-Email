@@ -18,11 +18,28 @@ const Sidebar = () => {
         {"name" : "Trash", "photo_asset" : "../../misc/delete_icon.png"}
     ];
 
+    const deleteLabel = async (e, label) => {
+        e.preventDefault();
+        try {
+            await ApiService.deleteLabel(label.id);
+            let newLabels = await ApiService.getAllLabels();
+            let defaultLabelNames = defaultLabels.map(l => l.name);
+            let filteredLabels = newLabels.filter(label => !defaultLabelNames.includes(label.name));
+            setLabels(filteredLabels);
+        } catch (err) {
+            console.log("Failed to delete label");
+        }
+    };
+
     const createLabel = async (labelName) => {
         try {
-            let res = await ApiService.createLabel({ name : labelName, color : "#FFFFFF" });
-            let newLabels = [...labels, res.label];
-            setLabels(newLabels);
+            let findDup = labels.find(label => label.name === labelName);
+            // Prevent duplicate names in same user and empty labels.
+            if (findDup === undefined && labelName !== "") {
+                let res = await ApiService.createLabel({ name : labelName, color : "#FFFFFF" });
+                let newLabels = [...labels, res.label];
+                setLabels(newLabels);
+            }
         } catch (err) {
             console.log("Failed to create label");
         }
@@ -42,8 +59,10 @@ const Sidebar = () => {
                         onChange={(e) => setNewLabelName(e.target.value)}
                     />
                     <div className="newlabel-buttons">
-                        <button onClick={() => setShowLabelCreation(false)}>Cancel</button>
-                        <button onClick={() => {
+                        <button className='label-button' 
+                        onClick={() => setShowLabelCreation(false)}>Cancel</button>
+                        <button className='label-button' 
+                        onClick={() => {
                             createLabel(newLabelName);
                             setShowLabelCreation(false);
                         }}>Create</button>
@@ -77,6 +96,7 @@ const Sidebar = () => {
                 const labelName = typeof label === 'string' ? label : label.name;
                 return (
                     <p
+                    onContextMenu={(e) => deleteLabel(e, label)}
                     key={labelName}
                     className={`sidebar-item ${currentLabel === labelName ? 'sidebar-active-label' : ''}`}
                     onClick={() => setCurrentLabel(labelName)}
