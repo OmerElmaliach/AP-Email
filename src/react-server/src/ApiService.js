@@ -3,8 +3,6 @@ const API_BASE_URL = 'http://localhost:9000/api';
 class ApiService {
   // Helper method to make HTTP requests
   static async makeRequest(url, options = {}, useAuth = true) {
-    console.log(`🌐 Making request to: ${API_BASE_URL}${url}`);
-    console.log('📋 Request options:', options);
 
     const finalHeaders = {
       ...(options.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
@@ -21,11 +19,8 @@ class ApiService {
         credentials: 'include'
       });
 
-      console.log('📡 Response status:', response.status);
-
       if (!response.ok) {
         const errorText = await response.text();
-        console.log('❌ Error response text:', errorText);
         throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
       }
 
@@ -33,11 +28,9 @@ class ApiService {
 
       if (contentType && contentType.includes('application/json')) {
         const jsonResponse = await response.json();
-        console.log('📦 JSON response:', jsonResponse);
         return jsonResponse;
       } else {
         const textResponse = await response.text();
-        console.log('📄 Text response:', textResponse);
         return textResponse;
       }
     } catch (error) {
@@ -48,7 +41,6 @@ class ApiService {
 
   // Get all emails for user
   static getUserEmails() {
-    console.log("APISERVICE making mails req")
     return this.makeRequest('/mails');
   }
 
@@ -140,28 +132,22 @@ class ApiService {
 
   //  login returns token, no token 
   static async signInUser(credentials) {
-    console.log('🔍 SignIn attempt with:', credentials);
 
     try {
-      console.log('📡 Making request to /signin');
       const response = await this.makeRequest('/signin', {
         method: 'POST',
         body: JSON.stringify(credentials)
       }, false);
 
-      console.log('📬 Response received:', response);
 
       if (response.token) {
-        console.log('✅ Token received, storing in localStorage');
         localStorage.setItem('token', response.token);
         return true;
       } else {
-        console.log('❌ No token in response');
         localStorage.removeItem('token');
         return false;
       }
     } catch (err) {
-      console.log('💥 Error in signInUser:', err);
       localStorage.removeItem('token');
       return false;
     }

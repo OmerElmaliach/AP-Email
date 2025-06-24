@@ -32,7 +32,6 @@ const EmailDisplay = () => {
                     )
                 );
                 setEmailLabels(labelResponses);
-                console.log("💡 Loaded labels:", labelResponses.map(l => l.name));
 
             } catch (err) {
                 setError("Request Failed");
@@ -96,7 +95,6 @@ const EmailDisplay = () => {
                 await ApiService.updateEmail(email.mail_id, { label : newLabelIds });
                 setEmailLabels(newLabels);
             } catch (e) {
-                console.log("Failed to report spam");
             }
         }
     }
@@ -112,7 +110,6 @@ const EmailDisplay = () => {
                 await ApiService.updateEmail(email.mail_id, { label : newLabelIds });
                 setEmailLabels(newLabels);
             } catch (e) {
-                console.log("Failed to star email");
             }
         }
     }

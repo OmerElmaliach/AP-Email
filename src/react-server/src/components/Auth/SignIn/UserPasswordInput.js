@@ -1,6 +1,6 @@
 import './UserPasswordInput.css';
 
-function UserPasswordInput({ mailAdress, setEmailAdress, password, setPassword, handleUserSignIn }) {
+function UserPasswordInput({ mailAdress, setEmailAdress, password, setPassword, handleUserSignIn, onGoToSignUp  }) {
   return (
     <div className="signin-container">
       <div className="signin-box">
@@ -9,7 +9,7 @@ function UserPasswordInput({ mailAdress, setEmailAdress, password, setPassword, 
         </div>
         <div className="signin-right">
           <h2>Sign in</h2>
-          <p className="subtext">to continue to AP-Mail</p>
+          <p className="subtext">to continue to AP-Email</p>
 
           <div className="form-floating mb-3 full-width">
             <input
@@ -36,6 +36,13 @@ function UserPasswordInput({ mailAdress, setEmailAdress, password, setPassword, 
           </div>
 
           <div className="button-row">
+             <button
+              className="btn btn-outline-secondary rounded-pill ms-2"
+              onClick={onGoToSignUp}
+            >
+              Create Account
+            </button>
+          
             <button
               className="btn btn-primary rounded-pill"
               onClick={handleUserSignIn}
@@ -43,6 +50,7 @@ function UserPasswordInput({ mailAdress, setEmailAdress, password, setPassword, 
             >
               Sign In
             </button>
+
           </div>
         </div>
       </div>

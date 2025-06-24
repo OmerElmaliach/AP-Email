@@ -30,7 +30,6 @@ const EmailCreate = () => {
         try {
             await ApiService.createEmail(data);
             setToastMessage("Email Sent");
-            console.log("inside createmail not draft the rmail:",{data})
             setToast(true);
             setTimeout(() => {
                 setToast(false);
@@ -52,7 +51,6 @@ const EmailCreate = () => {
             if (subject) {
                 if (isEditing) {
                 await ApiService.updateEmail(existingEmail.mail_id, data);
-                console.log("inside createmail draft the rmail:",{data})
                 setToastMessage("Draft Updated");
             } else {
                 await ApiService.createEmail({ ...data, label: ["draft"] });
