@@ -105,7 +105,6 @@ const getLabels = (req, res) => {
 
     const allLabels = [...labels, ...defaultLabel];
 
-    console.log("all labels:",{allLabels})
     res.json(allLabels);
 }
 
@@ -128,7 +127,6 @@ const getLabels = (req, res) => {
  */
 const getAllLabels = (req, res) => {
     const labels = model.getAllLabels()
-    console.log("the labels sent are", { labels })
     return res.status(200).json(labels)
 
 }
