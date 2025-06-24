@@ -27,18 +27,18 @@ function SignIn() {
   return null; // white screen during Bootstrap load
 }
   
-
+  const handleGoToSignUp = () => {
+    navigate('/signup');
+  };
   const handleUserSignIn =async ()=> {
 
       const credentials = {
       email: mailAdress,
       password: password
       };
-    console.log("from signin function sending to apiservice credentials",{credentials})
       try {
           const success = await ApiService.signInUser(credentials);
           if (success) {
-            console.log("in signIn with token should redirect now")
             navigate('/inbox');
           } else {
             alert('Wrong email or password');
@@ -57,6 +57,7 @@ function SignIn() {
             password = {password}
             setPassword = {setPassword}
             handleUserSignIn = {handleUserSignIn}
+            onGoToSignUp={handleGoToSignUp}
           />  
  )
 

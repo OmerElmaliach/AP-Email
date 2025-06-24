@@ -49,7 +49,7 @@ function EmailPasswordStep({
     onChange={e => setEmailAdress(e.target.value)}
   />
   <label htmlFor="floatingEmail">Email Address</label>
-  <span className="email-suffix">@APmail</span>
+  <span className="email-suffix">@AP-Email</span>
 </div>
 
       {/* Password input */}
