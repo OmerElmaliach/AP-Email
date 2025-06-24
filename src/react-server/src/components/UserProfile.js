@@ -61,14 +61,17 @@ const UserProfile = () => {
     setIsDropdownOpen(!isDropdownOpen);
     setIsSettingsOpen(false);
   };
+
   const handleSettingsClick = () => {
     setIsSettingsOpen(!isSettingsOpen);
   };
+
   const handleHelp = () => {
     // Show help modal instead of opening new tab
     setIsHelpOpen(true);
     setIsDropdownOpen(false);
   };
+
   const handleSwitchAccount = () => {
     // Save current user data as cookie for auto-login
     localStorage.setItem('savedUser', JSON.stringify({
@@ -77,8 +80,9 @@ const UserProfile = () => {
     }));
     // Navigate to login page (handled by teammate)
     window.location.href = '/login';
-  }; const handleLogout = () => {
+  };
 
+  const handleLogout = () => {
     // Clear any saved user data
     localStorage.removeItem('savedUser');
     localStorage.removeItem('currentUser');
@@ -86,7 +90,6 @@ const UserProfile = () => {
 
     window.location.href = '/SignIn';
   };
-
 
   if (loading) {
     return <div className="profile-loading">Loading...</div>;
