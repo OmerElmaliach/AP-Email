@@ -27,7 +27,9 @@ function SignIn() {
   return null; // white screen during Bootstrap load
 }
   
-
+  const handleGoToSignUp = () => {
+    navigate('/signup');
+  };
   const handleUserSignIn =async ()=> {
 
       const credentials = {
@@ -57,6 +59,7 @@ function SignIn() {
             password = {password}
             setPassword = {setPassword}
             handleUserSignIn = {handleUserSignIn}
+            onGoToSignUp={handleGoToSignUp}
           />  
  )
 
