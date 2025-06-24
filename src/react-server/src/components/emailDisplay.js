@@ -23,6 +23,7 @@ const EmailDisplay = () => {
                 const [emailData] = await Promise.all([
                     ApiService.getEmailById(id)
                 ]);
+                
                 setEmail(emailData);
 
                 const labelResponses = await Promise.all(
@@ -31,7 +32,8 @@ const EmailDisplay = () => {
                     )
                 );
                 setEmailLabels(labelResponses);
-                
+                console.log("💡 Loaded labels:", labelResponses.map(l => l.name));
+
             } catch (err) {
                 setError("Request Failed");
             }
@@ -133,6 +135,8 @@ const EmailDisplay = () => {
         }, 2000);
     };
 
+
+
     return (
         <>
         {error ? (
@@ -181,6 +185,15 @@ const EmailDisplay = () => {
                                 navigate('/');
                             }, 750);
                         }} title='Delete Email' alt='Delete Email'/>
+                    {emailLabels.some(label => label.name === 'Draft') && (
+                    <img
+                      src={darkMode ? '../../misc/emailDisplay/box_edit_dark.png' : '../../misc/emailDisplay/box_edit_light.png'}
+                      className='toolbar-btn'
+                      onClick={() => navigate('/create-mail', { state: { email } })}
+                      title='Edit draft'
+                      alt='Edit draft'
+                    />)}
+                    
                 </div>
                 <hr className="line-divider" />
                 <div className='subject'>

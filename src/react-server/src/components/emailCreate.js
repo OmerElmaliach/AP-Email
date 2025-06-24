@@ -4,22 +4,33 @@ import Topbar from './topbar.js'
 import Sidebar from './sidebar.js'
 import { useState } from 'react';
 import { useAppContext } from '../context/appContext.js';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const EmailCreate = () => {
-    const [toastMessage, setToastMessage] = useState('');
-    const [toMails, setTo] = useState('');
-    const [subject, setSubject] = useState('');
-    const [body, setBody] = useState('');
-    const [toast, setToast] = useState(false);
-    const { darkMode } = useAppContext();
+
+    const location = useLocation();
     const navigate = useNavigate();
+    const { darkMode } = useAppContext();
+
+    const existingEmail = location.state?.email || {};
+    const isEditing = !!existingEmail.mail_id;
+
+    const [toastMessage, setToastMessage] = useState('');
+    const [toast, setToast] = useState(false);
+    // if this is is a "edit email" page laod the old email 
+    const [toMails, setTo] = useState(existingEmail.to?.join(" ") || '');
+    const [subject, setSubject] = useState(existingEmail.subject || '');
+    const [body, setBody] = useState(existingEmail.body || '');
+
 
     const handleSend = async () => {
         const to = toMails.split(" ");
+        const data = { to, subject, body };
+
         try {
-            await ApiService.createEmail({ to, subject, body });
-            setToastMessage("Email Sent")
+            await ApiService.createEmail(data);
+            setToastMessage("Email Sent");
+            console.log("inside createmail not draft the rmail:",{data})
             setToast(true);
             setTimeout(() => {
                 setToast(false);
@@ -36,10 +47,17 @@ const EmailCreate = () => {
 
     const handleDraft = async () => {
         const to = toMails.split(" ");
+        const data = { to, subject, body };
         try {
             if (subject) {
-                await ApiService.createEmail({ to, subject, body, label: ["draft"] });
+                if (isEditing) {
+                await ApiService.updateEmail(existingEmail.mail_id, data);
+                console.log("inside createmail draft the rmail:",{data})
+                setToastMessage("Draft Updated");
+            } else {
+                await ApiService.createEmail({ ...data, label: ["draft"] });
                 setToastMessage("Draft Saved")
+            }
                 setToast(true);
                 setTimeout(() => {
                     setToast(false);
@@ -63,65 +81,65 @@ const EmailCreate = () => {
 
     return (
         <>
-        {/* Topbar display */}
-        <Topbar/>
+            {/* Topbar display */}
+            <Topbar />
 
-        {/* Sidebar display */}
-        <Sidebar/>
+            {/* Sidebar display */}
+            <Sidebar />
 
-        <div className="main">
-            {toast && (
-                <div className="toast">
-                    {toastMessage}
+            <div className="main">
+                {toast && (
+                    <div className="toast">
+                        {toastMessage}
+                    </div>
+                )}
+                <div className='toolbar-container'>
+                    <img src={darkMode ? '../../misc/emailCreate/arrow_back_ic.png' : '../../misc/emailCreate/light_arrow_back_ic.png'}
+                        className='toolbar-btn'
+                        onClick={() => navigate('/')}
+                        title='Back to Inbox'
+                        alt='Go back'
+                    />
+                    <div className="vertical-divider"></div>
+                    <img src={darkMode ? '../../misc/emailCreate/draft_ic.png' : '../../misc/emailCreate/light_draft_ic.png'}
+                        className='toolbar-btn'
+                        onClick={() => handleDraft()}
+                        title='Save To Draft'
+                        alt='To draft'
+                    />
+                    <img src={darkMode ? '../../misc/emailCreate/arrow_forward_ic.png' : '../../misc/emailCreate/light_arrow_forward_ic.png'}
+                        className='toolbar-btn'
+                        onClick={() => handleSend()}
+                        title='Send Email'
+                        alt='Send'
+                    />
                 </div>
-            )}
-            <div className='toolbar-container'>
-                <img src={darkMode ? '../../misc/emailCreate/arrow_back_ic.png' : '../../misc/emailCreate/light_arrow_back_ic.png'} 
-                    className='toolbar-btn' 
-                    onClick={() => navigate('/')} 
-                    title='Back to Inbox' 
-                    alt='Go back'
-                />
-                <div className="vertical-divider"></div>
-                <img src={darkMode ? '../../misc/emailCreate/draft_ic.png' : '../../misc/emailCreate/light_draft_ic.png'} 
-                    className='toolbar-btn' 
-                    onClick={() => handleDraft()} 
-                    title='Save To Draft' 
-                    alt='To draft'
-                />
-                <img src={darkMode ? '../../misc/emailCreate/arrow_forward_ic.png' : '../../misc/emailCreate/light_arrow_forward_ic.png'} 
-                    className='toolbar-btn' 
-                    onClick={() => handleSend()} 
-                    title='Send Email' 
-                    alt='Send'
-                />
+                <hr className="line-divider" />
+                <form className="email-compose">
+                    <input
+                        type="email"
+                        placeholder="To"
+                        value={toMails}
+                        onChange={(e) => setTo(e.target.value)}
+                        className="compose-input"
+                        required
+                    />
+                    <input
+                        type="text"
+                        placeholder="Subject"
+                        value={subject}
+                        onChange={(e) => setSubject(e.target.value)}
+                        className="compose-input"
+                    />
+                    <textarea
+                        placeholder="Body"
+                        value={body}
+                        onChange={(e) => setBody(e.target.value)}
+                        className="compose-body"
+                        rows={10}
+                    />
+                </form>
             </div>
-            <hr className="line-divider" />
-            <form className="email-compose">
-                <input
-                    type="email"
-                    placeholder="To"
-                    value={toMails}
-                    onChange={(e) => setTo(e.target.value)}
-                    className="compose-input"
-                    required
-                />
-                <input
-                    type="text"
-                    placeholder="Subject"
-                    value={subject}
-                    onChange={(e) => setSubject(e.target.value)}
-                    className="compose-input"
-                />
-                <textarea
-                    placeholder="Body"
-                    value={body}
-                    onChange={(e) => setBody(e.target.value)}
-                    className="compose-body"
-                    rows={10}
-                />
-            </form>
-        </div>
         </>
     )
 }

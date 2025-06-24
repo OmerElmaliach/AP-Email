@@ -11,17 +11,14 @@ const isLoggedIn = (req, res, next) => {
     const token = authHeader && authHeader.split(' ')[1]; 
         // no token send to signin
         if (!token) {
-             console.log("in auth- no token atall");
         return res.redirect('http://localhost:3000/signin'); 
         }
         try {
             // we extracted the token now test it with the key
             const data = jwt.verify(token, SECRET_KEY); 
             req.user = data
-             console.log("in auth- good token");
             return next() // continue down the pipeline to its rout
         } catch (err) {
-                    console.log("in auth- bad token");
                 return res.redirect('http://localhost:3000/signin');
         }
 
