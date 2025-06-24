@@ -11,7 +11,6 @@ const signin = (req,res) =>{
     const user = model.getUser('email', email)
     //check id exists and that password matches 
     if (!user || user.password !== password ) {
-         console.log("signin - no token");
         return res.status(404).json({error: 'wrong email or password' })
     }
     //the token will hold in data userid and his email

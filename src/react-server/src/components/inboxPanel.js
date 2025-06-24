@@ -14,7 +14,6 @@ const InboxPanel = () => {
         try {
           let labels = await ApiService.getAllLabels();
           let currentlabelId = labels.find(label => label.name === currentLabel).id;
-          console.log(labels);
           let newEmails = emails.filter(email => email.label.includes(currentlabelId));
           setEmailLabels(newEmails);
         } catch (error) {
