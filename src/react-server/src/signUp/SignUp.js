@@ -103,8 +103,8 @@ function SignUp() {
         {/* Right side with form step */}
         <div className="signup-right">
 
-          <h2>welcome!</h2>
-          <p className="subtext">creat your AP-Email account</p>
+          <h2>Welcome!</h2>
+          <p className="subtext">Create your AP-Email account</p>
 
           {step === 1 && (
             <NameStep
