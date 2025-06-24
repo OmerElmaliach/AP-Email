@@ -1,13 +1,7 @@
 
 const jwt = require('jsonwebtoken');
-
-
 const model = require('../models/users')
-const labelsModel = require('../models/labels')
 const { SECRET_KEY } = require('../middleware/auth')
-
-
-
 
 //mandatory fields: id, name, Email, userName, password, birthday.
 // optional fields: phone, gender (W/M!), picture
@@ -20,7 +14,7 @@ const createUser = (req, res) => {
         birthday,
         phoneNumber = null,
         gender,
-        labels = ''
+        labels = null
     } = req.body
     const userName = email;
     //get picture from req.file added by multer
@@ -82,15 +76,6 @@ const createUser = (req, res) => {
         labels
     }
     model.addUser(newUser)
-
-    // g.c - Create default label for the new user with null name and color, using idGenerator for ID
-    const defaultLabel = {
-        id: labelsModel.idGenerator(),
-        name: null,
-        userId: newUser.id.toString(),
-        color: null
-    }
-    labelsModel.createLabel(defaultLabel)
 
     //get user token
     const user = model.getUser('userName', userName)

@@ -1,6 +1,7 @@
 
 const jwt = require('jsonwebtoken')
-const SECRET_KEY = 'our-secret-key'
+require('dotenv').config({ path: '../../config/.env' }); 
+const SECRET_KEY = process.env.SECRET_KEY;
 
 const isLoggedIn = (req, res, next) => {
     // get the part of the header wich carrys authorization
