@@ -14,8 +14,6 @@ class ApiService {
       ...options.headers
     };
 
-    console.log('📝 Final headers:', finalHeaders);
-
     try {
       const response = await fetch(`${API_BASE_URL}${url}`, {
         ...options,
@@ -24,7 +22,6 @@ class ApiService {
       });
 
       console.log('📡 Response status:', response.status);
-      console.log('📡 Response ok:', response.ok);
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -33,7 +30,6 @@ class ApiService {
       }
 
       const contentType = response.headers.get('content-type');
-      console.log('📄 Content type:', contentType);
 
       if (contentType && contentType.includes('application/json')) {
         const jsonResponse = await response.json();

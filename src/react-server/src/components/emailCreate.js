@@ -13,7 +13,7 @@ const EmailCreate = () => {
     const { darkMode } = useAppContext();
 
     const existingEmail = location.state?.email || {};
-    const isEditing = !!existingEmail.id;
+    const isEditing = !!existingEmail.mail_id;
 
     const [toastMessage, setToastMessage] = useState('');
     const [toast, setToast] = useState(false);
@@ -28,14 +28,9 @@ const EmailCreate = () => {
         const data = { to, subject, body };
 
         try {
-            if (isEditing) {
-                await ApiService.updateEmail(existingEmail.id, data);
-                console.log("inside createmail draft the rmail:",{data})
-                setToastMessage("Email Updated");
-            } else {
-                await ApiService.createEmail(data);
-                setToastMessage("Email Sent");
-            }
+            await ApiService.createEmail(data);
+            setToastMessage("Email Sent");
+            console.log("inside createmail not draft the rmail:",{data})
             setToast(true);
             setTimeout(() => {
                 setToast(false);
@@ -52,10 +47,17 @@ const EmailCreate = () => {
 
     const handleDraft = async () => {
         const to = toMails.split(" ");
+        const data = { to, subject, body };
         try {
             if (subject) {
-                await ApiService.createEmail({ to, subject, body, label: ["draft"] });
+                if (isEditing) {
+                await ApiService.updateEmail(existingEmail.mail_id, data);
+                console.log("inside createmail draft the rmail:",{data})
+                setToastMessage("Draft Updated");
+            } else {
+                await ApiService.createEmail({ ...data, label: ["draft"] });
                 setToastMessage("Draft Saved")
+            }
                 setToast(true);
                 setTimeout(() => {
                     setToast(false);
