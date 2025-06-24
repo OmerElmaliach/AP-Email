@@ -1,11 +1,9 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
 import Inbox from './components/inbox.js';
 import EmailDisplay from './components/emailDisplay.js';
 import ErrorPage from './components/errorPage.js';
 import SignUp from './signUp/SignUp';
 import SignIn from './signIn/SignIn.js';
-import ApiService from './ApiService';
 import ProtectedRoute from "./components/Auth/ProtectedRoute"
 import EmailCreate from './components/emailCreate.js';
 
