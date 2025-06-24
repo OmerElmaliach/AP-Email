@@ -12,54 +12,48 @@ const ReadmePage = () => {
         <section>
           <h2>Overview</h2>
           <p>
-            AP-Email is a RESTful email server with a C++ blacklist server using Bloom filter logic. It supports user management, mail creation, labeling, and real-time URL validation against a blacklist.
+            AP-Email is a modern email application with features such as inbox management, email composition, trash handling, and a flexible labeling system. Users can register, sign in, and manage their personal email workflow efficiently from the browser.
           </p>
         </section>
+
         <section>
-          <h2>Architecture</h2>
+          <h2>Inbox</h2>
           <ul>
-            <li><strong>C++ Blacklist Server:</strong> TCP server with Bloom filter, persistent storage, and command pattern for URL management.</li>
-            <li><strong>JavaScript Email Server:</strong> Express.js REST API for mails, users, labels, and blacklist, communicating with the C++ server for URL checks.</li>
-            <li><strong>React Frontend:</strong> Modern UI for email management and user profile.</li>
+            <li>The inbox displays both received and sent emails.</li>
+            <li>Emails are grouped using labels like "sent", "trash", or user-created categories.</li>
+            <li>Clicking on any email opens its full view.</li>
           </ul>
         </section>
+
         <section>
-          <h2>How it Works</h2>
-          <ol>
-            <li>Blacklist server starts (C++, port 8091), loads Bloom filter and storage.</li>
-            <li>Email server starts (Node.js, port 9000), exposes REST API.</li>
-            <li>Emails are checked for URLs; each URL is validated via the blacklist server.</li>
-            <li>Blacklisted URLs block email sending; otherwise, emails are sent and stored.</li>
-          </ol>
-        </section>
-        <section>
-          <h2>Bloom Filter Logic</h2>
+          <h2>Compose Email</h2>
           <ul>
-            <li>URLs are hashed with multiple functions; bits set in the filter.</li>
-            <li>Query: If any bit is 0, URL is not blacklisted. If all are 1, check storage for confirmation.</li>
-            <li>False positives possible, false negatives impossible.</li>
+            <li>Users can send new emails through the Compose page.</li>
+            <li>Each email requires a recipient, subject, and body.</li>
+            <li>Sent emails are automatically labeled and stored under the "sent" label.</li>
           </ul>
         </section>
+
         <section>
-          <h2>Setup & Running</h2>
-          <ol>
-            <li>Install Docker and run <code>docker-compose up --build</code></li>
-            <li>API: <code>http://localhost:9000/api/</code> | Blacklist TCP: <code>localhost:8091</code></li>
-            <li>Stop: <code>docker-compose down</code></li>
-          </ol>
-        </section>
-        <section>
-          <h2>Example API Usage</h2>
+          <h2>Trash System</h2>
           <ul>
-            <li><code>GET /api/mails/</code> - Get inbox</li>
-            <li><code>POST /api/mails/</code> - Send email</li>
-            <li><code>GET /api/blacklist/:url</code> - Check URL</li>
-            <li><code>POST /api/blacklist</code> - Add URL to blacklist</li>
-            <li><code>DELETE /api/blacklist/:url</code> - Remove URL</li>
-            <li><code>POST /api/users</code> - Register user</li>
-            <li><code>POST /api/tokens</code> - Login</li>
+            <li>Deleting an email moves it to the "trash" label.</li>
+            <li>Emails in the trash can still be opened and recovered.</li>
+            <li>To permanently remove an email, it must be deleted from the trash explicitly.</li>
           </ul>
         </section>
+
+        <section>
+          <h2>Label System</h2>
+          <ul>
+            <li>Users can create custom labels such as "Work" or "School".</li>
+            <li>Labels can be applied to emails to help with categorization.</li>
+            <li>The inbox can be filtered to view only emails with a specific label.</li>
+            <li>Users can rename or delete existing labels anytime.</li>
+            <li>Each email can have multiple labels at once.</li>
+          </ul>
+        </section>
+
       </div>
     </div>
   );

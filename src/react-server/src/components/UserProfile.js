@@ -21,15 +21,15 @@ const UserProfile = () => {
         const userData = await ApiService.getCurrentUser();
         let photoUrl = null;
 
-         try {
-        const photoBlob = await ApiService.getUserPhotoBlob();
-        photoUrl = URL.createObjectURL(photoBlob);
-      } catch (photoErr) {
-        console.warn('No profile photo found, using fallback.', photoErr);
-        // optionally set a fallback image like:
-        // photoUrl = '/default-user-icon.png';
-      }
-      setUser({ ...userData, picture: photoUrl });
+        try {
+          const photoBlob = await ApiService.getUserPhotoBlob();
+          photoUrl = URL.createObjectURL(photoBlob);
+        } catch (photoErr) {
+          console.warn('No profile photo found, using fallback.', photoErr);
+          // optionally set a fallback image like:
+          // photoUrl = '/default-user-icon.png';
+        }
+        setUser({ ...userData, picture: photoUrl });
         setLoading(false);
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -77,7 +77,7 @@ const UserProfile = () => {
     }));
     // Navigate to login page (handled by teammate)
     window.location.href = '/login';
-  };  const handleLogout = () => {
+  }; const handleLogout = () => {
 
     // Clear any saved user data
     localStorage.removeItem('savedUser');
@@ -94,13 +94,13 @@ const UserProfile = () => {
 
   if (!user) {
     return null;
-  }  return (
+  } return (
     <>
       <div className="user-profile" ref={dropdownRef}>
         <button className="profile-button" onClick={handleProfileClick}>
-          <img 
-            src={user.picture|| backupPhoto}
-            onError={(e) => { e.target.onerror = null; e.target.src = backupPhoto; }} 
+          <img
+            src={user.picture || backupPhoto}
+            onError={(e) => { e.target.onerror = null; e.target.src = backupPhoto; }}
             alt={user.fullName}
             className="profile-picture"
           />
@@ -108,7 +108,7 @@ const UserProfile = () => {
 
         {isDropdownOpen && (
           <div className="profile-dropdown">
-            <button 
+            <button
               className="dropdown-close"
               onClick={() => setIsDropdownOpen(false)}
             >
@@ -118,8 +118,8 @@ const UserProfile = () => {
             {/* User Info Section */}
             <div className="user-info-section">
               <div className="user-email">{user.email}</div>
-              <img 
-                src={user.picture|| backupPhoto}
+              <img
+                src={user.picture || backupPhoto}
                 onError={(e) => { e.target.onerror = null; e.target.src = backupPhoto; }}
                 alt={user.fullName}
                 className="dropdown-picture"
@@ -134,9 +134,9 @@ const UserProfile = () => {
                 Help
               </button>
 
-              <div className="menu-item-container" ref={settingsRef}>               
-                 <button className="menu-item" onClick={handleSettingsClick}>
-                                            {/* gabi is something spused to go here?*/}            
+              <div className="menu-item-container" ref={settingsRef}>
+                <button className="menu-item" onClick={handleSettingsClick}>
+                  {/* gabi is something spused to go here?*/}
                   <span className="menu-icon">⚙️</span>
                   User info
                   <span className="menu-arrow">◀</span>
@@ -144,7 +144,7 @@ const UserProfile = () => {
 
                 {isSettingsOpen && (
                   <div className="settings-popup">
-                    <button 
+                    <button
                       className="settings-close"
                       onClick={() => setIsSettingsOpen(false)}
                     >
@@ -165,7 +165,11 @@ const UserProfile = () => {
                       </div>
                       <div className="setting-item">
                         <label>Gender:</label>
-                        <span>{user.gender === 'M' ? 'Male' : 'Female'}</span>
+                        <span>{user.gender === 'male'
+                          ? 'Male'
+                          : user.gender === 'female'
+                            ? 'Female'
+                            : 'Prefer not to say'}</span>
                       </div>
                     </div>
                   </div>
@@ -189,13 +193,13 @@ const UserProfile = () => {
       {isHelpOpen && (
         <div className="help-modal-overlay" onClick={() => setIsHelpOpen(false)}>
           <div className="help-modal-content" onClick={(e) => e.stopPropagation()}>
-            <button 
+            <button
               className="help-modal-close"
               onClick={() => setIsHelpOpen(false)}
             >
               ×
             </button>
-           <ReadmePage />
+            <ReadmePage />
           </div>
         </div>
       )}
