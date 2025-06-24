@@ -32,6 +32,10 @@ function SignUp() {
 
   const navigate = useNavigate();
 
+  const handleGoToSignIn = () => {
+    navigate('/signin');
+  };
+
   const [bootstrapReady, setBootstrapReady] = useState(false);
 
   //helper functions for page navigation 
@@ -58,7 +62,7 @@ function SignUp() {
     setLoading(true);
     const formData = new FormData();
 
-    const fullEmail = `${mailAdress}@APmail`;
+    const fullEmail = `${mailAdress}@AP-Email`;
 
     formData.append('firstName', firstName);
     formData.append('lastName', lastName);
@@ -98,6 +102,10 @@ function SignUp() {
 
         {/* Right side with form step */}
         <div className="signup-right">
+
+          <h2>welcome!</h2>
+          <p className="subtext">creat your AP-Email account</p>
+
           {step === 1 && (
             <NameStep
               firstName={firstName}
@@ -105,6 +113,7 @@ function SignUp() {
               lastName={lastName}
               setLastName={setLastName}
               onNext={nextStep}
+              goToSignIn = {handleGoToSignIn}
             />
           )}
 

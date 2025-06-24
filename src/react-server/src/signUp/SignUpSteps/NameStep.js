@@ -1,6 +1,6 @@
 import '../SignUpStepsStyle/NameStep.css'
 
-function NameStep({ firstName, setFirstName, lastName, setLastName, onNext }) {
+function NameStep({ firstName, setFirstName, lastName, setLastName, onNext, goToSignIn }) {
   return (
     <div className="input-container">
       <div className="form-floating mb-3 full-width">
@@ -26,8 +26,14 @@ function NameStep({ firstName, setFirstName, lastName, setLastName, onNext }) {
         />
         <label htmlFor="floatingLastName">Last Name</label>
       </div>
-
       <div className="next-button-container">
+        <button
+          id="sign-in-button"
+          className="btn btn-outline-secondary rounded-pill ms-2"
+          onClick={goToSignIn}
+        >
+          Sign In
+        </button>
         <button
           id="next-button"
           className="btn btn-primary rounded-pill"
