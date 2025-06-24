@@ -57,12 +57,15 @@ function SignUp() {
   const handleCreateUser = async () => {
     setLoading(true);
     const formData = new FormData();
+
+    const fullEmail = `${mailAdress}@APmail`;
+
     formData.append('firstName', firstName);
     formData.append('lastName', lastName);
     formData.append('gender', gender);
     formData.append('birthday', birthday);
-    formData.append('userName', mailAdress); // backend expects userName = email
-    formData.append('email', mailAdress);
+    formData.append('userName', fullEmail); // backend expects userName = email
+    formData.append('email', fullEmail);
     formData.append('password', password);
     if (picture) {
       formData.append('picture', picture);
