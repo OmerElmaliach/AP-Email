@@ -39,17 +39,18 @@ function EmailPasswordStep({
   return (
     <div className="input-container">
       {/* Email input */}
-      <div className="form-floating mb-3 full-width">
-        <input
-          type="email"
-          className="form-control"
-          id="floatingEmail"
-          placeholder="Email Address"
-          value={mailAdress}
-          onChange={e => setEmailAdress(e.target.value)}
-        />
-        <label htmlFor="floatingEmail">Email Address</label>
-      </div>
+      <div className="form-floating mb-3 full-width email-wrapper">
+  <input
+    type="text"
+    className="form-control"
+    id="floatingEmail"
+    placeholder="Username"
+    value={mailAdress}
+    onChange={e => setEmailAdress(e.target.value)}
+  />
+  <label htmlFor="floatingEmail">Email Address</label>
+  <span className="email-suffix">@APmail</span>
+</div>
 
       {/* Password input */}
       <div className="form-floating mb-3 full-width">
