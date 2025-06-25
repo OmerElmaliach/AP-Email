@@ -50,12 +50,12 @@ const EmailCreate = () => {
         try {
             if (subject) {
                 if (isEditing) {
-                await ApiService.updateEmail(existingEmail.mail_id, data);
-                setToastMessage("Draft Updated");
-            } else {
-                await ApiService.createEmail({ ...data, label: ["draft"] });
-                setToastMessage("Draft Saved")
-            }
+                    await ApiService.updateEmail(existingEmail.mail_id, data);
+                    setToastMessage("Draft Updated");
+                } else {
+                    await ApiService.createEmail({ ...data, label: ["draft"] });
+                    setToastMessage("Draft Saved")
+                }
                 setToast(true);
                 setTimeout(() => {
                     setToast(false);
@@ -119,6 +119,13 @@ const EmailCreate = () => {
                         placeholder="To"
                         value={toMails}
                         onChange={(e) => setTo(e.target.value)}
+                        onBlur={() => {
+                            if (toMails && !toMails.endsWith('@AP-Email')) {
+                                const atIndex = toMails.indexOf('@');
+                                const cleaned = atIndex !== -1 ? toMails.slice(0, atIndex) : toMails;
+                                setTo(cleaned + '@AP-Email');
+                            }
+                        }}
                         className="compose-input"
                         required
                     />
