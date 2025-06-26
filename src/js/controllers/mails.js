@@ -36,9 +36,11 @@ exports.createMail = async (req, res) => {
 
     const userDB = Model.getUser("id", userId);
 
-    if (to == undefined || typeof to == "string" || to.length == 0) {
-        return res.status(404).json({ error : "Invalid input provided" });
-    } else if (userDB == undefined) {
+    const isDraft = Array.isArray(label) && label.includes("draft");
+
+if (!isDraft && (!to || !Array.isArray(to) || to.length === 0)) {
+    return res.status(404).json({ error: "Missing recipients for non-draft mail" });
+} else if (userDB == undefined) {
         return res.status(404).json({ error : "Invalid user id provided" });
     }
 
@@ -57,6 +59,7 @@ exports.createMail = async (req, res) => {
     // List to hold all the 'to' email's id's
     var toIds = [];
 
+    if(!isDraft){
     // Check validation for each email in the 'to' section.
     for (var i = 0; i < to.length; i++) {
         let toUserDb = Model.getUser("email", to[i]);
@@ -65,7 +68,7 @@ exports.createMail = async (req, res) => {
         }
         toIds.push(toUserDb.id);
     }
-
+    }
     // Save urls appearing in the mail's subject or body.
     let urlsSubject = subject.match(urlRegex) || [];
     let urlsBody = body.match(urlRegex) || [];    let hasBlacklistedURL = false;
