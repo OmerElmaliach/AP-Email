@@ -92,7 +92,7 @@ All communication between the frontend and backend is performed using standard R
 
 1. **Run the Complete System:**
    ```bash
-   docker-compose up --build
+   sudo docker-compose up
    ```
    
 2. **Access the Services:**
@@ -154,22 +154,6 @@ Users may only interact with the React frontend. Any attempt to access the backe
    ```
 
    The frontend will be accessible at `http://localhost:3000`
-
-### Method 3: Using Provided Scripts
-
-1. **Start Blacklist Server:**
-   ```bash
-   cd src
-   chmod +x start-server.sh
-   ./start-server.sh
-   ```
-
-2. **Start JavaScript Server (in separate terminal):**
-   ```bash
-   cd src
-   chmod +x start-js-server.sh
-   ./start-js-server.sh
-   ```
 
 ## Screenshots
 
