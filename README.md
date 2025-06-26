@@ -9,7 +9,20 @@ the flow process of our work and SCRUM meeting summaries can all be found under 
 
 ## Overview
 
-This project implements a RESTful EMAIL server, with a C++ blacklisting server which uses bloom filter logic. The server allows user management, mail creation/retrieval, labeling, and real-time URL validation against the blacklist server.
+**AP-Email** is a modern, full-stack web application that simulates a complete email system with advanced features for composing, sending, labeling, and managing emails. The system is built using a React frontend, a Node.js + Express backend, and a C++ TCP server that uses a Bloom filter to handle blacklisted URLs.
+
+Key features include:
+- Full user authentication (sign up, sign in)
+- Email composition and sending with multi-recipient support
+- Real-time blacklist checking for URLs in emails
+- Label-based email organization (including system labels like “sent”, “trash”, and “draft”)
+- Email draft saving and resuming
+- Trash system with soft delete and permanent deletion
+- Custom label creation, renaming, and removal
+- Responsive and intuitive user interface
+
+The project emphasizes modularity, scalability, and practical use of both RESTful APIs and interprocess communication across languages.
+
 
 ## Architecture
 
@@ -36,42 +49,45 @@ The system follows the structure outlined in the provided UML diagrams:
 * **Models Layer**: Data access layer managing email operations, user management, and blacklist communication
 * **BlacklistModel**: Specialized component that communicates with the C++ server via TCP sockets for URL validation
 
+**React Frontend Components:**
+* **App.js**: Root component that sets up routing and navigation using `react-router-dom`
+* **SignIn / SignUp**: Authentication pages where users can register or log into the system
+* **Inbox**: Displays all received and sent emails, grouped by labels
+* **EmailDisplay**: Full-page view for reading a specific email
+* **EmailCreate**: Compose new emails, with support for saving drafts and blacklisted URL validation
+* **ProtectedRoute**: Wrapper component that guards routes and redirects unauthenticated users
+* **ErrorPage**: Displayed for undefined routes (404)
+* **Label System**: Integrated throughout the UI for applying, removing, and filtering emails by label
+* **Draft Logic**: Embedded in `EmailCreate`, enabling users to save unfinished emails and resume later
+* **Form Validation**: Real-time form behavior (e.g., adding @AP-Email domain, username restrictions)
+
+
 ## How it Works
 
 ### System Initialization
 1. **Blacklist Server Startup**: The C++ server initializes on a specified port (default 8091) with Bloom filter parameters (size, hash functions, seeds)
 2. **Data Persistence Loading**: Server loads previously saved Bloom filter state, URL storage, and configuration from persistent storage
 3. **Email Server Startup**: JavaScript Express server starts on port 9000, establishing RESTful API endpoints
-4. **Docker Network**: Both services connect through a Docker bridge network enabling inter-container communication
+4. **frontend GUI**  The frontend is a React-based single-page application that provides a modern user interface for interacting with the AP-Email system. It communicates with the backend server via HTTP requests to fetch and manage emails, user accounts, labels, and more.
+4. **Docker Network**: all services connect through a Docker bridge network enabling inter-container communication
 
-### Email Creation & Validation Process
-1. **Email Composition**: User submits email via POST /api/mails endpoint with recipients, subject, body, and optional labels
-2. **URL Extraction**: System uses regex patterns to extract all URLs from email subject and body content
-3. **Real-time Blacklist Validation**: For each extracted URL:
-   - JavaScript BlacklistModel establishes TCP connection to C++ server (port 8091)
-   - Sends GET command with URL to blacklist server
-   - C++ server processes command through CLI → Command pattern → BloomFilter query
-   - Returns validation result via TCP response
-4. **Email Blocking/Approval**: If any URL is blacklisted, email creation fails with error; otherwise, email is processed and sent
 
-### Blacklist Management
-1. **Adding URLs**: POST /api/blacklist endpoint → TCP POST command → Bloom filter insertion + storage persistence
-2. **Checking URLs**: GET /api/blacklist/:url endpoint → TCP GET command → Bloom filter query + storage verification
-3. **Removing URLs**: DELETE /api/blacklist/:url endpoint → TCP DELETE command → Storage removal (Bloom filter bits remain set)
+Key responsibilities of the frontend include:
 
-### Bloom Filter Logic
-- **Insertion**: URLs are hashed using multiple hash functions, corresponding bits set to 1 in filter array
-- **Query**: URL hashed with same functions, all corresponding bits checked:
-  - If any bit is 0: URL definitely NOT blacklisted
-  - If all bits are 1: URL MIGHT be blacklisted (verified against storage for accuracy)
-- **False Positives**: Possible but rare; manual storage check provides definitive answer
-- **False Negatives**: Impossible due to Bloom filter mathematical properties
+- **User Authentication**: Supports user sign-up and login. After authentication, a token is stored and used to access protected routes.
+- **Routing**: Utilizes React Router to handle navigation between pages such as inbox, compose email, view email, and error pages.
+- **Inbox & Email Management**: Displays received and sent emails, allows composing new messages, and opening full email views.
+- **Label System**: Lets users create custom labels, assign them to emails, filter by label, and manage label metadata.
+- **Draft Support**: Users can save emails as drafts, return to them later for editing, and send or delete them as needed.
+- **Input Enhancements**: Includes input assistance like automatically appending domain suffixes and preventing invalid characters.
+
+All communication between the frontend and backend is performed using standard REST API calls. The frontend is styled using CSS modules for consistent layout and responsive design.
+
 
 ## Setup & Running
 
 **Prerequisites:** Docker must be installed and running.
 ### Method 1: Using Docker Compose (Recommended)
-
 
 1. **Run the Complete System:**
    ```bash
@@ -79,15 +95,16 @@ The system follows the structure outlined in the provided UML diagrams:
    ```
    
 2. **Access the Services:**
-   - Email API: `http://localhost:9000/api/`
-   - Blacklist Server: TCP connection on `localhost:8091`
+    - Email SignIn : `http://http://localhost:3000/signup` 
+    - Email SignIn : `http://http://localhost:3000/SignIn`
+Users may only interact with the React frontend. Any attempt to access the backend directly will redirect them to the sign-in page.
 
 3. **Stop the System:**
    ```bash
    docker-compose down
    ```
 
-### Method 2: Manual Docker Setup
+### Method 2: Manual Docker Setup (But why make life complicated?)
 
 1. **Build Docker Images:**
    ```bash
@@ -123,6 +140,19 @@ The system follows the structure outlined in the provided UML diagrams:
      -p 9000:9000 docker-js
    ```
 
+5. **Run React Frontend:**
+   ```bash
+   # Navigate to the react-server project folder 
+
+   # Install dependencies
+   npm install
+
+   # Start the development server
+   npm start
+   ```
+
+   The frontend will be accessible at `http://localhost:3000`
+
 ### Method 3: Using Provided Scripts
 
 1. **Start Blacklist Server:**
@@ -138,196 +168,3 @@ The system follows the structure outlined in the provided UML diagrams:
    chmod +x start-js-server.sh
    ./start-js-server.sh
    ```
-## Example Commands:
-
-#Get user's inbox:
-
-curl -i -X GET localhost:9000/api/mails/ \
--H "Content-Type: application/json" \
--H "userId: 1"
-
-
-#Create and send an email:
-
-curl -i -X POST localhost:9000/api/mails/ \
--H "Content-Type: application/json" \
--H "userId: 1" \
--d '{"to" : ["gabi@example.com"], "subject" : "example subject", "body" : "example query", "label" : [1]}'
-
-
-
-#Search for an email by id:
-
-curl -i -X GET localhost:9000/api/mails/e0 \
--H "Content-Type: application/json" \
--H "userId: 1"
-
-
-#Update mail's content:
-
-curl -i -X PATCH localhost:9000/api/mails/e0 \
--H "Content-Type: application/json" \
--H "userId: 1" \
--d '{"subject" : "new subject", "body" : "new body", "label" : [1]}' // additional optional fields exist
-
-
-#Delete a mail by id:
-
-curl -i -X DELETE localhost:9000/api/mails/e0 \
--H "Content-Type: application/json" \
--H "userId: 1"
-
-
-#Find a mail by query search:
-
-curl -i -X GET localhost:9000/api/mails/search/example_query \
--H "Content-Type: application/json" \
--H "userId: 1"
-
-#weakpassword- should reject
-
-curl -i -X POST http://localhost:9000/api/users  \
--H "Content-Type: application/json"  \
--d '{"fullName": "gavriel cohen", 
-    "email": "gabi@example.com", 
-    "userName": "gabi", 
-    "password": "weakpassword", 
-    "birthday": "1995-06-01", 
-    "phoneNumber": "1234567890", 
-    "gender": "M", 
-    "picture": "https://example.com/avatar.jpg"
-}'
-
-#strong password accept
-
-curl -i -X POST http://localhost:9000/api/users  \
--H "Content-Type: application/json"  \
- -d '{"fullName": "gavriel cohen", 
-    "email": "gabi@example.com",
-    "userName": "gabi", 
-    "password": "GOODpassword1", 
-    "birthday": "1995-06-01", 
-    "phoneNumber": "1234567890", 
-    "gender": "M", 
-    "picture": "https://example.com/avatar.jpg"
-}'
-
-# new user trying same email
-
-curl -i -X POST http://localhost:9000/api/users \
--H "Content-Type: application/json"  \
--d '{"fullName": "Omer ", 
-    "email": "gabi@example.com", 
-    "userName": "gabi", 
-    "password": "GOODpassword1", 
-    "birthday": "1995-06-01", 
-    "phoneNumber": "1234567890", 
-    "gender": "M", 
-    "picture": "https://example.com/avatar.jpg" 
-}'
-
-#valid email choice- accept
-
-curl -i -X POST http://localhost:9000/api/users  \
--H "Content-Type: application/json" \
--d '{
-    "fullName": "Omer Elmaliach",
-    "email": "OmerHmelech@example.com",
-    "userName": "omerDaMan",
-    "password": "AMAZINGpassword1",
-    "birthday": "1997-02-22",
-    "phoneNumber": "1234567890",
-    "gender": "M",
-    "picture": "https://example.com/avatar.jpg"
-}' 
-
-
-
-#now lets get a specific users
-
-curl -i -X GET http://localhost:9000/api/users/1 \
-  -H "userId: 1"
-
-#check if registered - tokens
-
-# a non user
-
-curl -i -X POST http://localhost:9000/api/tokens \
-  -H "Content-Type: application/json" \
-  -H "userId: 1"\
-  -d '{
-    "userName": "etl",
-    "password": "imInvincibleYourALoony"
-  }'
-# a user
-
-curl -i -X POST http://localhost:9000/api/tokens \
-  -H "Content-Type: application/json" \
-  -H "userId: 1"\
-  -d '{
-    "userName": "omerDaMan",
-    "password": "AMAZINGpassword1"
-  }'
-
-#Add URL to blacklist
-curl -i -X POST http://localhost:9000/api/blacklist  \
- -H "Content-Type: application/json" \
- -d '{"id": "http://evil-malware-site.com"}'
-
-#Check if URL is blacklisted
-curl -X GET "http://localhost:9000/api/blacklist/http%3A%2F%2Fevil-malware-site.com"
-
-#Remove URL from blacklist
-curl -X DELETE "http://localhost:9000/api/blacklist/http%3A%2F%2Fevil-malware-site.com"
-
-#Create a new label
-curl -X POST http://localhost:9000/api/labels \
-  -H "Content-Type: application/json" \
-  -H "userId:1" \
-  -d '{
-    "id": "label_001",
-    "name": "Important",
-    "userId": "1",
-    "color": "#FF5733"
-  }'
-
-#Get all labels for a user
-curl -X GET "http://localhost:9000/api/labels" \
-  -H "Content-Type: application/json" \
-  -H "userId: 1" \
-  -d '{"userId":"1"}'
-
-#Get a specific label by ID
-curl -X GET http://localhost:9000/api/labels/label_001
-
-#Update a label
-curl -X PATCH http://localhost:9000/api/labels/label_001 \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "Very Important",
-    "color": "#FF0000"
-  }'
-
-#Delete a label
-curl -X DELETE http://localhost:9000/api/labels/label_001
-
-## Example Run:
-
-
-Below is an example illustrating how the project runs:
-
-![WhatsApp Image 2025-06-03 at 23 15 30](https://github.com/user-attachments/assets/33eb4a20-64df-432c-9d89-38343cbb73e5)
-
-![WhatsApp Image 2025-06-03 at 23 15 31](https://github.com/user-attachments/assets/5e942572-a152-441a-8f07-7e968391a45a)
-
-![WhatsApp Image 2025-06-03 at 23 15 31 (1)](https://github.com/user-attachments/assets/dca2468b-61a6-4482-8d28-a4181ee101ba)
-
-![Screenshot 2025-06-04 230644](https://github.com/user-attachments/assets/aafb1055-7f04-4087-ad56-02414a6abddd)
-
-## Takeaways from task 1 relating to SOLID:
-In general, lack of documentation harmed the ability to work and understand code which was written by other teammates in part Regarding the following questions:
-1. Did changing command names change anything in code which was supposed to be SOLID? No, In the implementation a map data structure was initialized which receives a key value and pairs it with a specific ICommand object, so given input from the user the map would execute the relevant command.
-In the new implementation with the new names all we had to do is change the key value from a number to string.
-2. Did adding command names change anything in code which was supposed to be SOLID? No, as explained we conveniently just added more commands with keys to the map without altering any other code.
-3. Did command output change anything in code which was supposed to be SOLID? Yes, before part 2 the commands never returned any output to the function that called them, more specifically the ICommands printed straight to the terminal instead of returning a string, in the new implementation we added return type so that regardless of what each command sent it would be delivered to the client.
-4. Did commands coming from sockets rather than console change anything in code which was supposed to be SOLID? Partially. CLI which is the object type that handles I/O with a user was added a new member - sock -> the client socket, so instead of printing to a terminal the output from the commands would be sent to the client, the rest of the structure remained the same. The storage had to be updated to receive input from the socket and not tight-coupling with text from console.

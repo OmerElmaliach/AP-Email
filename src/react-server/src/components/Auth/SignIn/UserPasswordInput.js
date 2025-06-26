@@ -1,6 +1,6 @@
 import './UserPasswordInput.css';
 
-function UserPasswordInput({ mailAdress, setEmailAdress, password, setPassword, handleUserSignIn, onGoToSignUp  }) {
+function UserPasswordInput({ mailAdress, setEmailAdress, password, setPassword, handleUserSignIn, onGoToSignUp }) {
   return (
     <div className="signin-container">
       <div className="signin-box">
@@ -19,6 +19,12 @@ function UserPasswordInput({ mailAdress, setEmailAdress, password, setPassword, 
               placeholder="Email Address"
               value={mailAdress}
               onChange={e => setEmailAdress(e.target.value)}
+              onBlur={() => {
+                if (mailAdress && !mailAdress.endsWith('@AP-Email')) {
+                  const base = mailAdress.split('@')[0];
+                  setEmailAdress(base + '@AP-Email');
+                }
+              }}
             />
             <label htmlFor="floatingSigninEmail">Email Address</label>
           </div>
@@ -36,13 +42,13 @@ function UserPasswordInput({ mailAdress, setEmailAdress, password, setPassword, 
           </div>
 
           <div className="button-row">
-             <button
+            <button
               className="btn btn-outline-secondary rounded-pill ms-2"
               onClick={onGoToSignUp}
             >
               Create Account
             </button>
-          
+
             <button
               className="btn btn-primary rounded-pill"
               onClick={handleUserSignIn}
