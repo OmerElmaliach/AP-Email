@@ -61,6 +61,7 @@ The system follows the structure outlined in the provided UML diagrams:
 * **Draft Logic**: Embedded in `EmailCreate`, enabling users to save unfinished emails and resume later
 * **Form Validation**: Real-time form behavior (e.g., adding @AP-Email domain, username restrictions)
 
+![UML DESIGN - big picture](./readmeFiles/UML_DESIGN.png)
 
 ## How it Works
 
@@ -168,3 +169,28 @@ Users may only interact with the React frontend. Any attempt to access the backe
    chmod +x start-js-server.sh
    ./start-js-server.sh
    ```
+
+## Screenshots
+
+Here are some screenshots demonstrating key features of the AP-Email system.
+
+
+
+![signin page](./readmeFiles/example_asset_01.png)
+
+
+
+![signup page](./readmeFiles/example_asset_02.png)
+
+
+
+![creating a custom label](./readmeFiles/example_asset_07.png)
+
+
+![email creation](./readmeFiles/example_asset_08_email_creation.png)
+
+
+**more Screenshots in ./readmeFiles**
+
+
+
