@@ -19,7 +19,7 @@ const ReadmePage = () => {
         <section>
           <h2>Inbox</h2>
           <ul>
-            <li>The inbox displays both received and sent emails.</li>
+            <li>The inbox displays all received emails.</li>
             <li>Emails are grouped using labels like "sent", "trash", or user-created categories.</li>
             <li>Clicking on any email opens its full view.</li>
           </ul>
@@ -30,10 +30,19 @@ const ReadmePage = () => {
           <ul>
             <li>Users can send new emails through the Compose page.</li>
             <li>Each email requires a recipient, subject, and body.</li>
-            <li>Sent emails are automatically labeled and stored under the "sent" label.</li>
+            <li>Sent emails are automatically labeled and stored in the "sent" page.</li>
           </ul>
         </section>
 
+        <section>
+          <h2>Drafts</h2>
+          <ul>
+            <li>Emails can be saved as drafts by selecting the "draft" label before sending.</li>
+            <li>Drafts do not require a recipient, allowing you to save partial emails at any point.</li>
+            <li>Saved drafts are reusable—you can open, edit, and send them later.</li>
+            <li>When you're done with a draft, you can move it to the trash.</li>
+          </ul>
+        </section>
         <section>
           <h2>Trash System</h2>
           <ul>
