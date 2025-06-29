@@ -71,39 +71,26 @@ if (!isDraft && (!to || !Array.isArray(to) || to.length === 0)) {
     }
     // Save urls appearing in the mail's subject or body.
     let urlsSubject = subject.match(urlRegex) || [];
-    let urlsBody = body.match(urlRegex) || [];    let hasBlacklistedURL = false;
-    
+    let urlsBody = body.match(urlRegex) || [];
+
     try {
         // Check for a list of urls if they are blacklisted.
         for (let i = 0; i < urlsSubject.length; i++) {
             let urlsValid = await BlackList.getBlacklistedURLById(urlsSubject[i]);
             if (urlsValid.endsWith("true")) {
-                hasBlacklistedURL = true;
-                break;
+                return res.status(400).json({ error: "Invalid URL provided" });
             }
         }
     
-        if (!hasBlacklistedURL) {
-            for (let i = 0; i < urlsBody.length; i++) {
-                let urlsValid = await BlackList.getBlacklistedURLById(urlsBody[i]);
-                if (urlsValid.endsWith("true")) {
-                    hasBlacklistedURL = true;
-                    break;
-                }
+        for (let i = 0; i < urlsBody.length; i++) {
+            let urlsValid = await BlackList.getBlacklistedURLById(urlsBody[i]);
+            if (urlsValid.endsWith("true")) {
+                return res.status(400).json({ error: "Invalid URL provided" });
             }
         }
         
     } catch (err) {
         return res.status(404).json({ error: err });
-    }
-
-    // If email contains blacklisted URLs, mark as spam and remove inbox label
-    if (hasBlacklistedURL) {
-        if (!label.includes("spam")) {
-            label.push("spam");
-        }
-        // Remove inbox label if it exists
-        label = label.filter(l => l !== "inbox");
     }
 
     Mails.createMail(userId, userDB.email, to, toIds, subject, body, label)
@@ -158,42 +145,30 @@ exports.updateMail = async (req, res) => {
             if (Labels.getLabelById(label[i]) == undefined)
                 return res.status(404).json({ error : "Invalid label provided" });
         }
-    }    // Save urls appearing in the mail's subject or body.
-    let urlsSubject = subject ? subject.match(urlRegex) || [] : [];
-    let urlsBody = body ? body.match(urlRegex) || [] : [];
-    let hasBlacklistedURL = false;
+    }
+
+    // Save urls appearing in the mail's subject or body.
+    let urlsSubject = subject.match(urlRegex) || [];
+    let urlsBody = body.match(urlRegex) || [];
 
     try {
         // Check for a list of urls if they are blacklisted.
         for (let i = 0; i < urlsSubject.length; i++) {
             let urlsValid = await BlackList.getBlacklistedURLById(urlsSubject[i]);
             if (urlsValid.endsWith("true")) {
-                hasBlacklistedURL = true;
-                break;
+                return res.status(400).json({ error: "Invalid URL provided" });
             }
         }
     
-        if (!hasBlacklistedURL) {
-            for (let i = 0; i < urlsBody.length; i++) {
-                let urlsValid = await BlackList.getBlacklistedURLById(urlsBody[i]);
-                if (urlsValid.endsWith("true")) {
-                    hasBlacklistedURL = true;
-                    break;
-                }
+        for (let i = 0; i < urlsBody.length; i++) {
+            let urlsValid = await BlackList.getBlacklistedURLById(urlsBody[i]);
+            if (urlsValid.endsWith("true")) {
+                return res.status(400).json({ error: "Invalid URL provided" });
             }
         }
         
     } catch (err) {
         return res.status(404).json({ error: err });
-    }
-
-    // If email contains blacklisted URLs, mark as spam and remove inbox label
-    if (hasBlacklistedURL && label) {
-        if (!label.includes("spam")) {
-            label.push("spam");
-        }
-        // Remove inbox label if it exists
-        label = label.filter(l => l !== "inbox");
     }
 
     // updateMail returns true if mail was updated successfully, otherwise false.
@@ -207,7 +182,7 @@ exports.updateMail = async (req, res) => {
 
 
 /**
- * Deletes a mail by labeling it as trash.
+ * Deletes a mail.
  *
  * @param {string} req - Request.
  * @param {json} res - Response.
