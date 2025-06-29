@@ -28,7 +28,6 @@ const initializeDefaultLabels = () => {
       { id: "draft", name: "Draft", userId: "system", color: "#9aa0a6" },
       { id: "spam", name: "Spam", userId: "system", color: "#ea4335" },
       { id: "trash", name: "Trash", userId: "system", color: "#5f6368" }
-// for testing DELTE THIS////////////////////////////////////////////////////////////////////////////////////////      
 
   ];
   
