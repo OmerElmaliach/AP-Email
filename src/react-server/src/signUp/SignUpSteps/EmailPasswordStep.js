@@ -46,7 +46,7 @@ function EmailPasswordStep({
     id="floatingEmail"
     placeholder="Username"
     value={mailAdress}
-    onChange={e => setEmailAdress(e.target.value)}
+    onChange={e => setEmailAdress(e.target.value.replace(/\s/g, ''))}
   />
   <label htmlFor="floatingEmail">Email Address</label>
   <span className="email-suffix">@AP-Email</span>
