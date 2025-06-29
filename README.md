@@ -96,6 +96,7 @@ All communication between the frontend and backend is performed using standard R
    ```
    
 2. **Access the Services:**
+   in your local browser copy to your url
     - Email SignIn : `http://localhost:3000/SignUp` 
     - Email SignIn : `http://localhost:3000/SignIn` 
       
