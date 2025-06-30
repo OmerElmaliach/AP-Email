@@ -11,7 +11,9 @@
  */
 
 const model = require('../models/labels')
-const usersModel = require('../models/users')
+const usersModel = require('../models/users');
+const Mails = require('../models/mails');
+var labelCounter = 0;
 
 /**
  * Creates a new label
@@ -25,7 +27,7 @@ const usersModel = require('../models/users')
  * @param {Object} req.body - Request body containing label data
  * @param {string} req.body.id - Unique identifier for the label
  * @param {string} req.body.name - Display name of the label
- * @param {string} req.body.userId - ID of the user who owns the label
+ * @param {string} req.user.id - ID of the user who owns the label
  * @param {string} req.body.color - Color code for the label (e.g., "#FF0000")
  * @param {Object} res - Express response object
  * 
@@ -40,13 +42,13 @@ const usersModel = require('../models/users')
  * // Response: { "message": "Label created", "label": {...} }
  */
 const createLabel = (req, res)=>{
-    const userId = req.headers['userid'];
-    const  { 
-    id,
-    name = null,
-    color = null,
+    const userId = req.user.id;
+    const id = labelCounter.toString();
+    const  {
+        name = null,
+        color = null,
     } = req.body    //mandatory fields check - only id and userId are truly required
-    if ( !id || !userId) {
+    if (!userId) {
         return res.status(400).json({ error: 'Missing mandatory field' });
     }// check userId exists
     if (usersModel.getUser("id", userId) == undefined) {
@@ -63,6 +65,7 @@ const createLabel = (req, res)=>{
         name,
         color
     }
+    labelCounter++;
     model.createLabel(newLabel)
     return res.status(201).json({ message: 'Label created', label: newLabel });
 }
@@ -76,7 +79,7 @@ const createLabel = (req, res)=>{
  * 
  * @param {Object} req - Express request object
  * @param {Object} req.query - Query parameters
- * @param {string} req.query.userId - ID of the user whose labels to retrieve
+ * @param {string} req.user.id - ID of the user whose labels to retrieve
  * @param {Object} res - Express response object
  * 
  * @returns {Object} HTTP response with status and JSON data
@@ -88,8 +91,8 @@ const createLabel = (req, res)=>{
  * // GET /api/labels?userId=user123
  * // Response: [{ "id": "label1", "name": "Important", "userId": "user123", "color": "#FF0000" }]
  */
-const getLabels = (req,res) =>{
-    const { userId } = req.query;
+const getLabels = (req, res) => {
+    const userId = req.user.id;
 
     // Check if userId is provided
     if (!userId) {
@@ -98,14 +101,11 @@ const getLabels = (req,res) =>{
 
     // Get labels for the specified user
     const labels = model.getLabels('userId', userId);
+    const defaultLabel = model.getDefaultLabelForUser(userId);
 
-    // Check if any labels were found
-    if (labels.length === 0) {
-        return res.status(404).json({ error: 'No labels found for this user' });
-    }
+    const allLabels = [...labels, ...defaultLabel];
 
-    return res.status(200).json(labels);
-    
+    res.json(allLabels);
 }
 
 /**
@@ -126,8 +126,9 @@ const getLabels = (req,res) =>{
  * // Response: [{ "id": "label1", "name": "Important", "userId": "user123", "color": "#FF0000" }, ...]
  */
 const getAllLabels = (req, res) => {
-  const labels = model.getAllLabels()
-  return res.status(200).json(labels)
+    const labels = model.getAllLabels()
+    return res.status(200).json(labels)
+
 }
 
 /**
@@ -213,6 +214,16 @@ const updateLabel = (req, res) => {
  */
 const deleteLabel = (req, res) => {
     const { id } = req.params;
+    const userId = req.user.id;
+    const labelMails = Mails.getUserMails(userId);
+    const filteredMails = labelMails.filter(mail => mail.label.includes(id));
+    for (let i = 0; i < filteredMails.length; i++) {
+        let MailLabels = filteredMails[i].label;
+        let idx = MailLabels.indexOf(id);
+        MailLabels.splice(idx, 1);
+        Mails.updateMail(userId, filteredMails[i].mail_id, undefined, undefined, MailLabels);
+    }
+
     const deletedLabel = model.deleteLabel(id);
     if (!deletedLabel) {
         return res.status(404).json({ error: 'Label not found' });
@@ -220,4 +231,4 @@ const deleteLabel = (req, res) => {
     return res.status(200).json({ message: 'Label deleted', label: deletedLabel });
 }
 
-module.exports = {createLabel, getLabels, getAllLabels, getLabelById, updateLabel, deleteLabel}
+module.exports = { createLabel, getLabels, getAllLabels, getLabelById, updateLabel, deleteLabel }

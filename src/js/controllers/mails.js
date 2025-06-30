@@ -12,7 +12,7 @@ const urlRegex = /(?<![a-zA-Z0-9])((https?:\/\/)?(www\.)?([a-zA-Z0-9-]+\.)+[a-zA
  * @returns {json} Fifty Mails in json structure.
  */
 exports.getUserMails = (req, res) => {
-    const userId = req.headers['userid'];
+    const userId = req.user.id;
     // Receive json containing information of a given user.
     const userDB = Model.getUser("id", userId);
     if (userDB == undefined) {
@@ -31,14 +31,16 @@ exports.getUserMails = (req, res) => {
  * @returns {number} Status code indicating result.
  */
 exports.createMail = async (req, res) => {
-    const userId = req.headers['userid'];
+    const userId = req.user.id;
     let { to, subject, body, label } = req.body;
 
     const userDB = Model.getUser("id", userId);
 
-    if (to == undefined || typeof to == "string" || to.length == 0) {
-        return res.status(404).json({ error : "Invalid input provided" });
-    } else if (userDB == undefined) {
+    const isDraft = Array.isArray(label) && label.includes("draft");
+
+if (!isDraft && (!to || !Array.isArray(to) || to.length === 0)) {
+    return res.status(404).json({ error: "Missing recipients for non-draft mail" });
+} else if (userDB == undefined) {
         return res.status(404).json({ error : "Invalid user id provided" });
     }
 
@@ -57,6 +59,7 @@ exports.createMail = async (req, res) => {
     // List to hold all the 'to' email's id's
     var toIds = [];
 
+    if(!isDraft){
     // Check validation for each email in the 'to' section.
     for (var i = 0; i < to.length; i++) {
         let toUserDb = Model.getUser("email", to[i]);
@@ -65,7 +68,7 @@ exports.createMail = async (req, res) => {
         }
         toIds.push(toUserDb.id);
     }
-
+    }
     // Save urls appearing in the mail's subject or body.
     let urlsSubject = subject.match(urlRegex) || [];
     let urlsBody = body.match(urlRegex) || [];
@@ -104,7 +107,7 @@ exports.createMail = async (req, res) => {
  */
 exports.getMailById = (req, res) => {
     const id = req.params.id;
-    const userId = req.headers['userid'];
+    const userId = req.user.id;
     const userDB = Model.getUser("id", userId);
     if (userDB == undefined) {
         return res.status(404).json({ error : "Invalid user id provided" });
@@ -128,7 +131,7 @@ exports.getMailById = (req, res) => {
  */
 exports.updateMail = async (req, res) => {
     const id = req.params.id;
-    const userId = req.headers['userid'];
+    const userId = req.user.id;
     const { subject, body, label } = req.body;
     const userDB = Model.getUser("id", userId);
     if (userDB == undefined) {
@@ -169,7 +172,7 @@ exports.updateMail = async (req, res) => {
     }
 
     // updateMail returns true if mail was updated successfully, otherwise false.
-    const mailCon = Mails.updateMail(userDB.email, id, subject, body, label);
+    const mailCon = Mails.updateMail(userId, id, subject, body, label);
     if (!mailCon) {
         return res.status(404).json({ error : "Invalid mail id provided" });
     }
@@ -187,15 +190,32 @@ exports.updateMail = async (req, res) => {
  */
 exports.deleteMail = (req, res) => {
     const id = req.params.id;
-    const userId = req.headers['userid'];
+    const userId = req.user.id;
     const userDB = Model.getUser("id", userId);
     if (userDB == undefined) {
         return res.status(404).json({ error : "Invalid user id provided" });
     }
-
-    const delCon = Mails.deleteMail(userId, id);
-    if (!delCon)
+    // Instead of deleting, update the mail put the "trash" 
+    const mail = Mails.getMailById(userId, id);
+    if (!mail) {
         return res.status(404).json({ error : "Invalid mail id provided" });
+    }
+
+    let currentLabels = mail.label ? (Array.isArray(mail.label) ? mail.label : [mail.label]) : [];
+    
+    // replace with trash label if not present
+    if (!currentLabels.includes("trash")) {
+        currentLabels = ["trash"];
+        const updateResult = Mails.updateMail(userId, id, undefined, undefined, currentLabels);
+        if (!updateResult) {
+            return res.status(404).json({ error : "Invalid mail id provided" });
+        }
+    } else {
+        const updateResult = Mails.deleteMail(userId, id);
+        if (!updateResult) {
+            return res.status(404).json({ error : "Invalid mail id provided" });
+        }
+    }
 
     return res.sendStatus(204);
 }
@@ -210,7 +230,7 @@ exports.deleteMail = (req, res) => {
  */
 exports.findMail = (req, res) => {
     const query = req.params.query;
-    const userId = req.headers['userid'];
+    const userId = req.user.id;
     const userDB = Model.getUser("id", userId);
     if (userDB == undefined) {
         return res.status(404).json({ error : "Invalid user id provided" });

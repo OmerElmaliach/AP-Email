@@ -1,0 +1,39 @@
+.signup-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #f1f3f4;
+  font-family: 'Roboto', sans-serif;
+}
+
+.signup-box {
+  width: 840px;
+  max-width: 100%;
+  display: flex;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+.signup-left {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.logo-img {
+  width: 250px;
+  height: auto;
+}
+
+.signup-right {
+  flex: 1;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+

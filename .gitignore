@@ -4,7 +4,6 @@ node_modules
 # Prerequisites
 *.d
 
-node_modules
 # Compiled Object files
 *.slo
 *.lo

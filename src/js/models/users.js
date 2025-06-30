@@ -1,7 +1,6 @@
 
 
-
-const users_DB = []
+const users_DB = [] 
 
 let currentId = 1;
 //add user to data base- in our case the array and set its id 
@@ -15,9 +14,10 @@ const addUser = (user) =>{
   /* function to get a user- enter key *string* to search and what val for that key 
    **MUST CHECK RETURN VAL** 
    */
-const getUser =  (field, value ) =>{
-    return users_DB.find(user => user[field] == value)
-}
+const getUser = (field, value) => {
+  if (value === undefined || value === null || value === '') return undefined;
+  return users_DB.find(user => user[field] == value);
+};
 
 /*
 updates a field of a user in users_DB

@@ -1,0 +1,11 @@
+/* Body Font Family */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+}
+
+/* DARK MODE */
+.dark {
+    background-color: #121212;
+    color: #e0e0e0;
+}
