@@ -36,11 +36,9 @@ exports.createMail = async (req, res) => {
 
     const userDB = Model.getUser("id", userId);
 
-    const isDraft = Array.isArray(label) && label.includes("draft");
-
-if (!isDraft && (!to || !Array.isArray(to) || to.length === 0)) {
-    return res.status(404).json({ error: "Missing recipients for non-draft mail" });
-} else if (userDB == undefined) {
+    if (to == undefined || typeof to == "string" || to.length == 0) {
+        return res.status(404).json({ error : "Invalid input provided" });
+    } else if (userDB == undefined) {
         return res.status(404).json({ error : "Invalid user id provided" });
     }
 
@@ -59,7 +57,6 @@ if (!isDraft && (!to || !Array.isArray(to) || to.length === 0)) {
     // List to hold all the 'to' email's id's
     var toIds = [];
 
-    if(!isDraft){
     // Check validation for each email in the 'to' section.
     for (var i = 0; i < to.length; i++) {
         let toUserDb = Model.getUser("email", to[i]);
@@ -68,29 +65,42 @@ if (!isDraft && (!to || !Array.isArray(to) || to.length === 0)) {
         }
         toIds.push(toUserDb.id);
     }
-    }
+
     // Save urls appearing in the mail's subject or body.
     let urlsSubject = subject.match(urlRegex) || [];
-    let urlsBody = body.match(urlRegex) || [];
-
+    let urlsBody = body.match(urlRegex) || [];    let hasBlacklistedURL = false;
+    
     try {
         // Check for a list of urls if they are blacklisted.
         for (let i = 0; i < urlsSubject.length; i++) {
             let urlsValid = await BlackList.getBlacklistedURLById(urlsSubject[i]);
             if (urlsValid.endsWith("true")) {
-                return res.status(400).json({ error: "Invalid URL provided" });
+                hasBlacklistedURL = true;
+                break;
             }
         }
     
-        for (let i = 0; i < urlsBody.length; i++) {
-            let urlsValid = await BlackList.getBlacklistedURLById(urlsBody[i]);
-            if (urlsValid.endsWith("true")) {
-                return res.status(400).json({ error: "Invalid URL provided" });
+        if (!hasBlacklistedURL) {
+            for (let i = 0; i < urlsBody.length; i++) {
+                let urlsValid = await BlackList.getBlacklistedURLById(urlsBody[i]);
+                if (urlsValid.endsWith("true")) {
+                    hasBlacklistedURL = true;
+                    break;
+                }
             }
         }
         
     } catch (err) {
         return res.status(404).json({ error: err });
+    }
+
+    // If email contains blacklisted URLs, mark as spam and remove inbox label
+    if (hasBlacklistedURL) {
+        if (!label.includes("spam")) {
+            label.push("spam");
+        }
+        // Remove inbox label if it exists
+        label = label.filter(l => l !== "inbox");
     }
 
     Mails.createMail(userId, userDB.email, to, toIds, subject, body, label)
@@ -145,30 +155,42 @@ exports.updateMail = async (req, res) => {
             if (Labels.getLabelById(label[i]) == undefined)
                 return res.status(404).json({ error : "Invalid label provided" });
         }
-    }
-
-    // Save urls appearing in the mail's subject or body.
-    let urlsSubject = subject.match(urlRegex) || [];
-    let urlsBody = body.match(urlRegex) || [];
+    }    // Save urls appearing in the mail's subject or body.
+    let urlsSubject = subject ? subject.match(urlRegex) || [] : [];
+    let urlsBody = body ? body.match(urlRegex) || [] : [];
+    let hasBlacklistedURL = false;
 
     try {
         // Check for a list of urls if they are blacklisted.
         for (let i = 0; i < urlsSubject.length; i++) {
             let urlsValid = await BlackList.getBlacklistedURLById(urlsSubject[i]);
             if (urlsValid.endsWith("true")) {
-                return res.status(400).json({ error: "Invalid URL provided" });
+                hasBlacklistedURL = true;
+                break;
             }
         }
     
-        for (let i = 0; i < urlsBody.length; i++) {
-            let urlsValid = await BlackList.getBlacklistedURLById(urlsBody[i]);
-            if (urlsValid.endsWith("true")) {
-                return res.status(400).json({ error: "Invalid URL provided" });
+        if (!hasBlacklistedURL) {
+            for (let i = 0; i < urlsBody.length; i++) {
+                let urlsValid = await BlackList.getBlacklistedURLById(urlsBody[i]);
+                if (urlsValid.endsWith("true")) {
+                    hasBlacklistedURL = true;
+                    break;
+                }
             }
         }
         
     } catch (err) {
         return res.status(404).json({ error: err });
+    }
+
+    // If email contains blacklisted URLs, mark as spam and remove inbox label
+    if (hasBlacklistedURL && label) {
+        if (!label.includes("spam")) {
+            label.push("spam");
+        }
+        // Remove inbox label if it exists
+        label = label.filter(l => l !== "inbox");
     }
 
     // updateMail returns true if mail was updated successfully, otherwise false.
@@ -182,7 +204,7 @@ exports.updateMail = async (req, res) => {
 
 
 /**
- * Deletes a mail.
+ * Deletes a mail by labeling it as trash.
  *
  * @param {string} req - Request.
  * @param {json} res - Response.

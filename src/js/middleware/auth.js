@@ -1,6 +1,6 @@
 
 const jwt = require('jsonwebtoken')
-const SECRET_KEY = 'our-secret-key';
+const SECRET_KEY = 'our-secret-key'
 
 const isLoggedIn = (req, res, next) => {
     // get the part of the header wich carrys authorization

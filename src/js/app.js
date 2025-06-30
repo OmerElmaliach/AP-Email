@@ -23,9 +23,6 @@ model.initializeDefaultLabels();
 
 
 
-
-
-
 app.use(express.json())
 //these dont need token
 app.use('/api/signin',signin )
