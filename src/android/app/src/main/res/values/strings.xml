@@ -1,3 +1,13 @@
 <resources>
-    <string name="app_name">AP-Email Android</string>
+    <string name="app_name">AP-Email</string>
+    <string name="navigation_drawer_open">Open toolbar</string>
+    <string name="navigation_drawer_close">Close toolbar</string>
+    <string name="ap_email_toolbar">Toolbar Menu</string>
+    <string name="inbox">Inbox</string>
+    <string name="menu_inbox">Inbox</string>
+    <string name="menu_starred">Starred</string>
+    <string name="menu_draft">Draft</string>
+    <string name="menu_spam">Spam</string>
+    <string name="menu_sent">Sent</string>
+    <string name="menu_trash">Trash</string>
 </resources>
