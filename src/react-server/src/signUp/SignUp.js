@@ -89,7 +89,7 @@ function SignUp() {
 
       // try parsing the error message if it looks like a JSON string inside
       try {
-        const parsed = JSON.parse(err.message.match(/{.*}/)?.[0]); 
+        const parsed = JSON.parse(err?.message?.match(/{.*}/)?.[0]);
         if (parsed?.error) {
           errorMessage = parsed.error;
         }
