@@ -15,7 +15,11 @@ function BirthdayStep({ gender, setGender, birthday, setBirthDay, onNext, onBack
       alert('You must be at least 13 years old to create an account.');
       return;
     }
-
+    
+    if (age > 130) {
+      alert('Please enter a valid age under 130.');
+      return;
+    }
     onNext(); // proceed if valid
   };
   

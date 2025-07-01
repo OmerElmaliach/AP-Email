@@ -34,7 +34,7 @@ class ApiService {
         return textResponse;
       }
     } catch (error) {
-      console.error(`💥 API request failed: ${url}`, error);
+      console.error(` API request failed: ${url}`, error);
       throw error;
     }
   }
