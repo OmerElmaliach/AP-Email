@@ -97,7 +97,7 @@ function SignUp() {
         errorMessage = err.message; // fallback if parsing fails
       }
 
-      alert(errorMessage);
+      alert(errorMessage || 'Something went wrong' );
     } finally {
       setLoading(false);
     }
