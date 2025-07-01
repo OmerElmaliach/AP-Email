@@ -29,7 +29,7 @@ const createUser = (req, res) => {
     }
     // check email address isnt taken 
     if (model.getUser('email', email)) {
-        return res.status(409).json({ error: 'Email already in use' });
+        return res.status(409).json({ error: 'That username is taken. Try another.' });
     }
 
     // check usename address isnt taken 
