@@ -96,9 +96,10 @@ All communication between the frontend and backend is performed using standard R
    ```
    
 2. **Access the Services:**
+   in order to use services most create an account.
    in your local browser copy to your url
-    - Email SignIn : `http://localhost:3000/SignUp` 
-    - Email SignIn : `http://localhost:3000/SignIn` 
+    - to create an account go to Email SignUp : `http://localhost:3000/SignUp` 
+    - if you already have an account go to Email SignIn : `http://localhost:3000/SignIn` 
       
 Users may only interact with the React frontend. Any attempt to access the backend directly will redirect them to the sign-in page.
 
