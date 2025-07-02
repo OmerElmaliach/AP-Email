@@ -13,7 +13,7 @@
             android:id="@+id/toolbar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@color/medium_grey"
+            android:background="@color/primary"
             app:title=""
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -25,10 +25,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="@string/app_name"
                 android:textStyle="bold"
                 android:textColor="@android:color/white"
                 android:textSize="23sp" />
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/drawer_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:iconifiedByDefault="false"
+                android:background="@drawable/rounded_search_bg"/>
 
         </androidx.appcompat.widget.Toolbar>
 
