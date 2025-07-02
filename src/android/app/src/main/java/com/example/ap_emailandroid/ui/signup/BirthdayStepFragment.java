@@ -5,16 +5,16 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.example.ap_emailandroid.R;
 import com.example.ap_emailandroid.viewmodel.SignUpViewModel;
-import com.google.android.material.textfield.TextInputEditText;
 import java.util.Calendar;
 
 /**
@@ -22,18 +22,16 @@ import java.util.Calendar;
  */
 public class BirthdayStepFragment extends Fragment {
     
-    private TextInputEditText etBirthdayDisplay;
+    private TextView tvSelectedDate;
     private Button btnSelectDate;
-    private AutoCompleteTextView spinnerGender;
+    private RadioGroup rgGender;
+    private RadioButton rbMale;
+    private RadioButton rbFemale;
     private Button btnNext;
     private Button btnBack;
     private SignUpNavigationListener navigationListener;
     private SignUpViewModel viewModel;
     private String selectedDate;
-    private String selectedGender;
-    
-    // gender options matching web implementation
-    private static final String[] GENDER_OPTIONS = {"male", "female", "prefer not to say"};
     
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,39 +45,41 @@ public class BirthdayStepFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_birthday_step, container, false);
         
-        etBirthdayDisplay = view.findViewById(R.id.et_birthday_display);
+        tvSelectedDate = view.findViewById(R.id.tv_selected_date);
         btnSelectDate = view.findViewById(R.id.btn_select_date);
-        spinnerGender = view.findViewById(R.id.spinner_gender);
+        rgGender = view.findViewById(R.id.rg_gender);
+        rbMale = view.findViewById(R.id.rb_male);
+        rbFemale = view.findViewById(R.id.rb_female);
         btnNext = view.findViewById(R.id.btn_next);
         btnBack = view.findViewById(R.id.btn_back);
-        
-        // setup gender dropdown
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, GENDER_OPTIONS);
-        spinnerGender.setAdapter(adapter);
         
         // load existing data if available
         if (viewModel.getBirthday() != null) {
             selectedDate = viewModel.getBirthday();
-            etBirthdayDisplay.setText(selectedDate);
+            tvSelectedDate.setText(selectedDate);
         }
         if (viewModel.getGender() != null) {
-            selectedGender = viewModel.getGender();
-            spinnerGender.setText(selectedGender, false);
+            if (viewModel.getGender().equals("M")) {
+                rbMale.setChecked(true);
+            } else if (viewModel.getGender().equals("W")) {
+                rbFemale.setChecked(true);
+            }
         }
         
-        spinnerGender.setOnItemClickListener((parent, view1, position, id) -> {
-            selectedGender = GENDER_OPTIONS[position];
-        });
-        
-        // handle clicks on the birthday field
-        etBirthdayDisplay.setOnClickListener(v -> showDatePicker());
         btnSelectDate.setOnClickListener(v -> showDatePicker());
         
         btnNext.setOnClickListener(v -> {
             if (validateInput()) {
                 // save data to viewmodel
                 viewModel.setBirthday(selectedDate);
-                viewModel.setGender(selectedGender);
+                
+                int selectedGenderId = rgGender.getCheckedRadioButtonId();
+                if (selectedGenderId == R.id.rb_male) {
+                    viewModel.setGender("M");
+                } else if (selectedGenderId == R.id.rb_female) {
+                    viewModel.setGender("W");
+                }
+                
                 navigationListener.onNextStep();
             }
         });
@@ -100,7 +100,7 @@ public class BirthdayStepFragment extends Fragment {
                 (view, selectedYear, selectedMonth, selectedDay) -> {
                     // format: yyyy-mm-dd (to match web implementation)
                     selectedDate = String.format("%04d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDay);
-                    etBirthdayDisplay.setText(selectedDate);
+                    tvSelectedDate.setText(selectedDate);
                 },
                 year, month, day
         );
@@ -122,36 +122,21 @@ public class BirthdayStepFragment extends Fragment {
             return false;
         }
         
-        if (selectedGender == null || selectedGender.isEmpty()) {
+        int selectedGenderId = rgGender.getCheckedRadioButtonId();
+        if (selectedGenderId == -1) {
             Toast.makeText(getContext(), "please select your gender", Toast.LENGTH_SHORT).show();
             return false;
         }
         
-        // validate age (must be at least 13 years old) - same logic as web
+        // validate age (must be at least 13 years old)
         try {
             String[] dateParts = selectedDate.split("-");
             int birthYear = Integer.parseInt(dateParts[0]);
-            int birthMonth = Integer.parseInt(dateParts[1]);
-            int birthDay = Integer.parseInt(dateParts[2]);
+            int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+            int age = currentYear - birthYear;
             
-            Calendar birthDate = Calendar.getInstance();
-            birthDate.set(birthYear, birthMonth - 1, birthDay);
-            
-            Calendar today = Calendar.getInstance();
-            int age = today.get(Calendar.YEAR) - birthDate.get(Calendar.YEAR);
-            int m = today.get(Calendar.MONTH) - birthDate.get(Calendar.MONTH);
-            
-            boolean isUnder13 = m < 0 || (m == 0 && today.get(Calendar.DAY_OF_MONTH) < birthDate.get(Calendar.DAY_OF_MONTH))
-                    ? age - 1 < 13
-                    : age < 13;
-            
-            if (isUnder13) {
-                Toast.makeText(getContext(), "you must be at least 13 years old to create an account", Toast.LENGTH_LONG).show();
-                return false;
-            }
-            
-            if (age > 130) {
-                Toast.makeText(getContext(), "please enter a valid age under 130", Toast.LENGTH_SHORT).show();
+            if (age < 13) {
+                Toast.makeText(getContext(), "you must be at least 13 years old to sign up", Toast.LENGTH_SHORT).show();
                 return false;
             }
         } catch (Exception e) {
