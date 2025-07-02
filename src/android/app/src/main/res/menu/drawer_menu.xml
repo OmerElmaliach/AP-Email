@@ -1,0 +1,8 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/nav_inbox" android:title="@string/menu_inbox" android:icon="@android:drawable/ic_dialog_email" />
+    <item android:id="@+id/nav_starred" android:title="@string/menu_starred" android:icon="@android:drawable/star_big_on" />
+    <item android:id="@+id/nav_sent" android:title="@string/menu_sent" android:icon="@android:drawable/ic_menu_send" />
+    <item android:id="@+id/nav_draft" android:title="@string/menu_draft" android:icon="@drawable/ic_draft" />
+    <item android:id="@+id/nav_spam" android:title="@string/menu_spam" android:icon="@drawable/ic_spam" />
+    <item android:id="@+id/nav_trash" android:title="@string/menu_trash" android:icon="@android:drawable/ic_menu_delete" />
+</menu>
