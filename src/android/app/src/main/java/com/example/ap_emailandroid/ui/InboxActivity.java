@@ -1,6 +1,10 @@
 package com.example.ap_emailandroid.ui;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.View;
+import android.widget.Button;
+
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.ap_emailandroid.R;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -23,13 +27,20 @@ public class InboxActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inbox);
 
+        setupToolbar();
+        setupEmails();
+    }
+
+
+    /**
+     * Loads up the default and user specific labels to the toolbar.
+     */
+    public void setupToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
-        NavigationView navView = findViewById(R.id.nav_view);
-
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar,
                 R.string.navigation_drawer_open,
@@ -38,10 +49,32 @@ public class InboxActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        // TODO: ADD DYNAMIC EMAILS
+        // TODO: ADD DYNAMIC LABELS
+        NavigationView nav_view = findViewById(R.id.nav_view);
+        Menu menu = nav_view.getMenu();
+
+        View headerView = nav_view.getHeaderView(0);
+        Button label_btn = headerView.findViewById(R.id.add_label_btn);
+        label_btn.setOnClickListener(view -> {
+            // TODO: ADD ONCLICK EVENT
+        });
+
+        nav_view.setNavigationItemSelectedListener(item -> {
+            String labelName = item.getTitle().toString();
+            // TODO: ADD ONCLICK EVENT
+            return true;
+        });
+    }
+
+
+    /**
+     * Loads up the relevant emails to the view.
+     */
+    public void setupEmails() {
         RecyclerView emailList = findViewById(R.id.email_list);
         emailList.setLayoutManager(new LinearLayoutManager(this));
 
+        // TODO: ADD DYNAMIC EMAILS
         List<Email> emails = Arrays.asList(
                 new Email("Test Email 1", "Thanks for joining AP-Email."),
                 new Email("Test Email 2", "Check out the new features."),
