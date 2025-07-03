@@ -1,6 +1,6 @@
 
 const mongoose = require('mongoose');
-const User = require('../models/users'); // your Mongoose model
+const User = require('../models/users'); // the mongoose users model
 
 
 //add user to data base
