@@ -11,24 +11,14 @@
         android:padding="24dp"
         android:gravity="center">
 
-        <!-- title -->
+        <!-- prompt -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="upload your picture"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="@color/text_primary"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="choose a profile picture from your device"
-            android:textSize="16sp"
-            android:textColor="@color/text_secondary"
-            android:layout_marginBottom="32dp"
-            android:textAlignment="center" />
+            android:text="Upload your picture"
+            android:textSize="18sp"
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="16dp" />
 
         <!-- profile picture preview -->
         <androidx.cardview.widget.CardView
@@ -52,13 +42,12 @@
         <!-- choose image button -->
         <Button
             android:id="@+id/btn_choose_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="choose image"
-            android:textColor="@color/primary_color"
-            android:backgroundTint="@android:color/transparent"
-            android:layout_marginBottom="32dp"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Choose Image"
+            android:textColor="@android:color/black"
+            android:background="@drawable/rounded_gray_box"
+            android:layout_marginBottom="32dp" />
 
         <!-- spacer -->
         <View
@@ -76,23 +65,24 @@
             <Button
                 android:id="@+id/btn_back"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="back"
-                android:textColor="@color/primary_color"
-                android:background="@android:color/transparent"
-                android:layout_marginEnd="16dp"
-                style="@style/Widget.MaterialComponents.Button.TextButton" />
-
-            <Button
-                android:id="@+id/btn_next"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="next"
+                android:layout_height="48dp"
+                android:text="Back"
                 android:textColor="@color/white"
                 android:backgroundTint="@color/primary_color"
                 android:paddingStart="32dp"
                 android:paddingEnd="32dp"
-                android:enabled="false"
+                android:layout_marginEnd="24dp"
+                style="@style/Widget.MaterialComponents.Button" />
+
+            <Button
+                android:id="@+id/btn_next"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:text="Next"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/primary_color"
+                android:paddingStart="32dp"
+                android:paddingEnd="32dp"
                 style="@style/Widget.MaterialComponents.Button" />
 
         </LinearLayout>
