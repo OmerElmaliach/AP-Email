@@ -1,12 +1,12 @@
 
 const fs = require('fs');
-const model = require('../models/users')
+const model = require('../services/users')
 const path = require('path');
 
 
-const getPhoto = (req, res) => {
+const getPhoto = async (req, res) => {
     const userId = req.user.id;
-    const user = model.getUser('id', userId);
+    const user = await model.getUser('id', userId);
     if (!user || !user.picture) {
         return res.status(404).json({ error: 'Photo not found' });
     }

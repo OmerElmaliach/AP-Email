@@ -1,5 +1,5 @@
 const Mails = require('../models/mails');
-const Model = require('../models/users');
+const Model = require('../services/users');
 const BlackList = require('../models/blacklist');
 const Labels = require('../models/labels');
 const urlRegex = /(?<![a-zA-Z0-9])((https?:\/\/)?(www\.)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(\/\S*)?/g;
@@ -11,10 +11,10 @@ const urlRegex = /(?<![a-zA-Z0-9])((https?:\/\/)?(www\.)?([a-zA-Z0-9-]+\.)+[a-zA
  * @param {json} res - Response.
  * @returns {json} Fifty Mails in json structure.
  */
-exports.getUserMails = (req, res) => {
+exports.getUserMails = async (req, res) => {
     const userId = req.user.id;
     // Receive json containing information of a given user.
-    const userDB = Model.getUser("id", userId);
+    const userDB = await Model.getUser("id", userId);
     if (userDB == undefined) {
         return res.status(404).json({ error : "Invalid user id provided" });
     }
@@ -34,7 +34,7 @@ exports.createMail = async (req, res) => {
     const userId = req.user.id;
     let { to, subject, body, label } = req.body;
 
-    const userDB = Model.getUser("id", userId);
+    const userDB = await Model.getUser("id", userId);
 
     const isDraft = Array.isArray(label) && label.includes("draft");
 
@@ -62,7 +62,7 @@ if (!isDraft && (!to || !Array.isArray(to) || to.length === 0)) {
     if(!isDraft){
     // Check validation for each email in the 'to' section.
     for (var i = 0; i < to.length; i++) {
-        let toUserDb = Model.getUser("email", to[i]);
+        let toUserDb = await Model.getUser("email", to[i]);
         if (toUserDb == undefined){
             return res.status(404).json({ error : "Invalid receiver mails provided" });
         }
@@ -118,10 +118,10 @@ if (!isDraft && (!to || !Array.isArray(to) || to.length === 0)) {
  * @param {json} res - Response.
  * @returns {json} Details of specific mail.
  */
-exports.getMailById = (req, res) => {
+exports.getMailById = async (req, res) => {
     const id = req.params.id;
     const userId = req.user.id;
-    const userDB = Model.getUser("id", userId);
+    const userDB = await Model.getUser("id", userId);
     if (userDB == undefined) {
         return res.status(404).json({ error : "Invalid user id provided" });
     }
@@ -146,7 +146,7 @@ exports.updateMail = async (req, res) => {
     const id = req.params.id;
     const userId = req.user.id;
     const { subject, body, label } = req.body;
-    const userDB = Model.getUser("id", userId);
+    const userDB = await Model.getUser("id", userId);
     if (userDB == undefined) {
         return res.status(404).json({ error : "Invalid user id provided" });
     }
@@ -213,10 +213,10 @@ exports.updateMail = async (req, res) => {
  * @param {json} res - Response.
  * @returns {number} Status code indicating result.
  */
-exports.deleteMail = (req, res) => {
+exports.deleteMail = async (req, res) => {
     const id = req.params.id;
     const userId = req.user.id;
-    const userDB = Model.getUser("id", userId);
+    const userDB = await Model.getUser("id", userId);
     if (userDB == undefined) {
         return res.status(404).json({ error : "Invalid user id provided" });
     }
@@ -253,10 +253,10 @@ exports.deleteMail = (req, res) => {
  * @param {json} res - Response.
  * @returns {json} Requested mail with query value.
  */
-exports.findMail = (req, res) => {
+exports.findMail = async (req, res) => {
     const query = req.params.query;
     const userId = req.user.id;
-    const userDB = Model.getUser("id", userId);
+    const userDB = await Model.getUser("id", userId);
     if (userDB == undefined) {
         return res.status(404).json({ error : "Invalid user id provided" });
     }

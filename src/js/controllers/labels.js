@@ -11,7 +11,7 @@
  */
 
 const model = require('../models/labels')
-const usersModel = require('../models/users');
+const usersModel = require('../services/users');
 const Mails = require('../models/mails');
 var labelCounter = 0;
 
@@ -41,7 +41,7 @@ var labelCounter = 0;
  * // Body: { "id": "label1", "name": "Important", "userId": "user123", "color": "#FF0000" }
  * // Response: { "message": "Label created", "label": {...} }
  */
-const createLabel = (req, res)=>{
+const  createLabel = async (req, res)=>{
     const userId = req.user.id;
     const id = labelCounter.toString();
     const  {
@@ -51,7 +51,7 @@ const createLabel = (req, res)=>{
     if (!userId) {
         return res.status(400).json({ error: 'Missing mandatory field' });
     }// check userId exists
-    if (usersModel.getUser("id", userId) == undefined) {
+    if (await usersModel.getUser("id", userId) == undefined) {
         return res.status(404).json({ error: 'User not found' });
     }
     // check if label with same id already exists
