@@ -11,24 +11,6 @@
         android:padding="24dp"
         android:gravity="center">
 
-        <!-- title -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="tell us about yourself"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="@color/text_primary"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="create your ap-email account"
-            android:textSize="16sp"
-            android:textColor="@color/text_secondary"
-            android:layout_marginBottom="32dp" />
-
         <!-- first name input -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -40,9 +22,10 @@
                 android:id="@+id/et_first_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="first name"
+                android:hint="FirstName"
                 android:inputType="textPersonName"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:textColor="@android:color/black" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -57,9 +40,10 @@
                 android:id="@+id/et_last_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="last name"
+                android:hint="LastName"
                 android:inputType="textPersonName"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:textColor="@android:color/black" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -80,17 +64,17 @@
                 android:id="@+id/btn_go_to_signin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="sign in instead"
+                android:text="Sign In"
                 android:textColor="@color/primary_color"
                 android:background="@android:color/transparent"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="24dp"
                 style="@style/Widget.MaterialComponents.Button.TextButton" />
 
             <Button
                 android:id="@+id/btn_next"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="next"
+                android:text="Next"
                 android:textColor="@color/white"
                 android:backgroundTint="@color/primary_color"
                 android:paddingStart="32dp"

@@ -11,91 +11,40 @@
         android:padding="24dp"
         android:gravity="center">
 
-        <!-- title -->
-        <TextView
-            android:layout_width="wrap_content"
+        <!-- gender dropdown -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="birthday and gender"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="@color/text_primary"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="16dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="tell us when you were born and your gender"
-            android:textSize="16sp"
-            android:textColor="@color/text_secondary"
-            android:layout_marginBottom="32dp"
-            android:textAlignment="center" />
+            <AutoCompleteTextView
+                android:id="@+id/et_gender"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:hint="   Select Gender"
+                android:inputType="none"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <!-- birthday selection -->
-        <TextView
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="birthday"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="@color/text_primary"
-            android:layout_marginBottom="8dp" />
-
-        <Button
-            android:id="@+id/btn_select_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="select your birthday"
-            android:textColor="@color/primary_color"
-            android:backgroundTint="@android:color/transparent"
-            android:layout_marginBottom="8dp"
-            android:gravity="start|center_vertical"
-            android:drawableEnd="@drawable/ic_calendar"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
-
-        <TextView
-            android:id="@+id/tv_selected_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:textSize="14sp"
-            android:textColor="@color/text_secondary"
-            android:layout_marginBottom="24dp"
-            android:visibility="gone" />
-
-        <!-- gender selection -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="gender"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="@color/text_primary"
-            android:layout_marginBottom="8dp" />
-
-        <RadioGroup
-            android:id="@+id/rg_gender"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginBottom="32dp">
-
-            <RadioButton
-                android:id="@+id/rb_male"
-                android:layout_width="wrap_content"
+            android:layout_marginBottom="32dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_birthday"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="male"
+                android:hint="birthday - dd/mm/yyyy"
+                android:textColor="@android:color/black"
                 android:textSize="16sp"
-                android:layout_marginEnd="32dp" />
-
-            <RadioButton
-                android:id="@+id/rb_female"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="female"
-                android:textSize="16sp" />
-
-        </RadioGroup>
+                android:drawableEnd="@drawable/ic_calendar"
+                android:focusable="false"
+                android:inputType="none" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <!-- spacer -->
         <View
@@ -113,18 +62,20 @@
             <Button
                 android:id="@+id/btn_back"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="back"
-                android:textColor="@color/primary_color"
-                android:background="@android:color/transparent"
-                android:layout_marginEnd="16dp"
-                style="@style/Widget.MaterialComponents.Button.TextButton" />
+                android:layout_height="48dp"
+                android:text="Back"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/primary_color"
+                android:paddingStart="32dp"
+                android:paddingEnd="32dp"
+                android:layout_marginEnd="24dp"
+                style="@style/Widget.MaterialComponents.Button" />
 
             <Button
                 android:id="@+id/btn_next"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="next"
+                android:layout_height="48dp"
+                android:text="Next"
                 android:textColor="@color/white"
                 android:backgroundTint="@color/primary_color"
                 android:paddingStart="32dp"
