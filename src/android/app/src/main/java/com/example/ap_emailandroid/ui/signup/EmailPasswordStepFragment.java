@@ -1,9 +1,7 @@
 package com.example.ap_emailandroid.ui.signup;
 
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,75 +56,36 @@ public class EmailPasswordStepFragment extends Fragment {
         if (viewModel.getEmail() != null) {
             etEmail.setText(viewModel.getEmail());
         }
-        if (viewModel.getPassword() != null) {
-            etPassword.setText(viewModel.getPassword());
-        }
         
-        // setup password requirements text
-        updatePasswordRequirements();
-        
-        // add text watchers to update button state
-        TextWatcher formWatcher = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-            
-            @Override
-            public void afterTextChanged(Editable s) {
-                updateCreateButtonState();
-                updatePasswordRequirements();
-            }
-        };
-        
-        etEmail.addTextChangedListener(formWatcher);
-        etPassword.addTextChangedListener(formWatcher);
-        etConfirmPassword.addTextChangedListener(formWatcher);
+        // show password requirements
+        tvPasswordRequirements.setText("password must be at least 8 characters long and contain:\n• at least one uppercase letter\n• at least one lowercase letter\n• at least one number\n• only letters and numbers (no special characters)");
         
         btnCreateAccount.setOnClickListener(v -> {
-            if (validateAndCreateAccount()) {
-                progressBar.setVisibility(View.VISIBLE);
-                btnCreateAccount.setEnabled(false);
-                
+            if (validateInput()) {
                 // save data to viewmodel
                 viewModel.setEmail(etEmail.getText().toString().trim());
                 viewModel.setPassword(etPassword.getText().toString());
                 
-                // simulate account creation (replace with actual implementation)
-                createAccount();
+                // show loading
+                progressBar.setVisibility(View.VISIBLE);
+                btnCreateAccount.setEnabled(false);
+                
+                navigationListener.onSignUpComplete();
             }
         });
         
         btnBack.setOnClickListener(v -> navigationListener.onPreviousStep());
         
-        // initial button state
-        updateCreateButtonState();
+        // observe signup process
+        viewModel.getIsLoading().observe(this, isLoading -> {
+            progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+            btnCreateAccount.setEnabled(!isLoading);
+        });
         
         return view;
     }
     
-    private void updateCreateButtonState() {
-        String email = etEmail.getText().toString().trim();
-        String password = etPassword.getText().toString();
-        String confirmPassword = etConfirmPassword.getText().toString();
-        
-        boolean isFormValid = !TextUtils.isEmpty(email) && 
-                             !TextUtils.isEmpty(password) && 
-                             !TextUtils.isEmpty(confirmPassword) &&
-                             password.equals(confirmPassword) &&
-                             isValidPassword(password);
-        
-        if (isFormValid) {
-            btnCreateAccount.setAlpha(1.0f);
-            btnCreateAccount.setEnabled(true);
-        } else {
-            btnCreateAccount.setAlpha(0.5f);
-            btnCreateAccount.setEnabled(false);
-        }
-    }
-    
-    private boolean validateAndCreateAccount() {
+    private boolean validateInput() {
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString();
         String confirmPassword = etConfirmPassword.getText().toString();
@@ -190,64 +149,5 @@ public class EmailPasswordStepFragment extends Fragment {
         }
         
         return null; // is valid
-    }
-    
-    private void updatePasswordRequirements() {
-        // similar logic to validatePassword, but updates the UI with which requirements are not met
-        String password = etPassword.getText().toString();
-        
-        StringBuilder requirements = new StringBuilder("password must be at least 8 characters long and contain:");
-        boolean isValid = true;
-        
-        if (password.length() < 8) {
-            requirements.append("\n• at least 8 characters");
-            isValid = false;
-        } else {
-            requirements.append("\n• ✓ at least 8 characters");
-        }
-        
-        if (!password.matches(".*[A-Z].*")) {
-            requirements.append("\n• at least one uppercase letter");
-            isValid = false;
-        } else {
-            requirements.append("\n• ✓ at least one uppercase letter");
-        }
-        
-        if (!password.matches(".*[a-z].*")) {
-            requirements.append("\n• at least one lowercase letter");
-            isValid = false;
-        } else {
-            requirements.append("\n• ✓ at least one lowercase letter");
-        }
-        
-        if (!password.matches(".*\\d.*")) {
-            requirements.append("\n• at least one number");
-            isValid = false;
-        } else {
-            requirements.append("\n• ✓ at least one number");
-        }
-        
-        // only allow letters and digits
-        if (!password.matches("^[a-zA-Z\\d]+$")) {
-            requirements.append("\n• only letters and numbers (no special characters)");
-            isValid = false;
-        } else {
-            requirements.append("\n• ✓ only letters and numbers (no special characters)");
-        }
-        
-        tvPasswordRequirements.setText(requirements.toString());
-        
-        // also update button state based on password validity
-        updateCreateButtonState();
-    }
-    
-    private void createAccount() {
-        // TODO: implement account creation logic
-        // this is just a simulation
-        new android.os.Handler().postDelayed(() -> {
-            progressBar.setVisibility(View.GONE);
-            btnCreateAccount.setEnabled(true);
-            navigationListener.onSignUpComplete();
-        }, 2000);
     }
 }

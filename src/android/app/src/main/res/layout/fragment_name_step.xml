@@ -1,63 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="0dp">
+    android:fillViewport="true">
 
-    <!-- welcome header -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Welcome!"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        android:textColor="@color/text_primary"
-        android:layout_marginBottom="8dp"
-        android:fontFamily="sans-serif-medium" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Create your AP-Email account"
-        android:textSize="16sp"
-        android:textColor="@color/text_secondary"
-        android:layout_marginBottom="32dp" />
-
-    <!-- main content container -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingTop="0dp"
-        android:paddingBottom="24dp">
+        android:padding="24dp"
+        android:gravity="center">
+
+        <!-- title -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="tell us about yourself"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="create your ap-email account"
+            android:textSize="16sp"
+            android:textColor="@color/text_secondary"
+            android:layout_marginBottom="32dp" />
 
         <!-- first name input -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:hint="First Name"
-            app:hintTextColor="@color/text_secondary"
-            app:boxBackgroundColor="@color/input_background"
-            app:boxStrokeColor="@color/input_border_focused"
-            app:boxStrokeWidth="1dp"
-            app:boxCornerRadiusTopStart="8dp"
-            app:boxCornerRadiusTopEnd="8dp"
-            app:boxCornerRadiusBottomStart="8dp"
-            app:boxCornerRadiusBottomEnd="8dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_first_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="first name"
                 android:inputType="textPersonName"
-                android:textSize="16sp"
-                android:textColor="@color/text_primary"
-                android:fontFamily="sans-serif" />
+                android:textSize="16sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -66,67 +51,54 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
-            android:hint="Last Name"
-            app:hintTextColor="@color/text_secondary"
-            app:boxBackgroundColor="@color/input_background"
-            app:boxStrokeColor="@color/input_border_focused"
-            app:boxStrokeWidth="1dp"
-            app:boxCornerRadiusTopStart="8dp"
-            app:boxCornerRadiusTopEnd="8dp"
-            app:boxCornerRadiusBottomStart="8dp"
-            app:boxCornerRadiusBottomEnd="8dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_last_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="last name"
                 android:inputType="textPersonName"
-                android:textSize="16sp"
-                android:textColor="@color/text_primary"
-                android:fontFamily="sans-serif" />
+                android:textSize="16sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-    </LinearLayout>
+        <!-- spacer -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
-    <!-- buttons container -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="end"
-        android:paddingTop="16dp">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_go_to_signin"
-            android:layout_width="wrap_content"
+        <!-- buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Sign In"
-            android:textColor="@color/text_secondary"
-            android:backgroundTint="@color/white"
-            android:layout_marginEnd="16dp"
-            android:paddingStart="24dp"
-            android:paddingEnd="24dp"
-            android:fontFamily="sans-serif-medium"
-            app:cornerRadius="20dp"
-            app:strokeColor="@color/text_secondary"
-            app:strokeWidth="1dp"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+            android:orientation="horizontal"
+            android:gravity="center">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_next"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Next"
-            android:textColor="@color/button_text"
-            android:backgroundTint="@color/button_primary"
-            android:paddingStart="32dp"
-            android:paddingEnd="32dp"
-            android:fontFamily="sans-serif-medium"
-            app:cornerRadius="20dp"
-            style="@style/Widget.MaterialComponents.Button" />
+            <Button
+                android:id="@+id/btn_go_to_signin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="sign in instead"
+                android:textColor="@color/primary_color"
+                android:background="@android:color/transparent"
+                android:layout_marginEnd="16dp"
+                style="@style/Widget.MaterialComponents.Button.TextButton" />
+
+            <Button
+                android:id="@+id/btn_next"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="next"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/primary_color"
+                android:paddingStart="32dp"
+                android:paddingEnd="32dp"
+                style="@style/Widget.MaterialComponents.Button" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
-</LinearLayout>
+</ScrollView>
