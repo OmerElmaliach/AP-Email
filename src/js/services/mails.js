@@ -1,20 +1,41 @@
+
+const Mails = require('../models/mails');// the mongoose mails model MMM
+
+
 let idCounter = 0;
 let draftCounter = 0;
 const EMAIL_AMOUNT = 50;
-var mails =  [];
 
 
 /**
  * @param {string} userId Id of a user.
  * @returns fifty existing mails in reverse order by Id.
  */
-const getUserMails = (userId) => {
+const getUserMails = async (userId) => {
     // Concatenate from and to mails into one array, sort in reverse order.
-    var mailList = mails.filter(item => item.id === userId);
+    var mailList = await Mails.find({ id : userId })
     mailList = mailList.sort((a, b) => a.date_sent.localeCompare(b.date_sent)).reverse().slice(0, EMAIL_AMOUNT);
 
     // Return list without duplicates.
     return Array.from(new Map(mailList.map(item => [item.mail_id, item])).values());
+}
+
+/**
+ * Helper to find a free mail_id based on counter and draft flag 
+ */
+async function getUniqueMailId(isDraft) {
+  let counter = isDraft ? draftCounter : idCounter;
+  while (true) {
+    const mailId = isDraft ? `e${counter}d` : `e${counter}`;
+    const existing = await Mails.findOne({ mail_id: mailId });
+    if (!existing) {
+      // Update the global counter so next call starts after this one
+      if (isDraft) draftCounter = counter + 1;
+      else idCounter = counter + 1;
+      return mailId;
+    }
+    counter++;
+  }
 }
 
 
@@ -29,11 +50,14 @@ const getUserMails = (userId) => {
  * @param {string} body
  * @param {string} label
  */
-const createMail = (id, from, to, toIds, subject, body, label) => {
+const createMail = async (id, from, to, toIds, subject, body, label) => {
     if (label.includes("draft")) {
-        mails.push({"id" : id, "mail_id" : "e".concat(draftCounter.toString().concat("d")), "from" : from, "to" : to, "subject" : subject, "body" : body, date_sent : "N/A", "label" : ["draft"]});
-        draftCounter++;
+        const mail_id = await getUniqueMailId(true);
+
+        await Mails.create({"id" : id, "mail_id" : mail_id, "from" : from, 
+            "to" : to, "subject" : subject, "body" : body, date_sent : "N/A", "label" : ["draft"]});
     } else {
+        const email_id = await getUniqueMailId(false);
         // Instantly creates a json and adds to mail list.
         const date = new Date();
         const timestamp = date.toLocaleString()
@@ -48,7 +72,8 @@ const createMail = (id, from, to, toIds, subject, body, label) => {
         
         if (toIds.includes(id))
             senderLabels.push("inbox");
-        mails.push({"id" : id, "mail_id" : "e".concat(idCounter.toString()), "from" : from, "to" : to, "subject" : subject, "body" : body, date_sent : timestamp, "label" : senderLabels});
+        await Mails.create({"id" : id, "mail_id" : email_id , "from" : from, "to" : to,
+             "subject" : subject, "body" : body, date_sent : timestamp, "label" : senderLabels});
         
         // For receivers: add "inbox" label unless it's spam or trash
         for (var i = 0; i < toIds.length; i++) {
@@ -59,10 +84,11 @@ const createMail = (id, from, to, toIds, subject, body, label) => {
                         receiverLabels.push("inbox");
                     }
                 }
-                mails.push({"id" : toIds[i], "mail_id" : "e".concat(idCounter.toString()), "from" : from, "to" : to, "subject" : subject, "body" : body, date_sent : timestamp, "label" : receiverLabels});
+                await Mails.create({"id" : toIds[i], "mail_id" : email_id , "from" : from,
+                     "to" : to, "subject" : subject, "body" : body, date_sent : timestamp,
+                      "label" : receiverLabels});
             }
         }
-        idCounter++;
     }
 }
 
@@ -72,9 +98,9 @@ const createMail = (id, from, to, toIds, subject, body, label) => {
  * @param {string} mailId Unique Id of a mail.
  * @returns Contents of a mail with unique id.
  */
-const getMailById = (userId, mailId) => {
+const getMailById = async (userId, mailId) => {
     // Filter and return the specific mail.
-    return mails.find(item => item.mail_id === mailId && item.id === userId);
+    return Mails.findOne({ mail_id: mailId, id: userId });
 }
 
 
@@ -88,24 +114,20 @@ const getMailById = (userId, mailId) => {
  * @param {string} label
  * @returns True if changed successfully, otherwise false.
  */
-const updateMail = (userId, mailId, subject, body, label) => {
-    let isFound = false;
-    // Loop over all mails and modify the correct one.
-    for (var i = 0; i < mails.length; i++) {
-        if (mails[i].mail_id == mailId && mails[i].id === userId) {
-            isFound = true;
-            if (subject != undefined)
-                mails[i].subject = subject;
-            if (body != undefined)
-                mails[i].body = body;
-            if (label != undefined)
-                mails[i].label = label;
-        }
-    }
+const updateMail = async (userId, mailId, subject, body, label) => {
+  const update = {};
+  if (subject !== undefined) update.subject = subject;
+  if (body !== undefined) update.body = body;
+  if (label !== undefined) update.label = label;
 
-    return isFound;
-}
+  const result = await Mails.updateOne(
+    { mail_id: mailId, id: userId },
+    { $set: update }
+  );
 
+  // result.modifiedCount will be 1 if the update happened
+  return result.modifiedCount > 0;
+};
 
 /**
  * @brief Deletes a mail.
@@ -114,39 +136,30 @@ const updateMail = (userId, mailId, subject, body, label) => {
  * @param {string} mailId
  * @returns True if deleted successfully, otherwise false.
  */
-const deleteMail = (userId, mailId) => {
-    // Filter so that whoever wants to delete has the mail in his inbox.
-    const delMail = mails.find(item => item.mail_id == mailId && item.id == userId);
-    if (delMail == undefined)
-        return false;
-
-    mails = mails.filter(item => item != delMail);
-    return true;
+const deleteMail = async (userId, mailId) => {
+    const deleted = await Mails.findOneAndDelete({ mail_id: mailId, id: userId });
+    return deleted !== null;
 }
 
 
 /**
  * @param {string} userId
  * @param {string} query
- * @returns A mail which includes a specific string in one of its content.
+ * @returns {Promise<Array>} A list of mails which include the query in any string field.
  */
-const findMail = (userId, query) => {
-    const mailLst = getUserMails(userId);
-    var newLst = [];
-    // Loop over all mails
-    for (var i = 0; i < mailLst.length; i++) {
-        // Loop over all key and value in a specific json mail.
-        for (const [key, value] of Object.entries(mailLst[i])) {
-            // Check for a match.
-            if (value.includes(query)) {
-                newLst.push(mailLst[i]);
-                break;
-            }
-        }
-    }
+const findMail = async (userId, query) => {
+  // get all mails for user
+  const mailLst = await Mails.find({ id: userId });
 
-    return newLst;
-}
+  const filtered = mailLst.filter(mail => {
+    // check if ANY field contains the query string
+    return Object.entries(mail.toObject()).some(([_, val]) => 
+      typeof val === 'string' && val.includes(query)
+    );
+  });
+
+  return filtered;
+};
 
 
 module.exports = {
