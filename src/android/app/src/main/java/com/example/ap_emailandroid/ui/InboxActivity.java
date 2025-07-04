@@ -13,15 +13,16 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ap_emailandroid.ui.email.Email;
 import com.example.ap_emailandroid.ui.email.EmailAdapter;
+import com.example.ap_emailandroid.viewmodel.EmailViewModel;
 import com.google.android.material.navigation.NavigationView;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class InboxActivity extends AppCompatActivity {
+    private EmailViewModel viewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,17 +75,13 @@ public class InboxActivity extends AppCompatActivity {
         RecyclerView emailList = findViewById(R.id.email_list);
         emailList.setLayoutManager(new LinearLayoutManager(this));
 
-        // TODO: ADD DYNAMIC EMAILS
-        List<Email> emails = Arrays.asList(
-                new Email("Test Email 1", "Thanks for joining AP-Email."),
-                new Email("Test Email 2", "Check out the new features."),
-                new Email("Test Email 3", "We detected a login from a new device.")
-        );
-
-        EmailAdapter adapter = new EmailAdapter(emails, email -> {
-            // TODO: ADD ONCLICK EVENT
+        EmailAdapter adapter = new EmailAdapter(new ArrayList<>(), email -> {
+            // TODO: HANDLE CLICK
         });
-
         emailList.setAdapter(adapter);
+
+//        viewModel = new ViewModelProvider(this).get(EmailViewModel.class);
+//        viewModel.getEmails().observe(this, adapter::setEmails);
     }
+
 }
