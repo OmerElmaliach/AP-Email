@@ -28,9 +28,10 @@ mongoose.connect('mongodb://localhost:27017/AP-Email', {
 
 
 
-const model = require('./models/labels'); 
-model.initializeDefaultLabels(); 
-
+const labelsBD = require('./services/labels');
+(async () => {
+  await labelsBD.initializeDefaultLabels();
+})();
 
 app.use(express.json())
 //these dont need token
