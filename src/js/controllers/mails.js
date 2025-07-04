@@ -1,7 +1,7 @@
 const Mails = require('../models/mails');
 const Model = require('../services/users');
 const BlackList = require('../models/blacklist');
-const Labels = require('../models/labels');
+const Labels = require('../services/labels');
 const urlRegex = /(?<![a-zA-Z0-9])((https?:\/\/)?(www\.)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(\/\S*)?/g;
 
 /**
@@ -51,7 +51,7 @@ if (!isDraft && (!to || !Array.isArray(to) || to.length === 0)) {
         return res.status(404).json({ error : "Invalid label format provided" });
     } else {
         for (let i = 0; i < label.length; i++) {
-            if (Labels.getLabelById(label[i]) == undefined)
+            if (await Labels.getLabelById(label[i]) == undefined)
                 return res.status(404).json({ error : "Invalid label provided" });
         }
     }
@@ -155,7 +155,7 @@ exports.updateMail = async (req, res) => {
         return res.status(404).json({ error : "Invalid label format provided" });
     } else if (label != undefined && Array.isArray(label)) {
         for (let i = 0; i < label.length; i++) {
-            if (Labels.getLabelById(label[i]) == undefined)
+            if (await Labels.getLabelById(label[i]) == undefined)
                 return res.status(404).json({ error : "Invalid label provided" });
         }
     }    // Save urls appearing in the mail's subject or body.
