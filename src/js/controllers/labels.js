@@ -12,7 +12,7 @@
 
 const model = require('../services/labels')
 const usersModel = require('../services/users');
-const Mails = require('../models/mails');
+const Mails = require('../services/mails');
 var labelCounter = 0;
 
 /**
@@ -41,33 +41,36 @@ var labelCounter = 0;
  * // Body: { "id": "label1", "name": "Important", "userId": "user123", "color": "#FF0000" }
  * // Response: { "message": "Label created", "label": {...} }
  */
-const  createLabel = async (req, res)=>{
-    const userId = req.user.id;
-    const id = labelCounter.toString();
-    const  {
-        name = null,
-        color = null,
-    } = req.body    //mandatory fields check - only id and userId are truly required
-    if (!userId) {
-        return res.status(400).json({ error: 'Missing mandatory field' });
-    }// check userId exists
-    if (await usersModel.getUser("id", userId) == undefined) {
-        return res.status(404).json({ error: 'User not found' });
+const createLabel = async (req, res) => {
+  const userId = req.user.id;
+  let idNum = labelCounter;
+  const { name = null, color = null } = req.body;
+
+  if (!userId) {
+    return res.status(400).json({ error: 'Missing mandatory field' });
+  }
+  if (await usersModel.getUser("id", userId) == undefined) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+
+  // Find a free ID by checking existence in a loop
+  let exists = true;
+  let id;
+  while (exists) {
+    id = idNum.toString();
+    const labelsWithId = await model.getLabels('id', id);
+    if (labelsWithId.length === 0) {
+      exists = false;
+    } else {
+      idNum++;
     }
-    // check if label with same id already exists
-    if (await model.getLabels('id', id).length > 0) {
-        return res.status(400).json({ error: 'Label with this ID already exists' });
-    }
-    // all looks good, make label json and send to models
-    const newLabel = {
-        id,
-        userId,
-        name,
-        color
-    }
-    labelCounter++;
-    await model.createLabel(newLabel)
-    return res.status(201).json({ message: 'Label created', label: newLabel });
+  }
+
+  labelCounter = idNum + 1;  // update counter for next
+
+  const newLabel = { id, userId, name, color };
+  await model.createLabel(newLabel);
+  return res.status(201).json({ message: 'Label created', label: newLabel });
 }
 
 /**
@@ -215,13 +218,13 @@ const updateLabel = async (req, res) => {
 const deleteLabel = async (req, res) => {
     const { id } = req.params;
     const userId = req.user.id;
-    const labelMails = Mails.getUserMails(userId);
+    const labelMails = await Mails.getUserMails(userId);
     const filteredMails = labelMails.filter(mail => mail.label.includes(id));
     for (let i = 0; i < filteredMails.length; i++) {
         let MailLabels = filteredMails[i].label;
         let idx = MailLabels.indexOf(id);
         MailLabels.splice(idx, 1);
-        Mails.updateMail(userId, filteredMails[i].mail_id, undefined, undefined, MailLabels);
+        await Mails.updateMail(userId, filteredMails[i].mail_id, undefined, undefined, MailLabels);
     }
 
     const deletedLabel = await model.deleteLabel(id);
