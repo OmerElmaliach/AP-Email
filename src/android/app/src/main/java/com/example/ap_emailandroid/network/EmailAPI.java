@@ -1,5 +1,7 @@
 package com.example.ap_emailandroid.network;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
@@ -48,6 +50,7 @@ public class EmailAPI {
             @Override
             public void onFailure(Call<List<Email>> call, Throwable t) {
                 // TODO: IMPLEMENT FAILURE EVENT.
+                Log.e("EmailAPI", "API call failed", t);
             }
         });
     }
