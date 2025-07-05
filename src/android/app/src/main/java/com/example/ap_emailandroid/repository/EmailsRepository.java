@@ -41,13 +41,19 @@ public class EmailsRepository {
     }
 
     public void add(Email email) {
-        dao.insert(email);
-        emailListData.postValue(dao.index());
+        new Thread(() -> {
+            dao.insert(email);
+            emailListData.postValue(dao.index());
+        }).start();
+        api.create(email);
     }
 
     public void delete(Email email) {
-        dao.delete(email);
-        emailListData.postValue(dao.index());
+        new Thread(() -> {
+            dao.delete(email);
+            emailListData.postValue(dao.index());
+        }).start();
+        api.delete(email);
     }
 
     public void reload() {

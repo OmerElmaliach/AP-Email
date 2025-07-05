@@ -11,12 +11,12 @@ import retrofit2.http.Path;
 import java.util.List;
 
 public interface WebServiceAPI {
-    @GET("/")
+    @GET("/emails") // TODO: CHANGE TO '/'
     Call<List<Email>> getEmails();
 
-    @POST("/")
+    @POST("/emails") // TODO: CHANGE TO '/'
     Call<Void> createEmail(@Body Email email);
 
-    @DELETE("/{id}")
+    @DELETE("/emails/{id}") // TODO: CHANGE TO '/{id}'
     Call<Void> deleteEmail(@Path("id") int id);
 }

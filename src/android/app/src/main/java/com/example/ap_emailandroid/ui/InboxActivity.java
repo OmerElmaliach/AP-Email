@@ -77,10 +77,10 @@ public class InboxActivity extends AppCompatActivity {
         emailList.setLayoutManager(new LinearLayoutManager(this));
 
         EmailAdapter adapter = new EmailAdapter(new ArrayList<>(), email -> {
-            // TODO: HANDLE CLICK
+            // TODO: ADD ONCLICK EVENT
         });
-        emailList.setAdapter(adapter);
 
+        emailList.setAdapter(adapter);
         viewModel = new ViewModelProvider(this).get(EmailViewModel.class);
         viewModel.getEmails().observe(this, adapter::setEmails);
     }
