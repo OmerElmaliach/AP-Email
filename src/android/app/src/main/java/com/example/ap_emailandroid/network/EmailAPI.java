@@ -40,17 +40,57 @@ public class EmailAPI {
             public void onResponse(@NonNull Call<List<Email>> call, @NonNull Response<List<Email>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<Email> fromSer = response.body();
-                    List<Email> current = dao.index();
-                    dao.delete(current.toArray(new Email[0]));
-                    dao.insert(fromSer.toArray(new Email[0]));
-                    emailListData.postValue(dao.index());
+
+                    new Thread(() -> {
+                        List<Email> current = dao.index();
+                        dao.delete(current.toArray(new Email[0]));
+                        dao.insert(fromSer.toArray(new Email[0]));
+                        emailListData.postValue(dao.index());
+                    }).start();
                 }
             }
 
             @Override
-            public void onFailure(Call<List<Email>> call, Throwable t) {
-                // TODO: IMPLEMENT FAILURE EVENT.
+            public void onFailure(@NonNull Call<List<Email>> call, @NonNull Throwable t) {
                 Log.e("EmailAPI", "API call failed", t);
+            }
+        });
+    }
+
+    public void create(Email email) {
+        Call<Void> call = webServiceAPI.createEmail(email);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Log.i("EmailAPI", "Email created: " + response.body());
+                } else {
+                    Log.e("EmailAPI", "Failed to create email: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                Log.e("EmailAPI", "Create request failed", t);
+            }
+        });
+    }
+
+    public void delete(Email email) {
+        Call<Void> call = webServiceAPI.deleteEmail(email.getId());
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Log.e("EmailAPI", "Email deleted successfully: " + response.code());
+                } else {
+                    Log.e("EmailAPI", "Deletion failed: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                Log.e("EmailAPI", "Delete request failed", t);
             }
         });
     }
