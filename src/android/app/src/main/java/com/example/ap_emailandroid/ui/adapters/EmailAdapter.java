@@ -1,4 +1,4 @@
-package com.example.ap_emailandroid.ui.email;
+package com.example.ap_emailandroid.ui.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;

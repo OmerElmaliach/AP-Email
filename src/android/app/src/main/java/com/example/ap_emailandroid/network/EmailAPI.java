@@ -35,7 +35,7 @@ public class EmailAPI {
 
     public void get() {
         Call<List<Email>> call = webServiceAPI.getEmails();
-        call.enqueue(new Callback<List<Email>>() {
+        call.enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<List<Email>> call, @NonNull Response<List<Email>> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -59,7 +59,7 @@ public class EmailAPI {
 
     public void create(Email email) {
         Call<Void> call = webServiceAPI.createEmail(email);
-        call.enqueue(new Callback<Void>() {
+        call.enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 if (response.isSuccessful()) {
@@ -78,7 +78,7 @@ public class EmailAPI {
 
     public void delete(Email email) {
         Call<Void> call = webServiceAPI.deleteEmail(email.getId());
-        call.enqueue(new Callback<Void>() {
+        call.enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 if (response.isSuccessful()) {

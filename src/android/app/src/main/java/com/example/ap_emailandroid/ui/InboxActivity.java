@@ -14,7 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ap_emailandroid.ui.email.EmailAdapter;
+import com.example.ap_emailandroid.ui.adapters.EmailAdapter;
 import com.example.ap_emailandroid.viewmodel.EmailViewModel;
 import com.google.android.material.navigation.NavigationView;
 
@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class InboxActivity extends AppCompatActivity {
-    private EmailViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +80,7 @@ public class InboxActivity extends AppCompatActivity {
         });
 
         emailList.setAdapter(adapter);
-        viewModel = new ViewModelProvider(this).get(EmailViewModel.class);
+        EmailViewModel viewModel = new ViewModelProvider(this).get(EmailViewModel.class);
         viewModel.getEmails().observe(this, adapter::setEmails);
     }
 
