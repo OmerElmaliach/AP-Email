@@ -8,7 +8,9 @@ public class LocalDatabase {
 
     public static AppDB getInstance(Context context) {
         if (instance == null) {
-            instance = Room.databaseBuilder(context.getApplicationContext(), AppDB.class, "emails.db").build();
+            instance = Room.databaseBuilder(context.getApplicationContext(), AppDB.class, "emails.db")
+                    .fallbackToDestructiveMigration()
+                    .build();
         }
 
         return instance;

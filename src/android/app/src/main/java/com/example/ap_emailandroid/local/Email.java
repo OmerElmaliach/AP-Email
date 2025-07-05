@@ -1,6 +1,12 @@
 package com.example.ap_emailandroid.local;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
+import com.example.ap_emailandroid.db.Converters;
+import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 @Entity
 public class Email {
@@ -8,12 +14,39 @@ public class Email {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
+    @SerializedName("user_id")
+    public String user_id;
+    @SerializedName("mail_id")
+    public String mail_id;
+
+    @SerializedName("from")
+    public String from;
+
+    @SerializedName("to")
+    public String to;
+
+    @SerializedName("subject")
     public String subject;
+
+    @SerializedName("body")
     public String body;
 
-    public Email(String subject, String body) {
+    @SerializedName("date_sent")
+    public String date_sent;
+
+    @SerializedName("label")
+    @TypeConverters(Converters.class)
+    public List<String> label;
+
+    public Email(String user_id, String mail_id, String from, String to, String subject, String body, String date_sent, List<String> label) {
+        this.user_id = user_id;
+        this.mail_id = mail_id;
+        this.from = from;
+        this.to = to;
         this.subject = subject;
         this.body = body;
+        this.date_sent = date_sent;
+        this.label = label;
     }
 
     public int getId() {
@@ -28,15 +61,59 @@ public class Email {
         return body;
     }
 
+    public String getUserId() {
+        return user_id;
+    }
+
+    public String getMailId() {
+        return mail_id;
+    }
+
+    public String getFrom() {
+        return from;
+    }
+
+    public String getTo() {
+        return to;
+    }
+
+    public String getDateSent() {
+        return date_sent;
+    }
+
+    public List<String> getLabel() {
+        return label;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
 
     public void setSubject(String content) {
-        this.subject = subject;
+        this.subject = content;
     }
 
     public void setBody(String content) {
-        this.body = body;
+        this.body = content;
+    }
+
+    public void setUserId(String content) {
+        this.user_id = content;
+    }
+
+    public void setMailId(String content) {
+        this.mail_id = content;
+    }
+
+    public void setTo(String content) {
+        this.to = content;
+    }
+
+    public void setDateSent(String content) {
+        this.date_sent = content;
+    }
+
+    public void setLabel(List<String> label) {
+        this.label = label;
     }
 }
