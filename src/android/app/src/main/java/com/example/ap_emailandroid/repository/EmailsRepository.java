@@ -32,7 +32,7 @@ public class EmailsRepository {
         @Override
         protected void onActive() {
             super.onActive();
-            postValue(dao.index());
+            new Thread(() -> postValue(dao.index())).start();
         }
     }
 

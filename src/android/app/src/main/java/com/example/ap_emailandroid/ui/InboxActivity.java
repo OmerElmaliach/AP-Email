@@ -10,6 +10,7 @@ import com.example.ap_emailandroid.R;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -80,8 +81,8 @@ public class InboxActivity extends AppCompatActivity {
         });
         emailList.setAdapter(adapter);
 
-//        viewModel = new ViewModelProvider(this).get(EmailViewModel.class);
-//        viewModel.getEmails().observe(this, adapter::setEmails);
+        viewModel = new ViewModelProvider(this).get(EmailViewModel.class);
+        viewModel.getEmails().observe(this, adapter::setEmails);
     }
 
 }
