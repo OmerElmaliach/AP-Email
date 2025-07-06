@@ -5,16 +5,16 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.example.ap_emailandroid.R;
 import com.example.ap_emailandroid.viewmodel.SignUpViewModel;
+import com.google.android.material.textfield.TextInputEditText;
 import java.util.Calendar;
 
 /**
@@ -22,17 +22,16 @@ import java.util.Calendar;
  */
 public class BirthdayStepFragment extends Fragment {
     
-    private TextView tvSelectedDate;
-    private Button btnSelectDate;
-    private RadioGroup rgGender;
-    private RadioButton rbMale;
-    private RadioButton rbFemale;
+    private TextInputEditText tvSelectedDate;
+    private AutoCompleteTextView etGender;
     private Button btnNext;
     private Button btnBack;
     private SignUpNavigationListener navigationListener;
     private SignUpViewModel viewModel;
     private String selectedDate;
     
+    private final String[] genderOptions = {"Male", "Female", "Prefer not to say"};
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,38 +45,47 @@ public class BirthdayStepFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_birthday_step, container, false);
         
         tvSelectedDate = view.findViewById(R.id.tv_selected_date);
-        btnSelectDate = view.findViewById(R.id.btn_select_date);
-        rgGender = view.findViewById(R.id.rg_gender);
-        rbMale = view.findViewById(R.id.rb_male);
-        rbFemale = view.findViewById(R.id.rb_female);
+        etGender = view.findViewById(R.id.et_gender);
         btnNext = view.findViewById(R.id.btn_next);
         btnBack = view.findViewById(R.id.btn_back);
         
+        // set up gender dropdown
+        ArrayAdapter<String> genderAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, genderOptions);
+        etGender.setAdapter(genderAdapter);
+
         // load existing data if available
         if (viewModel.getBirthday() != null) {
             selectedDate = viewModel.getBirthday();
             tvSelectedDate.setText(selectedDate);
         }
         if (viewModel.getGender() != null) {
+            String genderText = "";
             if (viewModel.getGender().equals("M")) {
-                rbMale.setChecked(true);
-            } else if (viewModel.getGender().equals("W")) {
-                rbFemale.setChecked(true);
+                genderText = "Male";
+            } else if (viewModel.getGender().equals("F")) {
+                genderText = "Female";
+            } else if (viewModel.getGender().equals("P")) {
+                genderText = "Prefer not to say";
             }
+            etGender.setText(genderText);
         }
         
-        btnSelectDate.setOnClickListener(v -> showDatePicker());
-        
+        // make date field clickable to show date picker
+        tvSelectedDate.setOnClickListener(v -> showDatePicker());
+
         btnNext.setOnClickListener(v -> {
             if (validateInput()) {
                 // save data to viewmodel
                 viewModel.setBirthday(selectedDate);
                 
-                int selectedGenderId = rgGender.getCheckedRadioButtonId();
-                if (selectedGenderId == R.id.rb_male) {
+                // save gender
+                String selectedGender = etGender.getText().toString();
+                if (selectedGender.equals("Male")) {
                     viewModel.setGender("M");
-                } else if (selectedGenderId == R.id.rb_female) {
-                    viewModel.setGender("W");
+                } else if (selectedGender.equals("Female")) {
+                    viewModel.setGender("F");
+                } else if (selectedGender.equals("Prefer not to say")) {
+                    viewModel.setGender("P");
                 }
                 
                 navigationListener.onNextStep();
@@ -98,8 +106,8 @@ public class BirthdayStepFragment extends Fragment {
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 getContext(),
                 (view, selectedYear, selectedMonth, selectedDay) -> {
-                    // format: yyyy-mm-dd (to match web implementation)
-                    selectedDate = String.format("%04d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDay);
+                    // format: dd/mm/yyyy (to match the hint)
+                    selectedDate = String.format("%02d/%02d/%04d", selectedDay, selectedMonth + 1, selectedYear);
                     tvSelectedDate.setText(selectedDate);
                 },
                 year, month, day
@@ -122,16 +130,15 @@ public class BirthdayStepFragment extends Fragment {
             return false;
         }
         
-        int selectedGenderId = rgGender.getCheckedRadioButtonId();
-        if (selectedGenderId == -1) {
+        if (etGender.getText().toString().isEmpty()) {
             Toast.makeText(getContext(), "please select your gender", Toast.LENGTH_SHORT).show();
             return false;
         }
         
         // validate age (must be at least 13 years old)
         try {
-            String[] dateParts = selectedDate.split("-");
-            int birthYear = Integer.parseInt(dateParts[0]);
+            String[] dateParts = selectedDate.split("/");
+            int birthYear = Integer.parseInt(dateParts[2]);
             int currentYear = Calendar.getInstance().get(Calendar.YEAR);
             int age = currentYear - birthYear;
             
