@@ -11,4 +11,13 @@
     <string name="menu_trash">Trash</string>
     <string name="compose">Compose</string>
     <string name="add_label">Add Label</string>
+    <string name="sign_in">Sign in</string>
+    <string name="sign_in_subtitle">to continue to AP-Email</string>
+    <string name="email_address">Email Address</string>
+    <string name="password">Password</string>
+    <string name="create_account">Create Account</string>
+    <string name="invalid_email">Please enter a valid email address</string>
+    <string name="invalid_password">Password cannot be empty</string>
+    <string name="signin_failed">Wrong email or password</string>
+    <string name="signin_error">Something went wrong. Please try again.</string>
 </resources>

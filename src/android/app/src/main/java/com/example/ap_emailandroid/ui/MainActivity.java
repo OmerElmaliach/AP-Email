@@ -8,6 +8,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.ap_emailandroid.R;
+import com.example.ap_emailandroid.ui.signin.SignInActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,10 +19,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Button btn = findViewById(R.id.main_btn);
         btn.setOnClickListener(view -> {
-            Intent intent = new Intent(this, InboxActivity.class);
+            Intent intent = new Intent(this, SignInActivity.class);
             startActivity(intent);
         });
 
-        // Temporary setup until Signin is defined and working.
+        // Navigate to SignIn activity first for authentication
     }
 }
