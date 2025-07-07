@@ -27,10 +27,28 @@ public class InboxActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inbox);
 
+        // Handle user authentication data passed from SignInActivity
+        handleUserAuthentication();
+        
         setupToolbar();
         setupEmails();
     }
 
+    /**
+     * Handle user authentication data passed from SignInActivity
+     */
+    private void handleUserAuthentication() {
+        String userToken = getIntent().getStringExtra("user_token");
+        String userEmail = getIntent().getStringExtra("user_email");
+        
+        // Store authentication data for future API calls
+        // In real implementation, you would store this in SharedPreferences or similar
+        if (userToken != null && userEmail != null) {
+            // Mock storage - in real app this would be properly secured
+            // SharedPreferences prefs = getSharedPreferences("auth", MODE_PRIVATE);
+            // prefs.edit().putString("token", userToken).putString("email", userEmail).apply();
+        }
+    }
 
     /**
      * Loads up the default and user specific labels to the toolbar.
