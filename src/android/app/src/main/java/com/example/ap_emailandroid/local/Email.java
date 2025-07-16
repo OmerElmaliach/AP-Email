@@ -14,8 +14,6 @@ public class Email {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
-    @SerializedName("user_id")
-    public String user_id;
     @SerializedName("mail_id")
     public String mail_id;
 
@@ -38,8 +36,7 @@ public class Email {
     @TypeConverters(Converters.class)
     public List<String> label;
 
-    public Email(String user_id, String mail_id, String from, String to, String subject, String body, String date_sent, List<String> label) {
-        this.user_id = user_id;
+    public Email(String mail_id, String from, String to, String subject, String body, String date_sent, List<String> label) {
         this.mail_id = mail_id;
         this.from = from;
         this.to = to;
@@ -59,10 +56,6 @@ public class Email {
 
     public String getBody() {
         return body;
-    }
-
-    public String getUserId() {
-        return user_id;
     }
 
     public String getMailId() {
@@ -95,10 +88,6 @@ public class Email {
 
     public void setBody(String content) {
         this.body = content;
-    }
-
-    public void setUserId(String content) {
-        this.user_id = content;
     }
 
     public void setMailId(String content) {

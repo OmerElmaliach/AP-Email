@@ -6,8 +6,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.ap_emailandroid.R;
@@ -25,10 +28,16 @@ import com.example.ap_emailandroid.viewmodel.LabelViewModel;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class InboxActivity extends AppCompatActivity {
     String user_id = "1"; // TODO: DELETE
+    static final List<String> defLabels = List.of("Inbox", "Starred", "Sent", "Draft", "Spam", "Trash");
+    private EmailAdapter adapter;
+    private EmailViewModel emailViewModel;
+    private String currLabel = "Inbox";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +46,7 @@ public class InboxActivity extends AppCompatActivity {
 
         setupToolbar();
         setupEmails();
+        setupHeader();
     }
 
 
@@ -60,7 +70,6 @@ public class InboxActivity extends AppCompatActivity {
         LabelViewModel labelViewModel = new ViewModelProvider(this).get(LabelViewModel.class);
         NavigationView nav_view = findViewById(R.id.nav_view);
         Menu menu = nav_view.getMenu();
-
         labelViewModel.getLabels().observe(this, labels -> {
             int groupId = Menu.FIRST;
             menu.removeGroup(groupId);
@@ -70,22 +79,40 @@ public class InboxActivity extends AppCompatActivity {
             }
         });
 
+        // Add label button.
         View headerView = nav_view.getHeaderView(0);
         Button label_btn = headerView.findViewById(R.id.add_label_btn);
         label_btn.setOnClickListener(view -> {
+            View dialogView = getLayoutInflater().inflate(R.layout.dialog_create_label, null);
+            EditText input = dialogView.findViewById(R.id.label_input);
+
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Create Label");
-            final EditText input = new EditText(this);
-            input.setHint("Enter label name");
-            builder.setView(input);
+            builder.setView(dialogView);
 
             builder.setPositiveButton("Add", (dialog, which) -> {
                 String labelName = input.getText().toString().trim();
-                if (!labelName.isEmpty()) {
-                    labelViewModel.add(new Label(user_id, labelName));
-                } else {
-                    Toast.makeText(this, "Label must include a name", Toast.LENGTH_SHORT).show();
+                AtomicBoolean exists = new AtomicBoolean(false);
+                labelViewModel.getLabels().observe(this, labels -> {
+                    for (Label label : labels) {
+                        if (label.getName().equals(labelName)) {
+                            exists.set(true);
+                            break;
+                        }
+                    }
+                });
+
+                if (defLabels.contains(labelName)) {
+                    exists.set(true);
                 }
+
+                if (!exists.get()) {
+                    if (!labelName.isEmpty()) {
+                        labelViewModel.add(new Label(user_id, labelName));
+                    } else
+                        Toast.makeText(this, "Label must include a name", Toast.LENGTH_SHORT).show();
+                } else
+                    Toast.makeText(this, "Label already exists", Toast.LENGTH_SHORT).show();
             });
 
             builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
@@ -95,7 +122,11 @@ public class InboxActivity extends AppCompatActivity {
         // Define event listener for label click
         nav_view.setNavigationItemSelectedListener(item -> {
             String labelName = item.getTitle().toString();
-            // TODO: ADD ONCLICK LABEL EVENT
+            emailViewModel.searchEmailsInLabel(labelName, "").observe(this, emails -> {
+                adapter.setEmails(emails);
+                currLabel = labelName;
+            });
+            drawerLayout.closeDrawers();
             return true;
         });
     }
@@ -108,13 +139,41 @@ public class InboxActivity extends AppCompatActivity {
         RecyclerView emailList = findViewById(R.id.email_list);
         emailList.setLayoutManager(new LinearLayoutManager(this));
 
-        EmailAdapter adapter = new EmailAdapter(new ArrayList<>(), email -> {
+        adapter = new EmailAdapter(new ArrayList<>(), email -> {
             // TODO: ADD ONCLICK EVENT
         });
 
         emailList.setAdapter(adapter);
-        EmailViewModel viewModel = new ViewModelProvider(this).get(EmailViewModel.class);
-        viewModel.getEmails().observe(this, adapter::setEmails);
+        emailViewModel = new ViewModelProvider(this).get(EmailViewModel.class);
+        emailViewModel.searchEmailsInLabel(currLabel, "").observe(this, adapter::setEmails);
     }
 
+    /**
+     * Changes the SearchView so that it filters emails according to query.
+     */
+    public void setupHeader() {
+        SearchView searchView = findViewById(R.id.drawer_search);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                emailViewModel.searchEmailsInLabel(currLabel, query).observe(InboxActivity.this, adapter::setEmails);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newQuery) {
+                emailViewModel.searchEmailsInLabel(currLabel, newQuery).observe(InboxActivity.this, adapter::setEmails);
+                return true;
+            }
+        });
+
+        ImageButton mode_btn = findViewById(R.id.mode_btn);
+        mode_btn.setOnClickListener(view -> {
+            if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            }
+        });
+    }
 }

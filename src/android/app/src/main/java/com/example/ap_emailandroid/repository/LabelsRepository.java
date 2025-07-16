@@ -46,7 +46,6 @@ public class LabelsRepository {
             label.setId((int) id);
             labelListData.postValue(dao.index());
         }).start();
-
         api.create(label);
     }
 

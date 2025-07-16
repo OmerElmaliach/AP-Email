@@ -46,7 +46,6 @@ public class EmailsRepository {
             email.setId((int) id);
             emailListData.postValue(dao.index());
         }).start();
-
         api.create(email);
     }
 
