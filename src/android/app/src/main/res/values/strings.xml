@@ -12,4 +12,6 @@
     <string name="menu_trash">Trash</string>
     <string name="compose">Compose</string>
     <string name="add_label">Add Label</string>
+    <string name="enter_label_name">Enter label name</string>
+    <string name="theme_mode">Theme mode</string>
 </resources>

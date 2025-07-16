@@ -18,11 +18,19 @@ public class LabelViewModel extends ViewModel {
         repository.reload();
     }
 
-    public LiveData<List<Label>> getLabels() { return labels; }
+    public LiveData<List<Label>> getLabels() {
+        return labels;
+    }
 
-    public void add(Label label) { repository.add(label); }
+    public void add(Label label) {
+        repository.add(label);
+    }
 
-    public void delete(Label label) { repository.delete(label); }
+    public void delete(Label label) {
+        repository.delete(label);
+    }
 
-    public void reload() { repository.reload(); }
+    public void reload() {
+        repository.reload();
+    }
 }
