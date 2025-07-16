@@ -16,8 +16,6 @@ public class EmailViewModel extends ViewModel {
         repository = new EmailsRepository();
         emails = repository.getAll();
         repository.reload();
-
-
     }
 
     public LiveData<List<Email>> getEmails() { return emails; }

@@ -10,6 +10,8 @@ import java.util.List;
 
 @Dao
 public interface EmailDao {
+    @Insert
+    long insert(Email email);
 
     @Query("SELECT * FROM email")
     List<Email> index();
