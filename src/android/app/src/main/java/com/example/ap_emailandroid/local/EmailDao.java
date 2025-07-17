@@ -16,8 +16,8 @@ public interface EmailDao {
     @Query("SELECT * FROM email")
     List<Email> index();
 
-    @Query("SELECT * FROM email WHERE id = :id")
-    Email get(int id);
+    @Query("SELECT * FROM email WHERE emailJaId = :emailJaId")
+    Email get(int emailJaId);
 
     @Insert
     void insert(Email... emails);

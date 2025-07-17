@@ -13,6 +13,8 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.ap_emailandroid.AppSession;
 import com.example.ap_emailandroid.R;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
@@ -33,7 +35,6 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class InboxActivity extends AppCompatActivity {
-    String user_id = "1"; // TODO: DELETE
     static final List<String> defLabels = List.of("Inbox", "Starred", "Sent", "Draft", "Spam", "Trash");
     private EmailAdapter adapter;
     private EmailViewModel emailViewModel;
@@ -43,6 +44,7 @@ public class InboxActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inbox);
+        AppSession.userId = "1"; // TODO: INTEGRATE WITH GABI
 
         setupToolbar();
         setupEmails();
@@ -108,7 +110,7 @@ public class InboxActivity extends AppCompatActivity {
 
                 if (!exists.get()) {
                     if (!labelName.isEmpty()) {
-                        labelViewModel.add(new Label(user_id, labelName));
+                        labelViewModel.add(new Label(AppSession.userId, labelName));
                     } else
                         Toast.makeText(this, "Label must include a name", Toast.LENGTH_SHORT).show();
                 } else

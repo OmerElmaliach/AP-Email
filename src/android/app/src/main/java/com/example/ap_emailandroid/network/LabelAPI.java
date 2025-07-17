@@ -21,10 +21,12 @@ import java.util.List;
 public class LabelAPI {
     private MutableLiveData<List<Label>> labelListData;
     private LabelDao dao;
+    private final String userId;
     Retrofit retrofit;
     WebServiceAPI webServiceAPI;
 
-    public LabelAPI(MutableLiveData<List<Label>> labelListData, LabelDao dao) {
+    public LabelAPI(MutableLiveData<List<Label>> labelListData, LabelDao dao, String userId) {
+        this.userId = userId;
         this.labelListData = labelListData;
         this.dao = dao;
 
@@ -35,7 +37,7 @@ public class LabelAPI {
     }
 
     public void get() {
-        Call<List<Label>> call = webServiceAPI.getLabels();
+        Call<List<Label>> call = webServiceAPI.getLabels(userId);
         call.enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<List<Label>> call, @NonNull Response<List<Label>> response) {
@@ -78,7 +80,7 @@ public class LabelAPI {
     }
 
     public void delete(Label label) {
-        Call<Void> call = webServiceAPI.deleteLabel(label.getId());
+        Call<Void> call = webServiceAPI.deleteLabel(label.getLabelJaId(), userId);
         call.enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {

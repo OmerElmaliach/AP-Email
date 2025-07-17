@@ -9,7 +9,7 @@ import com.example.ap_emailandroid.local.EmailDao;
 import com.example.ap_emailandroid.local.Label;
 import com.example.ap_emailandroid.local.LabelDao;
 
-@Database(entities = {Email.class, Label.class}, version = 5)
+@Database(entities = {Email.class, Label.class}, version = 10)
 @TypeConverters({Converters.class})
 public abstract class AppDB extends RoomDatabase {
     public abstract EmailDao emailDao();

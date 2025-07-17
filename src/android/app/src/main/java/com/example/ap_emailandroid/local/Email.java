@@ -1,5 +1,6 @@
 package com.example.ap_emailandroid.local;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
@@ -12,7 +13,11 @@ import java.util.List;
 public class Email {
 
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    private int emailJaId;
+
+    @Ignore
+    @SerializedName("id")
+    public String id;
 
     @SerializedName("mail_id")
     public String mail_id;
@@ -46,8 +51,8 @@ public class Email {
         this.label = label;
     }
 
-    public int getId() {
-        return id;
+    public int getEmailJaId() {
+        return emailJaId;
     }
 
     public String getSubject() {
@@ -78,8 +83,8 @@ public class Email {
         return label;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setEmailJaId(int emailJaId) {
+        this.emailJaId = emailJaId;
     }
 
     public void setSubject(String content) {
