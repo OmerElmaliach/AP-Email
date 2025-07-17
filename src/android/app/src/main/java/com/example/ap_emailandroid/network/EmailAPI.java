@@ -20,10 +20,12 @@ import java.util.List;
 public class EmailAPI {
     private MutableLiveData<List<Email>> emailListData;
     private EmailDao dao;
+    private final String userId;
     Retrofit retrofit;
     WebServiceAPI webServiceAPI;
 
-    public EmailAPI(MutableLiveData<List<Email>> emailListData, EmailDao dao) {
+    public EmailAPI(MutableLiveData<List<Email>> emailListData, EmailDao dao, String userId) {
+        this.userId = userId;
         this.emailListData = emailListData;
         this.dao = dao;
 
@@ -34,7 +36,7 @@ public class EmailAPI {
     }
 
     public void get() {
-        Call<List<Email>> call = webServiceAPI.getEmails();
+        Call<List<Email>> call = webServiceAPI.getEmails(userId);
         call.enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<List<Email>> call, @NonNull Response<List<Email>> response) {
@@ -77,7 +79,7 @@ public class EmailAPI {
     }
 
     public void delete(Email email) {
-        Call<Void> call = webServiceAPI.deleteEmail(email.getId());
+        Call<Void> call = webServiceAPI.deleteEmail(email.getEmailJaId(), userId);
         call.enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {

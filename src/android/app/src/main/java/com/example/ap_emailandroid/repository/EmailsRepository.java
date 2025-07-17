@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.ap_emailandroid.AppController;
+import com.example.ap_emailandroid.AppSession;
 import com.example.ap_emailandroid.db.LocalDatabase;
 import com.example.ap_emailandroid.local.Email;
 import com.example.ap_emailandroid.local.EmailDao;
@@ -20,7 +21,7 @@ public class EmailsRepository {
     public EmailsRepository() {
         dao = LocalDatabase.getInstance(AppController.context).emailDao();
         emailListData = new EmailListData();
-        api = new EmailAPI(emailListData, dao);
+        api = new EmailAPI(emailListData, dao, AppSession.userId);
     }
 
     class EmailListData extends MutableLiveData<List<Email>> {
@@ -43,7 +44,7 @@ public class EmailsRepository {
     public void add(Email email) {
         new Thread(() -> {
             long id = dao.insert(email);
-            email.setId((int) id);
+            email.setEmailJaId((int) id);
             emailListData.postValue(dao.index());
         }).start();
         api.create(email);

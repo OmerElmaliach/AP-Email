@@ -1,14 +1,18 @@
 package com.example.ap_emailandroid.local;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import com.google.gson.annotations.SerializedName;
-import java.util.List;
 
 @Entity
 public class Label {
 
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    private int labelJaId;
+
+    @Ignore
+    @SerializedName("id")
+    public String id;
 
     @SerializedName("userId")
     public String user_id;
@@ -21,20 +25,12 @@ public class Label {
         this.name = name;
     }
 
-    public int getId() {
-        return id;
-    }
-
     public String getUserId() {
         return user_id;
     }
 
     public String getName() {
         return name;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public void setUserId(String content) {
@@ -44,4 +40,7 @@ public class Label {
     public void setName(String content) {
         this.name = content;
     }
+
+    public int getLabelJaId() { return labelJaId; }
+    public void setLabelJaId(int labelJaId) { this.labelJaId = labelJaId; }
 }

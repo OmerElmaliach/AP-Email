@@ -9,6 +9,7 @@ import retrofit2.http.POST;
 import retrofit2.http.DELETE;
 import retrofit2.http.Body;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 import java.util.List;
 
@@ -16,21 +17,21 @@ import java.util.List;
 public interface WebServiceAPI {
     // Emails
     @GET("/emails")
-    Call<List<Email>> getEmails();
+    Call<List<Email>> getEmails(@Query("userId") String userId);
 
     @POST("/emails")
     Call<Void> createEmail(@Body Email email);
 
     @DELETE("/emails/{id}")
-    Call<Void> deleteEmail(@Path("id") int id);
+    Call<Void> deleteEmail(@Path("id") int id, @Query("userId") String userId);
 
-    // Labels
     @GET("/labels")
-    Call<List<Label>> getLabels();
+    Call<List<Label>> getLabels(@Query("userId") String userId);
 
     @POST("/labels")
     Call<Void> createLabel(@Body Label label);
 
     @DELETE("/labels/{id}")
-    Call<Void> deleteLabel(@Path("id") int id);
+    Call<Void> deleteLabel(@Path("id") int id, @Query("userId") String userId);
+
 }

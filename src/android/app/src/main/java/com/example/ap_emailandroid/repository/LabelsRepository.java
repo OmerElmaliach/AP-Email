@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.ap_emailandroid.AppController;
+import com.example.ap_emailandroid.AppSession;
 import com.example.ap_emailandroid.db.LocalDatabase;
 import com.example.ap_emailandroid.local.Label;
 import com.example.ap_emailandroid.local.LabelDao;
@@ -20,7 +21,7 @@ public class LabelsRepository {
     public LabelsRepository() {
         dao = LocalDatabase.getInstance(AppController.context).labelDao();
         labelListData = new LabelListData();
-        api = new LabelAPI(labelListData, dao);
+        api = new LabelAPI(labelListData, dao, AppSession.userId);
     }
 
     class LabelListData extends MutableLiveData<List<Label>> {
@@ -43,7 +44,7 @@ public class LabelsRepository {
     public void add(Label label) {
         new Thread(() -> {
             long id = dao.insert(label);
-            label.setId((int) id);
+            label.setLabelJaId((int) id);
             labelListData.postValue(dao.index());
         }).start();
         api.create(label);
