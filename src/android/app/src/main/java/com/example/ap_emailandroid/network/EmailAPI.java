@@ -79,7 +79,7 @@ public class EmailAPI {
     }
 
     public void delete(Email email) {
-        Call<Void> call = webServiceAPI.deleteEmail(email.getEmailJaId(), userId);
+        Call<Void> call = webServiceAPI.deleteEmail(email.getMailId(), userId);
         call.enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
