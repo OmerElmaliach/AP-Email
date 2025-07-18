@@ -16,6 +16,7 @@ import retrofit2.Callback;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class EmailAPI {
     private MutableLiveData<List<Email>> emailListData;
@@ -39,9 +40,9 @@ public class EmailAPI {
         Call<List<Email>> call = webServiceAPI.getEmails(userId);
         call.enqueue(new Callback<>() {
             @Override
-            public void onResponse(@NonNull Call<List<Email>> call, @NonNull Response<List<Email>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    List<Email> fromSer = response.body();
+            public void onResponse(@NonNull Call<List<Email>> call, @NonNull Response<List<Email>> res) {
+                if (res.isSuccessful() && res.body() != null) {
+                    List<Email> fromSer = res.body();
 
                     new Thread(() -> {
                         List<Email> current = dao.index();
@@ -59,20 +60,23 @@ public class EmailAPI {
         });
     }
 
-    public void create(Email email) {
-        Call<Void> call = webServiceAPI.createEmail(email);
+    public void create(Email email, Consumer<Email> onSuccess) {
+        Call<Email> call = webServiceAPI.createEmail(email);
         call.enqueue(new Callback<>() {
             @Override
-            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
-                if (response.isSuccessful()) {
-                    Log.i("EmailAPI", "Email created: " + response.body());
+            public void onResponse(@NonNull Call<Email> call, @NonNull Response<Email> res) {
+                if (res.isSuccessful() && res.body() != null) {
+                    Email createdEmail = res.body();
+                    email.setMailId(createdEmail.getMailId());
+                    Log.i("EmailAPI", "Created with ID: " + createdEmail.getMailId());
+                    onSuccess.accept(createdEmail);
                 } else {
-                    Log.e("EmailAPI", "Failed to create email: " + response.code());
+                    Log.e("EmailAPI", "Create failed: " + res.code());
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<Email> call, @NonNull Throwable t) {
                 Log.e("EmailAPI", "Create request failed", t);
             }
         });
@@ -82,11 +86,11 @@ public class EmailAPI {
         Call<Void> call = webServiceAPI.deleteEmail(email.getMailId(), userId);
         call.enqueue(new Callback<>() {
             @Override
-            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
-                if (response.isSuccessful()) {
-                    Log.e("EmailAPI", "Email deleted successfully: " + response.code());
+            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> res) {
+                if (res.isSuccessful()) {
+                    Log.e("EmailAPI", "Email deleted successfully: " + res.code());
                 } else {
-                    Log.e("EmailAPI", "Deletion failed: " + response.code());
+                    Log.e("EmailAPI", "Deletion failed: " + res.code());
                 }
             }
 
