@@ -10,7 +10,6 @@ public class Label {
     @PrimaryKey(autoGenerate = true)
     private int labelJaId;
 
-    @Ignore
     @SerializedName("id")
     public String id;
 

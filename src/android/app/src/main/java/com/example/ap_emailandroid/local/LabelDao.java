@@ -16,8 +16,8 @@ public interface LabelDao {
     @Query("SELECT * FROM label")
     List<Label> index();
 
-    @Query("SELECT * FROM label WHERE labelJaId = :labelJaId")
-    Label get(int labelJaId);
+    @Query("SELECT * FROM label WHERE id = :id")
+    Label get(String id);
 
     @Insert
     void insert(Label... labels);
