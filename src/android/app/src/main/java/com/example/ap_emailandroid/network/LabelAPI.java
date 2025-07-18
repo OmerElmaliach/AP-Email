@@ -80,7 +80,7 @@ public class LabelAPI {
     }
 
     public void delete(Label label) {
-        Call<Void> call = webServiceAPI.deleteLabel(label.getLabelJaId(), userId);
+        Call<Void> call = webServiceAPI.deleteLabel(label.getId(), userId);
         call.enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {

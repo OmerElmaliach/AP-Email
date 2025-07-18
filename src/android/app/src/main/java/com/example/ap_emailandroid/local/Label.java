@@ -42,4 +42,8 @@ public class Label {
 
     public int getLabelJaId() { return labelJaId; }
     public void setLabelJaId(int labelJaId) { this.labelJaId = labelJaId; }
+
+    public String getId() { return id; }
+
+    public void setId(String id) { this.id = id; }
 }
