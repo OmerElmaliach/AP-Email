@@ -97,10 +97,8 @@ const getUser = async (req, res) => {
     const { firstName, lastName, email, gender, picture, birthday } = user
     // taskes first and last and joins trings to one with space. if one is missing its  ok
     const fullName = [firstName, lastName].filter(Boolean).join(' ') 
-    //get rid of "time" from birthday 
-    const formattedBirthday = birthday ? birthday.toISOString().split('T')[0] : null
-    
-    return res.status(200).json({ fullName, email, gender, picture, birthday: formattedBirthday })
+        
+    return res.status(200).json({ fullName, email, gender, picture, birthday })
 }
 
 /* for DEBUGGING
