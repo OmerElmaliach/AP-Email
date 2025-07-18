@@ -42,12 +42,12 @@ public class LabelsRepository {
     }
 
     public void add(Label label) {
-        new Thread(() -> {
-            long id = dao.insert(label);
-            label.setLabelJaId((int) id);
-            labelListData.postValue(dao.index());
-        }).start();
-        api.create(label);
+        api.create(label, created -> {
+            new Thread(() -> {
+                dao.insert(created);
+                labelListData.postValue(dao.index());
+            }).start();
+        });
     }
 
     public void delete(Label label) {

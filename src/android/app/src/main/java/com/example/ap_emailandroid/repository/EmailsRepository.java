@@ -42,12 +42,12 @@ public class EmailsRepository {
     }
 
     public void add(Email email) {
-        new Thread(() -> {
-            long id = dao.insert(email);
-            email.setEmailJaId((int) id);
-            emailListData.postValue(dao.index());
-        }).start();
-        api.create(email);
+        api.create(email, created -> {
+            new Thread(() -> {
+                dao.insert(created);
+                emailListData.postValue(dao.index());
+            }).start();
+        });
     }
 
     public void delete(Email email) {

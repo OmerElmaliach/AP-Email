@@ -1,5 +1,6 @@
 package com.example.ap_emailandroid.ui;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -78,6 +79,21 @@ public class InboxActivity extends AppCompatActivity {
             for (Label label : labels) {
                 MenuItem item = menu.add(groupId, View.generateViewId(), Menu.NONE, label.name);
                 item.setIcon(R.drawable.label_ic);
+
+                @SuppressLint("InflateParams") View actionView = getLayoutInflater()
+                        .inflate(R.layout.menu_label_item, null);
+                ImageButton delete_btn = actionView.findViewById(R.id.delete_button);
+                delete_btn.setOnClickListener(v -> {
+                    new AlertDialog.Builder(this)
+                            .setTitle("Delete Label")
+                            .setMessage("Are you sure you want to delete '" + label.name + "'?")
+                            .setPositiveButton("Yes", (dialog,
+                                                       which) -> labelViewModel.delete(label))
+                            .setNegativeButton("Cancel", null)
+                            .show();
+                });
+
+                item.setActionView(actionView);
             }
         });
 
@@ -123,7 +139,7 @@ public class InboxActivity extends AppCompatActivity {
 
         // Define event listener for label click
         nav_view.setNavigationItemSelectedListener(item -> {
-            String labelName = item.getTitle().toString();
+            String labelName = Objects.requireNonNull(item.getTitle()).toString();
             emailViewModel.searchEmailsInLabel(labelName, "").observe(this, emails -> {
                 adapter.setEmails(emails);
                 currLabel = labelName;

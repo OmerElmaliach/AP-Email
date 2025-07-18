@@ -20,7 +20,7 @@ public interface WebServiceAPI {
     Call<List<Email>> getEmails(@Query("userId") String userId);
 
     @POST("/emails")
-    Call<Void> createEmail(@Body Email email);
+    Call<Email> createEmail(@Body Email email);
 
     @DELETE("/emails/{id}")
     Call<Void> deleteEmail(@Path("id") String mail_id, @Query("userId") String userId);
@@ -29,7 +29,7 @@ public interface WebServiceAPI {
     Call<List<Label>> getLabels(@Query("userId") String userId);
 
     @POST("/labels")
-    Call<Void> createLabel(@Body Label label);
+    Call<Label> createLabel(@Body Label label);
 
     @DELETE("/labels/{id}")
     Call<Void> deleteLabel(@Path("id") String id, @Query("userId") String userId);

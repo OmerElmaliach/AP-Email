@@ -17,6 +17,7 @@ import retrofit2.Callback;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class LabelAPI {
     private MutableLiveData<List<Label>> labelListData;
@@ -40,9 +41,9 @@ public class LabelAPI {
         Call<List<Label>> call = webServiceAPI.getLabels(userId);
         call.enqueue(new Callback<>() {
             @Override
-            public void onResponse(@NonNull Call<List<Label>> call, @NonNull Response<List<Label>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    List<Label> fromSer = response.body();
+            public void onResponse(@NonNull Call<List<Label>> call, @NonNull Response<List<Label>> res) {
+                if (res.isSuccessful() && res.body() != null) {
+                    List<Label> fromSer = res.body();
 
                     new Thread(() -> {
                         List<Label> current = dao.index();
@@ -60,20 +61,23 @@ public class LabelAPI {
         });
     }
 
-    public void create(Label label) {
-        Call<Void> call = webServiceAPI.createLabel(label);
+    public void create(Label label, Consumer<Label> onSuccess) {
+        Call<Label> call = webServiceAPI.createLabel(label);
         call.enqueue(new Callback<>() {
             @Override
-            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
-                if (response.isSuccessful()) {
-                    Log.i("LabelAPI", "Label created: " + response.body());
+            public void onResponse(@NonNull Call<Label> call, @NonNull Response<Label> res) {
+                if (res.isSuccessful() && res.body() != null) {
+                    Label createdLabel = res.body();
+                    label.setId(createdLabel.getId());
+                    Log.i("LabelAPI", "Label created: " + createdLabel.getId());
+                    onSuccess.accept(createdLabel);
                 } else {
-                    Log.e("LabelAPI", "Failed to create label: " + response.code());
+                    Log.e("LabelAPI", "Failed to create label: " + res.code());
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<Label> call, @NonNull Throwable t) {
                 Log.e("LabelAPI", "Create request failed", t);
             }
         });
@@ -83,11 +87,11 @@ public class LabelAPI {
         Call<Void> call = webServiceAPI.deleteLabel(label.getId(), userId);
         call.enqueue(new Callback<>() {
             @Override
-            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
-                if (response.isSuccessful()) {
-                    Log.e("LabelAPI", "Label deleted successfully: " + response.code());
+            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> res) {
+                if (res.isSuccessful()) {
+                    Log.e("LabelAPI", "Label deleted successfully: " + res.code());
                 } else {
-                    Log.e("LabelAPI", "Deletion failed: " + response.code());
+                    Log.e("LabelAPI", "Deletion failed: " + res.code());
                 }
             }
 
