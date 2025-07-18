@@ -73,6 +73,9 @@ public class BirthdayStepFragment extends Fragment {
         // make date field clickable to show date picker
         tvSelectedDate.setOnClickListener(v -> showDatePicker());
 
+        // Ensure dropdown appears when the field is clicked
+        etGender.setOnClickListener(v -> etGender.showDropDown());
+
         btnNext.setOnClickListener(v -> {
             if (validateInput()) {
                 // save data to viewmodel

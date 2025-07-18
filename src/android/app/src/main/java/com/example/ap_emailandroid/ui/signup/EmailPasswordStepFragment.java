@@ -77,7 +77,7 @@ public class EmailPasswordStepFragment extends Fragment {
         btnBack.setOnClickListener(v -> navigationListener.onPreviousStep());
         
         // observe signup process
-        viewModel.getIsLoading().observe(this, isLoading -> {
+        viewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
             progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
             btnCreateAccount.setEnabled(!isLoading);
         });
