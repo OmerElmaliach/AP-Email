@@ -1,10 +1,12 @@
-package com.example.ap_emailandroid.ui.email;
+package com.example.ap_emailandroid.ui.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.example.ap_emailandroid.R;
+import com.example.ap_emailandroid.local.Email;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
@@ -15,12 +17,17 @@ public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.EmailViewHol
         void onEmailClick(Email email);
     }
 
-    private final List<Email> emails;
-    private final OnEmailClickListener listener;
+    private List<Email> emails;
+    private OnEmailClickListener listener;
 
     public EmailAdapter(List<Email> emails, OnEmailClickListener listener) {
         this.emails = emails;
         this.listener = listener;
+    }
+
+    public void setEmails(List<Email> newEmails) {
+        this.emails = newEmails;
+        notifyDataSetChanged();
     }
 
     @NonNull
