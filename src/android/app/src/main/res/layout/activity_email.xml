@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="start"
+            android:layout_margin="8dp">
+
+            <ImageButton
+                android:id="@+id/btn_back"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_arrow_back"
+                android:contentDescription="@string/go_back"
+                android:layout_marginEnd="4dp"
+                app:tint="?attr/colorControlNormal" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#CCCCCC"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp" />
+
+            <ImageButton
+                android:id="@+id/btn_spam"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_spam"
+                android:contentDescription="@string/report_spam"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                app:tint="?attr/colorControlNormal" />
+
+            <ImageButton
+                android:id="@+id/btn_starred"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_starred"
+                android:contentDescription="@string/star"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                app:tint="?attr/colorControlNormal" />
+
+            <ImageButton
+                android:id="@+id/btn_trash"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_label_del"
+                android:contentDescription="@string/delete_email"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                app:tint="?attr/colorControlNormal" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#CCCCCC"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:id="@+id/email_subject"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Subject"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/labels"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Labels: Work"
+            android:layout_marginBottom="4dp"/>
+
+        <TextView
+            android:id="@+id/email_from"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="From: gabi@apemail.com"
+            android:layout_marginBottom="4dp"/>
+
+        <TextView
+            android:id="@+id/email_to"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="To: omer@apemail.com"
+            android:layout_marginBottom="4dp"/>
+
+        <TextView
+            android:id="@+id/email_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Date: 20/7/2025"
+            android:layout_marginBottom="16dp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#CCCCCC"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:id="@+id/email_body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Example"
+            android:textSize="16sp"/>
+
+    </LinearLayout>
+</ScrollView>

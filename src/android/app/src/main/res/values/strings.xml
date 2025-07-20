@@ -25,4 +25,8 @@
     <string name="theme_mode">Theme mode</string>
     <string name="profile_picture">Profile picture</string>
     <string name="delete_label">Delete label</string>
+    <string name="go_back">Go Back</string>
+    <string name="report_spam">Report Spam</string>
+    <string name="star">Star</string>
+    <string name="delete_email">Delete Email</string>
 </resources>
