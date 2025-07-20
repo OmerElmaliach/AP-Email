@@ -217,5 +217,6 @@ public class SignInActivity extends AppCompatActivity {
         errorMessage.setVisibility(View.GONE);
         emailInputLayout.setError(null);
         passwordInputLayout.setError(null);
+
     }
 }
