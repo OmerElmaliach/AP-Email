@@ -15,6 +15,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="start"
+            android:paddingTop="8dp"
             android:layout_margin="8dp">
 
             <ImageButton
@@ -57,6 +58,17 @@
                 app:tint="?attr/colorControlNormal" />
 
             <ImageButton
+                android:id="@+id/btn_add_labels"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_add"
+                android:contentDescription="@string/add_labels_to_email"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                app:tint="?attr/colorControlNormal" />
+
+            <ImageButton
                 android:id="@+id/btn_trash"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
@@ -78,7 +90,6 @@
             android:id="@+id/email_subject"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Subject"
             android:textSize="20sp"
             android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
@@ -87,28 +98,28 @@
             android:id="@+id/labels"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Labels: Work"
+            android:text="@string/labels_emailview"
             android:layout_marginBottom="4dp"/>
 
         <TextView
             android:id="@+id/email_from"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="From: gabi@apemail.com"
+            android:text="@string/from_emailview"
             android:layout_marginBottom="4dp"/>
 
         <TextView
             android:id="@+id/email_to"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="To: omer@apemail.com"
+            android:text="@string/to_emailview"
             android:layout_marginBottom="4dp"/>
 
         <TextView
             android:id="@+id/email_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Date: 20/7/2025"
+            android:text="@string/date_emailview"
             android:layout_marginBottom="16dp"/>
 
         <View
@@ -121,7 +132,6 @@
             android:id="@+id/email_body"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Example"
             android:textSize="16sp"/>
 
     </LinearLayout>

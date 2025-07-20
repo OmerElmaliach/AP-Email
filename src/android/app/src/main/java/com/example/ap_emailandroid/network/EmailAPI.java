@@ -82,6 +82,27 @@ public class EmailAPI {
         });
     }
 
+    public void update(Email email, Consumer<Email> onSuccess) {
+        Call<Email> call = webServiceAPI.updateEmail(email.getMailId(), email, userId);
+        call.enqueue(new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<Email> call, @NonNull Response<Email> res) {
+                if (res.isSuccessful() && res.body() != null) {
+                    Email updatedEmail = res.body();
+                    Log.i("EmailAPI", "Updated Email ID: " + updatedEmail.getMailId());
+                    onSuccess.accept(updatedEmail);
+                } else {
+                    Log.e("EmailAPI", "Update failed: " + res.code());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Email> call, @NonNull Throwable t) {
+                Log.e("EmailAPI", "Update request failed", t);
+            }
+        });
+    }
+
     public void delete(Email email) {
         Call<Void> call = webServiceAPI.deleteEmail(email.getMailId(), userId);
         call.enqueue(new Callback<>() {
