@@ -34,4 +34,5 @@
     <string name="to_emailview">To:</string>
     <string name="date_emailview">Date:</string>
     <string name="add_labels_to_email">Add labels to email</string>
+    <string name="remove_label_from_email">Remove label from email</string>
 </resources>

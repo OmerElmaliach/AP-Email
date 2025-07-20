@@ -69,6 +69,17 @@
                 app:tint="?attr/colorControlNormal" />
 
             <ImageButton
+                android:id="@+id/btn_remove_labels"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_remove_label"
+                android:contentDescription="@string/remove_label_from_email"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                app:tint="?attr/colorControlNormal" />
+
+            <ImageButton
                 android:id="@+id/btn_trash"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
