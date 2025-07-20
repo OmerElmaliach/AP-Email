@@ -39,13 +39,13 @@
 
                 <ImageButton
                     android:id="@+id/mode_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:contentDescription="@string/theme_mode"
                     android:src="@drawable/ic_theme_mode"
-                    android:paddingRight="4dp"
-                    android:paddingLeft="4dp"
+                    android:scaleType="center"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="@string/add_label"
+                    android:padding="12dp"
                     android:layout_marginStart="8dp"/>
             </LinearLayout>
 
