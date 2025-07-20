@@ -1,3 +1,19 @@
 <resources>
-    <string name="app_name">AP-Email Android</string>
+    <string name="app_name">AP-Email</string>
+    <string name="BaseUrl">http://10.0.2.2:9000</string>
+    <string name="navigation_drawer_open">Open toolbar</string>
+    <string name="navigation_drawer_close">Close toolbar</string>
+    <string name="inbox">Inbox</string>
+    <string name="menu_inbox">Inbox</string>
+    <string name="menu_starred">Starred</string>
+    <string name="menu_draft">Draft</string>
+    <string name="menu_spam">Spam</string>
+    <string name="menu_sent">Sent</string>
+    <string name="menu_trash">Trash</string>
+    <string name="compose">Compose</string>
+    <string name="add_label">Add Label</string>
+    <string name="enter_label_name">Enter label name</string>
+    <string name="theme_mode">Theme mode</string>
+    <string name="profile_picture">Profile picture</string>
+    <string name="delete_label">Delete label</string>
 </resources>
