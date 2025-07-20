@@ -29,4 +29,9 @@
     <string name="report_spam">Report Spam</string>
     <string name="star">Star</string>
     <string name="delete_email">Delete Email</string>
+    <string name="labels_emailview">Labels:</string>
+    <string name="from_emailview">From:</string>
+    <string name="to_emailview">To:</string>
+    <string name="date_emailview">Date:</string>
+    <string name="add_labels_to_email">Add labels to email</string>
 </resources>

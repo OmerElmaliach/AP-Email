@@ -179,7 +179,7 @@ public class InboxActivity extends AppCompatActivity {
 
         adapter = new EmailAdapter(new ArrayList<>(), email -> {
             Intent intent = new Intent(this, EmailActivity.class);
-
+            intent.putExtra("email", email);
             startActivity(intent);
         });
 

@@ -5,6 +5,7 @@ import com.example.ap_emailandroid.local.Label;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.DELETE;
 import retrofit2.http.Body;
@@ -21,6 +22,9 @@ public interface WebServiceAPI {
 
     @POST("/emails")
     Call<Email> createEmail(@Body Email email);
+
+    @PATCH("/emails/{id}")
+    Call<Email> updateEmail(@Path("id") String mail_id, @Body Email email, @Query("userId") String userId);
 
     @DELETE("/emails/{id}")
     Call<Void> deleteEmail(@Path("id") String mail_id, @Query("userId") String userId);
