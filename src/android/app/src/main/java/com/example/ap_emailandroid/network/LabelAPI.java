@@ -10,6 +10,7 @@ import com.example.ap_emailandroid.R;
 import com.example.ap_emailandroid.local.Label;
 import com.example.ap_emailandroid.local.LabelDao;
 
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -31,14 +32,20 @@ public class LabelAPI {
         this.labelListData = labelListData;
         this.dao = dao;
 
-        retrofit = new Retrofit.Builder().baseUrl(AppController.context.getString(R.string.BaseUrl))
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new AuthInterceptor(userId))
+                .build();
+
+        retrofit = new Retrofit.Builder()
+                .baseUrl(AppController.context.getString(R.string.BaseUrl))
+                .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         webServiceAPI = retrofit.create(WebServiceAPI.class);
     }
 
     public void get() {
-        Call<List<Label>> call = webServiceAPI.getLabels(userId);
+        Call<List<Label>> call = webServiceAPI.getLabels();
         call.enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<List<Label>> call, @NonNull Response<List<Label>> res) {
@@ -84,7 +91,7 @@ public class LabelAPI {
     }
 
     public void delete(Label label) {
-        Call<Void> call = webServiceAPI.deleteLabel(label.getId(), userId);
+        Call<Void> call = webServiceAPI.deleteLabel(label.getId());
         call.enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> res) {
