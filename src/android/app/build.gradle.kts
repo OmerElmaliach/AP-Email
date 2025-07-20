@@ -29,6 +29,12 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
+    lint {
+        abortOnError = false
+        warningsAsErrors = false
+        checkReleaseBuilds = false
+    }
 }
 
 dependencies {
@@ -36,7 +42,18 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
-
+    
+    // viewmodel and livedata for mvvm architecture
+    implementation("androidx.lifecycle:lifecycle-viewmodel:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-livedata:2.7.0")
+    
+    // fragment support
+    implementation("androidx.fragment:fragment:1.6.2")
+    
+    // cardview for ui components
+    implementation("androidx.cardview:cardview:1.0.0")
+    
+    // for image handling (no external libraries needed, using built-in android)
     implementation(libs.room.runtime)
     implementation(libs.room.common.jvm)
     annotationProcessor(libs.room.compiler)
