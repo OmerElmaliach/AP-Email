@@ -1,6 +1,7 @@
 package com.example.ap_emailandroid.ui;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ap_emailandroid.local.Label;
 import com.example.ap_emailandroid.ui.adapters.EmailAdapter;
+import com.example.ap_emailandroid.ui.signin.SignInActivity;
 import com.example.ap_emailandroid.viewmodel.EmailViewModel;
 import com.example.ap_emailandroid.viewmodel.LabelViewModel;
 import com.google.android.material.navigation.NavigationView;
@@ -176,7 +178,9 @@ public class InboxActivity extends AppCompatActivity {
         emailList.setLayoutManager(new LinearLayoutManager(this));
 
         adapter = new EmailAdapter(new ArrayList<>(), email -> {
-            // TODO: ADD ONCLICK EVENT
+            Intent intent = new Intent(this, EmailActivity.class);
+
+            startActivity(intent);
         });
 
         emailList.setAdapter(adapter);
