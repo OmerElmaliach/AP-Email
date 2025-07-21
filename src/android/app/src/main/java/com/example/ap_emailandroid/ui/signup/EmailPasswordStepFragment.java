@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
 import com.example.ap_emailandroid.R;
 import com.example.ap_emailandroid.viewmodel.SignUpViewModel;
 
@@ -62,10 +63,6 @@ public class EmailPasswordStepFragment extends Fragment {
         
         btnCreateAccount.setOnClickListener(v -> {
             if (validateInput()) {
-                // save data to viewmodel
-                viewModel.setEmail(etEmail.getText().toString().trim());
-                viewModel.setPassword(etPassword.getText().toString());
-                
                 // show loading
                 progressBar.setVisibility(View.VISIBLE);
                 btnCreateAccount.setEnabled(false);
@@ -77,7 +74,7 @@ public class EmailPasswordStepFragment extends Fragment {
         btnBack.setOnClickListener(v -> navigationListener.onPreviousStep());
         
         // observe signup process
-        viewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
+        viewModel.getIsLoading().observe((LifecycleOwner) this, isLoading -> {
             progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
             btnCreateAccount.setEnabled(!isLoading);
         });
@@ -117,6 +114,10 @@ public class EmailPasswordStepFragment extends Fragment {
             etConfirmPassword.requestFocus();
             return false;
         }
+        
+        // Save data to viewmodel and proceed
+        viewModel.setEmail(email);
+        viewModel.setPassword(password);
         
         return true;
     }
