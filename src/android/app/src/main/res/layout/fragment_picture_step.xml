@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:text="Upload your picture"
             android:textSize="18sp"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:layout_marginBottom="16dp" />
 
         <!-- profile picture preview -->
@@ -45,7 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:text="Choose Image"
-            android:textColor="@android:color/black"
+            android:textColor="@android:color/white"
             android:background="@android:color/darker_gray"
             android:layout_marginBottom="32dp" />
 
