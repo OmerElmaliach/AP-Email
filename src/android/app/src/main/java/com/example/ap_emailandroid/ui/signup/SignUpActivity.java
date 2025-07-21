@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.ap_emailandroid.R;
+import com.example.ap_emailandroid.ui.InboxActivity;
 import com.example.ap_emailandroid.ui.signin.SignInActivity;
 import com.example.ap_emailandroid.viewmodel.SignUpViewModel;
 
@@ -30,8 +31,11 @@ public class SignUpActivity extends AppCompatActivity implements SignUpNavigatio
         // observe signup completion
         signUpViewModel.getSignUpSuccess().observe(this, success -> {
             if (success) {
-                // navigate to signin page after successful signup
-                Intent intent = new Intent(this, SignInActivity.class);
+                // navigate to inbox after successful signup
+                String token = signUpViewModel.getAuthToken().getValue();
+                Intent intent = new Intent(this, InboxActivity.class);
+                intent.putExtra("user_token", token);
+                intent.putExtra("user_email", signUpViewModel.getEmail());
                 startActivity(intent);
                 finish();
             }

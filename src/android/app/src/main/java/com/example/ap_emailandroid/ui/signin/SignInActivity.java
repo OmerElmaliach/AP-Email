@@ -11,8 +11,15 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.ap_emailandroid.R;
 import com.example.ap_emailandroid.ui.InboxActivity;
+import com.example.ap_emailandroid.ui.signup.SignUpActivity;
+import com.example.ap_emailandroid.model.SignInResponse;
+import com.example.ap_emailandroid.repository.UserRepository;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Sign-in activity that provides user authentication interface.
@@ -27,11 +34,14 @@ public class SignInActivity extends AppCompatActivity {
     private Button signInButton;
     private Button createAccountButton;
     private TextView errorMessage;
+    private UserRepository userRepository;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signin);
+        
+        userRepository = new UserRepository();
         
         initializeViews();
         setupValidation();
@@ -135,14 +145,40 @@ public class SignInActivity extends AppCompatActivity {
             return;
         }
         
-        // Mock authentication - in real app this would call API
-        if (mockAuthentication(email, password)) {
-            // Generate mock token (in real app this would come from server)
-            String mockToken = "mock_token_" + System.currentTimeMillis();
-            navigateToInbox(mockToken);
-        } else {
-            showError(getString(R.string.signin_failed));
-        }
+        // Show loading state
+        signInButton.setEnabled(false);
+        signInButton.setText("Signing in...");
+        
+        // Make API call for authentication
+        userRepository.signInUser(email, password, new Callback<SignInResponse>() {
+            @Override
+            public void onResponse(Call<SignInResponse> call, Response<SignInResponse> response) {
+                // Reset button state
+                signInButton.setEnabled(true);
+                signInButton.setText("Sign In");
+                
+                if (response.isSuccessful() && response.body() != null) {
+                    String token = response.body().getToken();
+                    navigateToInbox(token, email);
+                } else {
+                    String error = "Invalid email or password";
+                    if (response.code() == 404) {
+                        error = "User not found or incorrect credentials";
+                    } else if (response.code() >= 500) {
+                        error = "Server error. Please try again later.";
+                    }
+                    showError(error);
+                }
+            }
+            
+            @Override
+            public void onFailure(Call<SignInResponse> call, Throwable t) {
+                // Reset button state
+                signInButton.setEnabled(true);
+                signInButton.setText("Sign In");
+                showError("Network error. Please check your connection and try again.");
+            }
+        });
     }
     
     /**
@@ -170,36 +206,22 @@ public class SignInActivity extends AppCompatActivity {
     }
     
     /**
-     * Mock authentication method
-     * In real implementation, this would make an API call to the server
-     */
-    private boolean mockAuthentication(String email, String password) {
-        // Mock logic: accept any email ending with @AP-Email and password length > 3
-        return email.endsWith("@AP-Email") && password.length() > 3;
-    }
-    
-    /**
      * Navigate to inbox activity with user token
      */
-    private void navigateToInbox(String userToken) {
+    private void navigateToInbox(String userToken, String userEmail) {
         Intent intent = new Intent(this, InboxActivity.class);
         intent.putExtra("user_token", userToken);
-        intent.putExtra("user_email", emailInput.getText().toString().trim());
+        intent.putExtra("user_email", userEmail);
         startActivity(intent);
         finish(); // Close sign-in activity
     }
     
     /**
      * Navigate to sign-up activity
-     * Note: SignUpActivity implementation is handled by another team member
      */
     private void navigateToSignUp() {
-        // For now, show a placeholder message since SignUpActivity is not implemented yet
-        showError("Sign up functionality will be implemented in another branch");
-        
-        // In real implementation, this would be:
-        // Intent intent = new Intent(this, SignUpActivity.class);
-        // startActivity(intent);
+        Intent intent = new Intent(this, SignUpActivity.class);
+        startActivity(intent);
     }
     
     /**
@@ -217,6 +239,5 @@ public class SignInActivity extends AppCompatActivity {
         errorMessage.setVisibility(View.GONE);
         emailInputLayout.setError(null);
         passwordInputLayout.setError(null);
-
     }
 }
