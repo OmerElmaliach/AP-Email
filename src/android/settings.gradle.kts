@@ -21,4 +21,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "AP-Email Android"
 include(":app")
- 
