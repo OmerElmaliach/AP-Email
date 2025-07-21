@@ -17,24 +17,37 @@ import com.example.ap_emailandroid.viewmodel.EmailViewModel;
 import com.example.ap_emailandroid.viewmodel.LabelViewModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EmailActivity extends AppCompatActivity {
-    static final List<String> defLabels = List.of("Inbox", "Starred", "Sent", "Draft", "Spam", "Trash");
+    static final List<String> defLabels = List.of("inbox", "sent", "draft", "trash");
     private List<String> availableLabels;
     private List<String> availableRemLabels;
+    private Map<String, String> userLabelMap;
+    private boolean infoUpdated = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_email);
+
+        // Assign to map default labels
+        userLabelMap = new HashMap<>();
+        userLabelMap.put("inbox", "Inbox");
+        userLabelMap.put("starred", "Starred");
+        userLabelMap.put("sent", "Sent");
+        userLabelMap.put("draft", "Draft");
+        userLabelMap.put("spam", "Spam");
+        userLabelMap.put("trash", "Trash");
+
         EmailViewModel emailViewModel = new ViewModelProvider(this).get(EmailViewModel.class);
         Email email = (Email) getIntent().getSerializableExtra("email");
-        if (email != null) {
-            updateInfo(email);
-        } else {
+        if (email == null) {
             Toast.makeText(this, "Failed to load email information", Toast.LENGTH_SHORT).show();
             finish();
+            return;
         }
 
         LabelViewModel labelViewModel = new ViewModelProvider(this).get(LabelViewModel.class);
@@ -43,37 +56,46 @@ public class EmailActivity extends AppCompatActivity {
 
         labelViewModel.getLabels().observe(this, labels -> {
             availableLabels.clear();
+            availableRemLabels.clear();
+
             if (labels != null) {
                 for (Label label : labels) {
-                    assert email != null;
-                    if (!email.getLabel().contains(label.getName()))
-                        availableLabels.add(label.getName());
+                    String name = label.getName();
+                    String id = label.getId();
+                    if (name == null || id == null) continue;
+
+                    userLabelMap.put(id, name);
+
+                    String keyForName = findKeyByValue(name);
+                    if (email.getLabel() != null && !email.getLabel().contains(keyForName)) {
+                        availableLabels.add(name);
+                    }
                 }
             }
-        });
 
-        assert email != null;
-        for (String label : email.getLabel()) {
-            if (!defLabels.contains(label))
-                availableRemLabels.add(label);
-        }
+            if (!infoUpdated) {
+                updateInfo(email);
+                infoUpdated = true;
+            }
+
+            for (String label : email.getLabel()) {
+                if (!defLabels.contains(label)) {
+                    String name = userLabelMap.get(label);
+                    if (name != null) availableRemLabels.add(name);
+                }
+            }
+
+            updateLabelsInEmailView(email.getLabel());
+        });
 
         ImageButton btn_back = findViewById(R.id.btn_back);
-        btn_back.setOnClickListener(view -> {
-            finish();
-        });
+        btn_back.setOnClickListener(view -> finish());
 
         ImageButton btn_spam = findViewById(R.id.btn_spam);
-        btn_spam.setOnClickListener(view -> {
-            assert email != null;
-            addLabel(email, emailViewModel, "spam");
-        });
+        btn_spam.setOnClickListener(view -> addLabel(email, emailViewModel, "Spam"));
 
         ImageButton btn_starred = findViewById(R.id.btn_starred);
-        btn_starred.setOnClickListener(view -> {
-            assert email != null;
-            addLabel(email, emailViewModel, "starred");
-        });
+        btn_starred.setOnClickListener(view -> addLabel(email, emailViewModel, "Starred"));
 
         ImageButton btn_add_label = findViewById(R.id.btn_add_labels);
         btn_add_label.setOnClickListener(view -> {
@@ -113,8 +135,7 @@ public class EmailActivity extends AppCompatActivity {
 
         ImageButton btn_trash = findViewById(R.id.btn_trash);
         btn_trash.setOnClickListener(view -> {
-            assert email != null;
-            addLabel(email, emailViewModel, "trash");
+            addLabel(email, emailViewModel, "Trash");
             finish();
         });
     }
@@ -124,12 +145,7 @@ public class EmailActivity extends AppCompatActivity {
         textView.append(email.getSubject());
 
         List<String> labels = email.getLabel();
-        TextView labelView = findViewById(R.id.labels);
-        labelView.append(" ");
-        for (int i = 0; i < labels.size() - 1; i++) {
-            labelView.append(labels.get(i) + ", ");
-        }
-        labelView.append(labels.get(labels.size() - 1));
+        updateLabelsInEmailView(labels);
 
         TextView fromView = findViewById(R.id.email_from);
         fromView.append(" " + email.getFrom());
@@ -145,13 +161,14 @@ public class EmailActivity extends AppCompatActivity {
     }
 
     private void addLabel(Email email, EmailViewModel emailViewModel, String labelName) {
-        if (email.getLabel().contains(labelName)) {
+        String labelId = findKeyByValue(labelName);
+        if (email.getLabel().contains(labelId)) {
             Toast.makeText(this, "Email already labeled as such", Toast.LENGTH_SHORT).show();
             return;
         }
 
         List<String> newLabels = new ArrayList<>(email.getLabel());
-        newLabels.add(labelName);
+        newLabels.add(labelId);
         email.setLabel(newLabels);
         emailViewModel.update(email);
         TextView labelView = findViewById(R.id.labels);
@@ -159,31 +176,56 @@ public class EmailActivity extends AppCompatActivity {
 
         availableLabels.remove(labelName);
         availableRemLabels.add(labelName);
+        emailViewModel.reload();
     }
 
     @SuppressLint("SetTextI18n")
     private void removeLabel(Email email, EmailViewModel emailViewModel, String labelName) {
-        if (defLabels.contains(labelName)) {
+        String labelId = findKeyByValue(labelName);
+        if (defLabels.contains(labelId)) {
             Toast.makeText(this, "Cannot remove a default label", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (!email.getLabel().contains(labelName)) {
+        if (!email.getLabel().contains(labelId)) {
             Toast.makeText(this, "Email does not contain this label", Toast.LENGTH_SHORT).show();
             return;
         }
 
         List<String> newLabels = new ArrayList<>(email.getLabel());
-        newLabels.remove(labelName);
+        newLabels.remove(labelId);
         email.setLabel(newLabels);
         emailViewModel.update(email);
-        TextView labelView = findViewById(R.id.labels);
-        labelView.setText("Labels: ");
-        for (int i = 0; i < newLabels.size() - 1; i++) {
-            labelView.append(newLabels.get(i) + ", ");
-        }
-        labelView.append(newLabels.get(newLabels.size() - 1));
+        updateLabelsInEmailView(newLabels);
         availableLabels.add(labelName);
         availableRemLabels.remove(labelName);
+        emailViewModel.reload();
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void updateLabelsInEmailView(List<String> emailLabelIds) {
+        TextView labelView = findViewById(R.id.labels);
+        labelView.setText("Labels: ");
+        for (int i = 0; i < emailLabelIds.size(); i++) {
+            String labelId = emailLabelIds.get(i);
+            String labelName = userLabelMap.get(labelId);
+            if (labelName == null) {
+                labelName = "[Unknown: " + labelId + "]";
+            }
+            labelView.append(labelName);
+            if (i < emailLabelIds.size() - 1) {
+                labelView.append(", ");
+            }
+        }
+    }
+
+    public String findKeyByValue(String targetValue) {
+        for (Map.Entry<String, String> entry : userLabelMap.entrySet()) {
+            if (entry.getValue().equals(targetValue)) {
+                return entry.getKey();
+            }
+        }
+
+        return null;
     }
 }

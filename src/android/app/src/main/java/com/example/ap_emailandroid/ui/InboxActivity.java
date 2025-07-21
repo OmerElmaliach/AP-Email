@@ -38,10 +38,10 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class InboxActivity extends AppCompatActivity {
-    static final List<String> defLabels = List.of("Inbox", "Starred", "Sent", "Draft", "Spam", "Trash");
+    static final List<String> defLabels = List.of("inbox", "starred", "sent", "draft", "spam", "trash");
     private EmailAdapter adapter;
     private EmailViewModel emailViewModel;
-    private String currLabel = "Inbox";
+    private String currLabel = "inbox";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
