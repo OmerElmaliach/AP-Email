@@ -1,6 +1,7 @@
 package com.example.ap_emailandroid.viewmodel;
 
 import android.net.Uri;
+import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -19,6 +20,7 @@ import retrofit2.Response;
  */
 public class SignUpViewModel extends ViewModel {
     
+    private static final String TAG = "SignUpViewModel";
     private UserRepository userRepository;
     
     // signup form data
@@ -128,6 +130,7 @@ public class SignUpViewModel extends ViewModel {
      * this method coordinates with the repository to save user data via API
      */
     public void submitSignUp() {
+        Log.d(TAG, "submitSignUp() called");
         isLoading.setValue(true);
         errorMessage.setValue("");
         
@@ -141,19 +144,32 @@ public class SignUpViewModel extends ViewModel {
         user.setBirthday(birthday);
         user.setGender(gender);
         user.setPhoneNumber(phoneNumber);
-        // Note: Picture handling will be implemented later with multipart uploads
-        
+
+        Log.d(TAG, "Making API call to create user with email: " + email);
+
         // make API call to create user
         userRepository.createUser(user, new Callback<SignUpResponse>() {
             @Override
             public void onResponse(Call<SignUpResponse> call, Response<SignUpResponse> response) {
+                Log.d(TAG, "API Response received. Code: " + response.code());
                 isLoading.postValue(false);
                 
                 if (response.isSuccessful() && response.body() != null) {
+                    Log.d(TAG, "Signup successful!");
                     SignUpResponse signUpResponse = response.body();
                     authToken.postValue(signUpResponse.getToken());
                     signUpSuccess.postValue(true);
                 } else {
+                    Log.e(TAG, "Signup failed with response code: " + response.code());
+                    if (response.errorBody() != null) {
+                        try {
+                            String errorBody = response.errorBody().string();
+                            Log.e(TAG, "Error body: " + errorBody);
+                        } catch (Exception e) {
+                            Log.e(TAG, "Error reading error body", e);
+                        }
+                    }
+
                     // Handle error response
                     String error = "Sign up failed. Please try again.";
                     if (response.code() == 409) {
@@ -167,6 +183,7 @@ public class SignUpViewModel extends ViewModel {
             
             @Override
             public void onFailure(Call<SignUpResponse> call, Throwable t) {
+                Log.e(TAG, "API call failed", t);
                 isLoading.postValue(false);
                 errorMessage.postValue("Network error. Please check your connection and try again.");
             }

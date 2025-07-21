@@ -21,15 +21,17 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class UserRepository {
     
     private UserAPI userAPI;
-    private static final String BASE_URL = "http://localhost:9000"; // JS server URL
+    private static final String BASE_URL = "http://10.0.2.2:9000"; // JS server URL for Android emulator
 
     public UserRepository() {
+        android.util.Log.e("UserRepository", "Creating UserRepository with BASE_URL: " + BASE_URL);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         
         userAPI = retrofit.create(UserAPI.class);
+        android.util.Log.e("UserRepository", "UserRepository created successfully");
     }
 
     /**

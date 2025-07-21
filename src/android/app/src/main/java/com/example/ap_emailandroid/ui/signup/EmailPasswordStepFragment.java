@@ -61,13 +61,27 @@ public class EmailPasswordStepFragment extends Fragment {
         // show password requirements
         tvPasswordRequirements.setText("password must be at least 8 characters long and contain:\n• at least one uppercase letter\n• at least one lowercase letter\n• at least one number\n• only letters and numbers (no special characters)");
         
+        // Auto-append domain on focus loss
+        etEmail.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                String emailText = etEmail.getText().toString().trim();
+                if (!emailText.contains("@")) {
+                    etEmail.setText(emailText + "@AP-Email.com");
+                }
+            }
+        });
+
         btnCreateAccount.setOnClickListener(v -> {
+            android.util.Log.e("EmailPasswordStep", "CREATE ACCOUNT BUTTON CLICKED!");
             if (validateInput()) {
+                android.util.Log.e("EmailPasswordStep", "VALIDATION PASSED - CALLING onSignUpComplete");
                 // show loading
                 progressBar.setVisibility(View.VISIBLE);
                 btnCreateAccount.setEnabled(false);
                 
                 navigationListener.onSignUpComplete();
+            } else {
+                android.util.Log.e("EmailPasswordStep", "VALIDATION FAILED");
             }
         });
         
