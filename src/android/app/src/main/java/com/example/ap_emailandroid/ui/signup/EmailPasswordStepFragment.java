@@ -66,7 +66,8 @@ public class EmailPasswordStepFragment extends Fragment {
             if (!hasFocus) {
                 String emailText = etEmail.getText().toString().trim();
                 if (!emailText.contains("@")) {
-                    etEmail.setText(emailText + "@AP-Email.com");
+                    etEmail.setText(emailText + "@AP-Email");
+                    etEmail.setSelection(etEmail.getText().length());
                 }
             }
         });
@@ -108,8 +109,8 @@ public class EmailPasswordStepFragment extends Fragment {
             return false;
         }
         
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            etEmail.setError("please enter a valid email address");
+        if (!email.matches("^[^@]+@AP-Email$")) {
+            etEmail.setError("please enter a valid AP-Email address");
             etEmail.requestFocus();
             return false;
         }

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -86,6 +85,8 @@ public class SignInActivity extends AppCompatActivity {
         emailInput.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
                 autoCompleteEmailDomain();
+                emailInput.setSelection(emailInput.getText().length());
+                validateInputs();
             }
         });
     }
@@ -115,7 +116,7 @@ public class SignInActivity extends AppCompatActivity {
      * Check if email is valid
      */
     private boolean isValidEmail(String email) {
-        return !email.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches();
+        return email.matches("^[^@]+@AP-Email$");
     }
     
     /**
@@ -123,13 +124,14 @@ public class SignInActivity extends AppCompatActivity {
      */
     private void autoCompleteEmailDomain() {
         String email = emailInput.getText().toString().trim();
+        String domain = "@AP-Email";
         if (!email.isEmpty() && !email.contains("@")) {
-            emailInput.setText(email + "@AP-Email");
-        } else if (email.contains("@") && !email.endsWith("@AP-Email")) {
+            emailInput.setText(email + domain);
+        } else if (email.contains("@") && !email.endsWith(domain)) {
             // Replace domain with AP-Email if different domain was entered
             String[] parts = email.split("@");
             if (parts.length > 0) {
-                emailInput.setText(parts[0] + "@AP-Email");
+                emailInput.setText(parts[0] + domain);
             }
         }
     }
