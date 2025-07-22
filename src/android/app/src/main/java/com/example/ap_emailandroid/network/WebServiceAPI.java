@@ -1,5 +1,6 @@
 package com.example.ap_emailandroid.network;
 
+import com.example.ap_emailandroid.local.BlacklistReq;
 import com.example.ap_emailandroid.local.Email;
 import com.example.ap_emailandroid.local.Label;
 
@@ -38,4 +39,6 @@ public interface WebServiceAPI {
     @DELETE("/labels/{id}")
     Call<Void> deleteLabel(@Path("id") String id);
 
+    @POST("/api/blacklist")
+    Call<Void> blacklistUrl(@Body BlacklistReq request);
 }
