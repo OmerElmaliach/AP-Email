@@ -45,8 +45,8 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:text="Choose Image"
-            android:textColor="@android:color/black"
-            android:background="@android:color/darker_gray"
+            android:textColor="@android:color/white"
+            android:background="@color/primary_color"
             android:layout_marginBottom="32dp" />
 
         <!-- spacer -->

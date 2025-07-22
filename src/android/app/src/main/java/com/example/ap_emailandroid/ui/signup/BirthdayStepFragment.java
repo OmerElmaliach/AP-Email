@@ -3,6 +3,7 @@ package com.example.ap_emailandroid.ui.signup;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -75,6 +76,12 @@ public class BirthdayStepFragment extends Fragment {
 
         // Ensure dropdown appears when the field is clicked
         etGender.setOnClickListener(v -> etGender.showDropDown());
+        etGender.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                etGender.showDropDown();
+            }
+            return false;
+        });
 
         btnNext.setOnClickListener(v -> {
             if (validateInput()) {
