@@ -1,11 +1,18 @@
 package com.example.ap_emailandroid.viewmodel;
 
 import android.net.Uri;
+import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import com.example.ap_emailandroid.local.User;
 import com.example.ap_emailandroid.model.SignUpRequest;
+import com.example.ap_emailandroid.model.SignUpResponse;
 import com.example.ap_emailandroid.repository.UserRepository;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * viewmodel for managing signup process data and state
@@ -13,6 +20,7 @@ import com.example.ap_emailandroid.repository.UserRepository;
  */
 public class SignUpViewModel extends ViewModel {
     
+    private static final String TAG = "SignUpViewModel";
     private UserRepository userRepository;
     
     // signup form data
@@ -23,14 +31,16 @@ public class SignUpViewModel extends ViewModel {
     private String gender;
     private String email;
     private String password;
+    private String phoneNumber;
     
     // observables for ui state
     private MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private MutableLiveData<Boolean> signUpSuccess = new MutableLiveData<>(false);
     private MutableLiveData<String> errorMessage = new MutableLiveData<>("");
+    private MutableLiveData<String> authToken = new MutableLiveData<>("");
     
     public SignUpViewModel() {
-        userRepository = new UserRepository(); // placeholder - will be implemented by another team member
+        userRepository = new UserRepository();
     }
     
     // getters and setters for form data
@@ -89,6 +99,14 @@ public class SignUpViewModel extends ViewModel {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
     
     // observables for ui
     public LiveData<Boolean> getIsLoading() {
@@ -102,55 +120,92 @@ public class SignUpViewModel extends ViewModel {
     public LiveData<String> getErrorMessage() {
         return errorMessage;
     }
-    
-    /**
-     * submits the signup request to the backend
-     * this method will coordinate with the repository to save user data to mongodb
-     */
-    public void submitSignUp() {
-        isLoading.setValue(true);
-        errorMessage.setValue("");
-        
-        // create signup request object
-        SignUpRequest request = new SignUpRequest();
-        request.setFirstName(firstName);
-        request.setLastName(lastName);
-        request.setEmail(email);
-        request.setUserName(email); // username = email as per web implementation
-        request.setPassword(password);
-        request.setBirthday(birthday);
-        request.setGender(gender);
-        request.setProfilePictureUri(profilePictureUri);
-        
-        // todo: implement actual network call via repository
-        // for now, simulate success after delay
-        // the actual implementation will be done by another team member
-        simulateNetworkCall(request);
+
+    public LiveData<String> getAuthToken() {
+        return authToken;
     }
     
     /**
-     * placeholder method to simulate network call
-     * the actual implementation will use mongodb and network calls
-     * implemented by another team member
+     * submits the signup request to the backend
+     * this method coordinates with the repository to save user data via API
      */
-    private void simulateNetworkCall(SignUpRequest request) {
-        // simulate network delay
-        new Thread(() -> {
-            try {
-                Thread.sleep(2000); // 2 second delay
-                
-                // simulate success
+    public void submitSignUp() {
+        Log.d(TAG, "submitSignUp() called");
+        isLoading.setValue(true);
+        errorMessage.setValue("");
+        
+        // create user object
+        User user = new User();
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setEmail(email);
+        user.setUserName(email); // username = email as per web implementation
+        user.setPassword(password);
+        user.setBirthday(birthday);
+        user.setGender(gender);
+        user.setPhoneNumber(phoneNumber);
+
+        Log.d(TAG, "Making API call to create user with email: " + email);
+
+        // make API call to create user
+        userRepository.createUser(user, new Callback<SignUpResponse>() {
+            @Override
+            public void onResponse(Call<SignUpResponse> call, Response<SignUpResponse> response) {
+                Log.d(TAG, "API Response received. Code: " + response.code());
                 isLoading.postValue(false);
-                signUpSuccess.postValue(true);
                 
-                // todo: replace with actual repository call
-                // userRepository.createUser(request);
-                
-            } catch (InterruptedException e) {
-                isLoading.postValue(false);
-                errorMessage.postValue("signup failed. please try again.");
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.d(TAG, "Signup successful!");
+                    SignUpResponse signUpResponse = response.body();
+                    authToken.postValue(signUpResponse.getToken());
+                    signUpSuccess.postValue(true);
+                } else {
+                    Log.e(TAG, "Signup failed with response code: " + response.code());
+                    if (response.errorBody() != null) {
+                        try {
+                            String errorBody = response.errorBody().string();
+                            Log.e(TAG, "Error body: " + errorBody);
+                        } catch (Exception e) {
+                            Log.e(TAG, "Error reading error body", e);
+                        }
+                    }
+
+                    // Handle error response
+                    String error = "Sign up failed. Please try again.";
+                    if (response.code() == 409) {
+                        error = "Email or username already exists.";
+                    } else if (response.code() == 400) {
+                        error = "Invalid input. Please check your information.";
+                    }
+                    errorMessage.postValue(error);
+                }
             }
-        }).start();
+            
+            @Override
+            public void onFailure(Call<SignUpResponse> call, Throwable t) {
+                Log.e(TAG, "API call failed", t);
+                isLoading.postValue(false);
+                errorMessage.postValue("Network error. Please check your connection and try again.");
+            }
+        });
+    }
+
+    /**
+     * Check if email is already in use
+     * @param email the email to check
+     * @param callback callback to handle result
+     */
+    public void checkEmailAvailability(String email, Callback<Void> callback) {
+        userRepository.checkEmailExists(email, callback);
+    }
+
+    /**
+     * Check if username is already in use
+     * @param userName the username to check
+     * @param callback callback to handle result
+     */
+    public void checkUsernameAvailability(String userName, Callback<Void> callback) {
+        userRepository.checkUsernameExists(userName, callback);
     }
     
     /**
@@ -164,5 +219,6 @@ public class SignUpViewModel extends ViewModel {
         gender = null;
         email = null;
         password = null;
+        phoneNumber = null;
     }
 }

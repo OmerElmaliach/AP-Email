@@ -2,6 +2,10 @@ package com.example.ap_emailandroid.network;
 
 import com.example.ap_emailandroid.local.Email;
 import com.example.ap_emailandroid.local.Label;
+import com.example.ap_emailandroid.local.User;
+import com.example.ap_emailandroid.model.SignInRequest;
+import com.example.ap_emailandroid.model.SignInResponse;
+import com.example.ap_emailandroid.model.SignUpResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -11,6 +15,7 @@ import retrofit2.http.DELETE;
 import retrofit2.http.Body;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.Header;
 
 import java.util.List;
 
@@ -37,5 +42,15 @@ public interface WebServiceAPI {
 
     @DELETE("/labels/{id}")
     Call<Void> deleteLabel(@Path("id") String id);
+
+    // User endpoints
+    @POST("/api/users")
+    Call<SignUpResponse> createUser(@Body User user);
+
+    @GET("/api/users/me")
+    Call<User> getCurrentUser(@Header("Authorization") String token);
+
+    @POST("/api/signin")
+    Call<SignInResponse> signIn(@Body SignInRequest signInRequest);
 
 }
