@@ -12,8 +12,8 @@
 
 const model = require('../services/labels')
 const usersModel = require('../services/users');
-const Mails = require('../models/mails');
-var labelCounter = 0;
+const Mails = require('../services/mails'); 
+var labelCounter = 0; // get uniqu id function
 
 /**
  * Creates a new label
@@ -215,13 +215,13 @@ const updateLabel = async (req, res) => {
 const deleteLabel = async (req, res) => {
     const { id } = req.params;
     const userId = req.user.id;
-    const labelMails = Mails.getUserMails(userId);
+    const labelMails = await Mails.getUserMails(userId);
     const filteredMails = labelMails.filter(mail => mail.label.includes(id));
     for (let i = 0; i < filteredMails.length; i++) {
         let MailLabels = filteredMails[i].label;
         let idx = MailLabels.indexOf(id);
         MailLabels.splice(idx, 1);
-        Mails.updateMail(userId, filteredMails[i].mail_id, undefined, undefined, MailLabels);
+        await Mails.updateMail(userId, filteredMails[i].mail_id, undefined, undefined, MailLabels);
     }
 
     const deletedLabel = await model.deleteLabel(id);
