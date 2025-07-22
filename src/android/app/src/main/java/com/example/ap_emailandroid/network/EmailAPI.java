@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.ap_emailandroid.AppController;
 import com.example.ap_emailandroid.R;
+import com.example.ap_emailandroid.local.BlacklistReq;
 import com.example.ap_emailandroid.local.Email;
 import com.example.ap_emailandroid.local.EmailDao;
 
@@ -124,6 +125,26 @@ public class EmailAPI {
             @Override
             public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
                 Log.e("EmailAPI", "Delete request failed", t);
+            }
+        });
+    }
+
+    public void addUrlSpam(String url) {
+        BlacklistReq req = new BlacklistReq(url);
+        Call<Void> call = webServiceAPI.blacklistUrl(req);
+        call.enqueue(new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> res) {
+                if (res.isSuccessful()) {
+                    Log.i("EmailAPI", "URL Added to blacklist: " + url);
+                } else {
+                    Log.e("EmailAPI", "Blacklisting failed: " + res.code());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                Log.e("EmailAPI", "Blacklist request failed", t);
             }
         });
     }

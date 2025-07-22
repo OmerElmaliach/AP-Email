@@ -66,6 +66,10 @@ public class EmailsRepository {
         api.delete(email);
     }
 
+    public void reportSpam(String url) {
+        api.addUrlSpam(url);
+    }
+
     public void reload() {
         api.get();
     }
