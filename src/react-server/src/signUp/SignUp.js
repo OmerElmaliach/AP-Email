@@ -53,7 +53,7 @@ function SignUp() {
   if (!bootstrapReady) {
     return null; // white screen during Bootstrap load
   }
-  
+
   const nextStep = () => setStep(step + 1);
   const prevStep = () => setStep(step - 1);
 
@@ -83,8 +83,21 @@ function SignUp() {
       }
     } catch (err) {
 
-      alert(err.message || 'Something went wrong');
+      console.error('Error:', err);
 
+      let errorMessage = 'Something went wrong';
+
+      // try parsing the error message if it looks like a JSON string inside
+      try {
+        const parsed = JSON.parse(err?.message?.match(/{.*}/)?.[0]);
+        if (parsed?.error) {
+          errorMessage = parsed.error;
+        }
+      } catch (parseErr) {
+        errorMessage = err.message; // fallback if parsing fails
+      }
+
+      alert(errorMessage || 'Something went wrong' );
     } finally {
       setLoading(false);
     }
@@ -113,7 +126,7 @@ function SignUp() {
               lastName={lastName}
               setLastName={setLastName}
               onNext={nextStep}
-              goToSignIn = {handleGoToSignIn}
+              goToSignIn={handleGoToSignIn}
             />
           )}
 
