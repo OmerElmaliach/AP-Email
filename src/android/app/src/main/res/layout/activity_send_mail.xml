@@ -1,0 +1,65 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+  <!-- Simple "Toolbar" -->
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="#EEEEEE"
+      android:padding="8dp">
+
+    <!-- Back Button (left) -->
+    <ImageButton
+        android:id="@+id/btn_back"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/emailsend_light_arrow_back_ic"
+        android:background="@android:color/transparent"
+        android:contentDescription="Back"
+        android:scaleType="centerInside"
+        android:padding="4dp"
+        android:layout_alignParentStart="true" />
+
+    <!-- Send Button (right) -->
+    <ImageButton
+        android:id="@+id/btn_send"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="9dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="Send"
+        android:padding="4dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/emailsend_send" />
+  </RelativeLayout>
+
+
+  <!-- Rest of the screen (email form) -->
+  <EditText
+      android:id="@+id/edit_to"
+      android:layout_width="match_parent"
+      android:layout_height="70dp"
+      android:hint="To"
+      android:padding="10dp" />
+
+  <EditText
+      android:id="@+id/edit_subject"
+      android:layout_width="match_parent"
+      android:layout_height="70dp"
+      android:hint="Subject"
+      android:padding="10dp" />
+
+  <EditText
+      android:id="@+id/edit_body"
+      android:hint="Compose email"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      android:gravity="top"
+      android:padding="10dp"
+      android:inputType="textMultiLine"
+      android:background="#ffffff"/>
+</LinearLayout>
