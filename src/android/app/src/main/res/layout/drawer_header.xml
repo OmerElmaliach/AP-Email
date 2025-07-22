@@ -15,6 +15,22 @@
         android:contentDescription="@string/profile_picture"
         android:layout_marginStart="8dp"/>
 
+    <TextView
+        android:id="@+id/user_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:textColor="@android:color/white"
+        android:text="Email"/>
+
+    <TextView
+        android:id="@+id/user_full_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="8dp"
+        android:textColor="@android:color/white"
+        android:text="Name"/>
+
     <View
         android:layout_width="0dp"
         android:layout_height="0dp"
