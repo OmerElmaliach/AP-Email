@@ -44,6 +44,7 @@ public interface UserAPI {
      * Check if email exists (for validation during signup)
      * This would be implemented as a custom endpoint on the server
      */
+    //TODO what is this?
     @GET("/api/users/check-email")
     Call<Void> checkEmailExists(@Header("email") String email);
 

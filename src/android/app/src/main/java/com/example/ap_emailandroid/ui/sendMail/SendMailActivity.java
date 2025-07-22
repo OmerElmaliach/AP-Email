@@ -11,6 +11,8 @@ import com.example.ap_emailandroid.R;
 import com.example.ap_emailandroid.local.Email;
 import  com.example.ap_emailandroid.network.EmailAPI;
 
+import java.util.List;
+
 public class SendMailActivity extends AppCompatActivity {
     // navigation buttons on the top
     ImageButton btnBack, btnSend;
@@ -44,14 +46,14 @@ public class SendMailActivity extends AppCompatActivity {
 
     }
     private void sendEmail(){
-        String to = editTo.getText().toString().trim();
+        //List<String> to = editTo.getText().toString().trim();
         String subject = editSubject.getText().toString().trim();
         String body = editBody.getText().toString().trim();
 
-        if (to.isEmpty()) {
-            Toast.makeText(this, "missing recipient email", Toast.LENGTH_SHORT).show();
-            return;
-        }
+      //  if (to.isEmpty()) {
+      //      Toast.makeText(this, "missing recipient email", Toast.LENGTH_SHORT).show();
+      //      return;
+      //  }
         if (subject.isEmpty()) {
             Toast.makeText(this, "missing email subject", Toast.LENGTH_SHORT).show();
             return;
@@ -63,7 +65,7 @@ public class SendMailActivity extends AppCompatActivity {
 
         Toast.makeText(this, "Sending mail...", Toast.LENGTH_SHORT).show();
 
-        Email email = new Email(null,null,to,subject,body,null,null);
+        //Email email = new Email(null,null,to,subject,body,null,null);
 
         //TODO send email, probably implament a send mail api
 
