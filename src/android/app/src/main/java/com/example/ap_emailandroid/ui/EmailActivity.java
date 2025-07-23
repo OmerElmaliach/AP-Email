@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 
 public class EmailActivity extends AppCompatActivity {
     static final List<String> defLabels = List.of("inbox", "sent", "draft", "trash");
+    static final List<String> defLabelsNames = List.of("Inbox", "Starred", "Sent", "Draft", "Spam", "Trash");
     private List<String> availableLabels;
     private List<String> availableRemLabels;
     private Map<String, String> userLabelMap;
@@ -69,7 +70,7 @@ public class EmailActivity extends AppCompatActivity {
                     userLabelMap.put(id, name);
 
                     String keyForName = findKeyByValue(name);
-                    if (email.getLabel() != null && !email.getLabel().contains(keyForName)) {
+                    if (email.getLabel() != null && !email.getLabel().contains(keyForName) && !defLabelsNames.contains(label.getName())) {
                         availableLabels.add(name);
                     }
                 }
@@ -140,7 +141,7 @@ public class EmailActivity extends AppCompatActivity {
 
         ImageButton btn_trash = findViewById(R.id.btn_trash);
         btn_trash.setOnClickListener(view -> {
-            addLabel(email, emailViewModel, "Trash");
+            emailViewModel.delete(email);
             finish();
         });
     }
@@ -156,7 +157,7 @@ public class EmailActivity extends AppCompatActivity {
         fromView.append(" " + email.getFrom());
 
         TextView toView = findViewById(R.id.email_to);
-        toView.append(" " + email.getTo()); // TODO something. maybe
+        toView.append(" " + email.getTo());
 
         TextView dateView = findViewById(R.id.email_date);
         dateView.append(" " + email.getDateSent());
