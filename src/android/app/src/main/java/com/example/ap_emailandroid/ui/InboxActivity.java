@@ -28,9 +28,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ap_emailandroid.local.Label;
 import com.example.ap_emailandroid.ui.adapters.EmailAdapter;
-import com.example.ap_emailandroid.ui.signin.SignInActivity;
+import com.example.ap_emailandroid.ui.sendMail.SendMailActivity;
 import com.example.ap_emailandroid.viewmodel.EmailViewModel;
 import com.example.ap_emailandroid.viewmodel.LabelViewModel;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
@@ -213,6 +214,12 @@ public class InboxActivity extends AppCompatActivity {
         emailList.setAdapter(adapter);
         emailViewModel = new ViewModelProvider(this).get(EmailViewModel.class);
         emailViewModel.searchEmailsInLabel(AppSession.currentLabel, "").observe(this, adapter::setEmails);
+
+        FloatingActionButton composeButton = findViewById(R.id.compose);
+        composeButton.setOnClickListener(view -> {
+            Intent intent = new Intent(this, SendMailActivity.class);
+            startActivity(intent);
+        });
     }
 
     /**
