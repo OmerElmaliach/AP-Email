@@ -26,19 +26,19 @@ public interface WebServiceAPI {
     @GET("/api/mails/") //works
     Call<List<Email>> getEmails();
 
-    @POST("/api/mails/") //TODO
+    @POST("/api/mails/") //TODO ETL
     Call<Email> createEmail(@Body Email email);
 
-    @PATCH("/api/mails/{id}") //TODO
+    @PATCH("/api/mails/{id}") //TODO ETL
     Call<Email> updateEmail(@Path("id") String mailId, @Body Email email);
 
-    @DELETE("/api/mails/{id}") //TODO
+    @DELETE("/api/mails/{id}") //works
     Call<Void> deleteEmail(@Path("id") String mailId);
 
-    @GET("/api/labels/") //TODO - remove degualt labels
+    @GET("/api/labels/") //TODO - remove default labels - OMER
     Call<List<Label>> getLabels();
 
-    @POST("/api/labels/") //TODO change backend
+    @POST("/api/labels/") //TODO change backend ETL
     Call<LabelResponse> createLabel(@Body Label label);
 
     @DELETE("/api/labels/{id}") //works

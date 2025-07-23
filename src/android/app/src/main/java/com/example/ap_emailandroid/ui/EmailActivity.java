@@ -135,7 +135,7 @@ public class EmailActivity extends AppCompatActivity {
 
         ImageButton btn_trash = findViewById(R.id.btn_trash);
         btn_trash.setOnClickListener(view -> {
-            addLabel(email, emailViewModel, "Trash");
+            emailViewModel.delete(email);
             finish();
         });
     }
