@@ -50,6 +50,14 @@ public class EmailsRepository {
         });
     }
 
+    public void update(Email email) {
+        api.update(email, updateEmail -> {
+            new Thread(() -> {
+                emailListData.postValue(dao.index());
+            }).start();
+        });
+    }
+
     public void delete(Email email) {
         new Thread(() -> {
             dao.delete(email);

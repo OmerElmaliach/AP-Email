@@ -1,6 +1,7 @@
 package com.example.ap_emailandroid.ui;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,12 +27,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ap_emailandroid.local.Label;
 import com.example.ap_emailandroid.ui.adapters.EmailAdapter;
+import com.example.ap_emailandroid.ui.signin.SignInActivity;
 import com.example.ap_emailandroid.viewmodel.EmailViewModel;
 import com.example.ap_emailandroid.viewmodel.LabelViewModel;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -39,12 +43,22 @@ public class InboxActivity extends AppCompatActivity {
     static final List<String> defLabels = List.of("Inbox", "Starred", "Sent", "Draft", "Spam", "Trash");
     private EmailAdapter adapter;
     private EmailViewModel emailViewModel;
-    private String currLabel = "Inbox";
+    private String currLabel = "inbox";
+    private Map<String, String> userLabelMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inbox);
+
+        userLabelMap = new HashMap<>();
+        userLabelMap.put("Inbox", "inbox");
+        userLabelMap.put("Starred", "starred");
+        userLabelMap.put("Sent", "sent");
+        userLabelMap.put("Draft", "draft");
+        userLabelMap.put("Spam", "spam");
+        userLabelMap.put("Trash", "trash");
+
         AppSession.userId = "1"; // TODO: INTEGRATE WITH GABI
 
         // Handle user authentication data passed from SignInActivity
@@ -97,6 +111,7 @@ public class InboxActivity extends AppCompatActivity {
             for (Label label : labels) {
                 MenuItem item = menu.add(groupId, View.generateViewId(), Menu.NONE, label.name);
                 item.setIcon(R.drawable.label_ic);
+                userLabelMap.put(label.getName(), label.getId());
 
                 @SuppressLint("InflateParams") View actionView = getLayoutInflater()
                         .inflate(R.layout.menu_label_item, null);
@@ -105,8 +120,10 @@ public class InboxActivity extends AppCompatActivity {
                     new AlertDialog.Builder(this)
                             .setTitle("Delete Label")
                             .setMessage("Are you sure you want to delete '" + label.name + "'?")
-                            .setPositiveButton("Yes", (dialog,
-                                                       which) -> labelViewModel.delete(label))
+                            .setPositiveButton("Yes", (dialog, which) -> {
+                                labelViewModel.delete(label);
+                                userLabelMap.remove(label.getName());
+                            })
                             .setNegativeButton("Cancel", null)
                             .show();
                 });
@@ -158,9 +175,9 @@ public class InboxActivity extends AppCompatActivity {
         // Define event listener for label click
         nav_view.setNavigationItemSelectedListener(item -> {
             String labelName = Objects.requireNonNull(item.getTitle()).toString();
-            emailViewModel.searchEmailsInLabel(labelName, "").observe(this, emails -> {
+            emailViewModel.searchEmailsInLabel(userLabelMap.get(labelName), "").observe(this, emails -> {
                 adapter.setEmails(emails);
-                currLabel = labelName;
+                currLabel = userLabelMap.get(labelName);
             });
             drawerLayout.closeDrawers();
             return true;
@@ -176,7 +193,9 @@ public class InboxActivity extends AppCompatActivity {
         emailList.setLayoutManager(new LinearLayoutManager(this));
 
         adapter = new EmailAdapter(new ArrayList<>(), email -> {
-            // TODO: ADD ONCLICK EVENT
+            Intent intent = new Intent(this, EmailActivity.class);
+            intent.putExtra("email", email);
+            startActivity(intent);
         });
 
         emailList.setAdapter(adapter);
