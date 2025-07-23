@@ -32,6 +32,10 @@ public class EmailViewModel extends ViewModel {
         repository.delete(email);
     }
 
+    public void update(Email email) {
+        repository.update(email);
+    }
+
     public void reload() {
         repository.reload();
     }
