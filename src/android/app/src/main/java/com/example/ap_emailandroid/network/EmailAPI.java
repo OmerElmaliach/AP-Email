@@ -9,6 +9,8 @@ import com.example.ap_emailandroid.AppController;
 import com.example.ap_emailandroid.R;
 import com.example.ap_emailandroid.local.Email;
 import com.example.ap_emailandroid.local.EmailDao;
+
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -21,23 +23,27 @@ import java.util.function.Consumer;
 public class EmailAPI {
     private MutableLiveData<List<Email>> emailListData;
     private EmailDao dao;
-    private final String userId;
     Retrofit retrofit;
     WebServiceAPI webServiceAPI;
 
     public EmailAPI(MutableLiveData<List<Email>> emailListData, EmailDao dao, String userId) {
-        this.userId = userId;
         this.emailListData = emailListData;
         this.dao = dao;
 
-        retrofit = new Retrofit.Builder().baseUrl(AppController.context.getString(R.string.BaseUrl))
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new AuthInterceptor(userId))
+                .build();
+
+        retrofit = new Retrofit.Builder()
+                .baseUrl(AppController.context.getString(R.string.BaseUrl))
+                .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         webServiceAPI = retrofit.create(WebServiceAPI.class);
     }
 
     public void get() {
-        Call<List<Email>> call = webServiceAPI.getEmails(userId);
+        Call<List<Email>> call = webServiceAPI.getEmails();
         call.enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<List<Email>> call, @NonNull Response<List<Email>> res) {
@@ -82,8 +88,29 @@ public class EmailAPI {
         });
     }
 
+    public void update(Email email, Consumer<Email> onSuccess) {
+        Call<Email> call = webServiceAPI.updateEmail(email.getMailId(), email);
+        call.enqueue(new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<Email> call, @NonNull Response<Email> res) {
+                if (res.isSuccessful() && res.body() != null) {
+                    Email updatedEmail = res.body();
+                    Log.i("EmailAPI", "Updated Email ID: " + updatedEmail.getMailId());
+                    onSuccess.accept(updatedEmail);
+                } else {
+                    Log.e("EmailAPI", "Update failed: " + res.code());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Email> call, @NonNull Throwable t) {
+                Log.e("EmailAPI", "Update request failed", t);
+            }
+        });
+    }
+
     public void delete(Email email) {
-        Call<Void> call = webServiceAPI.deleteEmail(email.getMailId(), userId);
+        Call<Void> call = webServiceAPI.deleteEmail(email.getMailId());
         call.enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> res) {
