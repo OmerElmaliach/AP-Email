@@ -151,7 +151,7 @@ public class EmailActivity extends AppCompatActivity {
         fromView.append(" " + email.getFrom());
 
         TextView toView = findViewById(R.id.email_to);
-        toView.append(" " + email.getTo());
+        toView.append(" " + email.getTo()); // TODO something. maybe
 
         TextView dateView = findViewById(R.id.email_date);
         dateView.append(" " + email.getDateSent());

@@ -69,7 +69,6 @@ public class InboxActivity extends AppCompatActivity {
         userLabelMap.put("Spam", "spam");
         userLabelMap.put("Trash", "trash");
 
-        AppSession.userId = "1"; // TODO: INTEGRATE WITH GABI
 
         // Handle user authentication data passed from SignInActivity
         handleUserAuthentication();

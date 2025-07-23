@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');  
 const { isLoggedIn } = require('./middleware/auth');
+const mongoose = require('mongoose');
 
 const app = express();
 
@@ -18,10 +19,19 @@ const labels = require('./routes/labels');
 const blacklist = require('./routes/blacklist');
 const userPhoto = require('./routes/userPhoto');
 
-const model = require('./models/labels'); 
-model.initializeDefaultLabels(); 
+//connect to database 
+mongoose.connect('mongodb://localhost:27017/AP-Email', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+}).then(() => console.log(' MongoDB connected'))
+  .catch((err) => console.error('MongoDB connection error:', err));
 
 
+
+const labelsBD = require('./services/labels');
+(async () => {
+  await labelsBD.initializeDefaultLabels();
+})();
 
 app.use(express.json())
 //these dont need token
