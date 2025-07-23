@@ -1,7 +1,5 @@
 package com.example.ap_emailandroid.model;
 
-import java.net.URI;
-
 import android.net.Uri;
 
 /**
@@ -23,7 +21,7 @@ public class SignUpRequest {
     public SignUpRequest() {}
     
     public SignUpRequest(String firstName, String lastName, String email, String userName, 
-                        String password, String birthday, String gender, URI profilePictureUri) {
+                        String password, String birthday, String gender, Uri profilePictureUri) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;

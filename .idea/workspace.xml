@@ -71,13 +71,11 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c3396701-4484-40c4-8f4d-2af4a616e2c9" name="Changes" comment="user photo menu + profile picture added">
-      <change afterPath="$PROJECT_DIR$/src/android/app/src/main/res/menu/pfp_menu.xml" afterDir="false" />
+    <list default="true" id="c3396701-4484-40c4-8f4d-2af4a616e2c9" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/android/app/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/src/android/app/build.gradle.kts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/android/app/src/main/java/com/example/ap_emailandroid/AppSession.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/android/app/src/main/java/com/example/ap_emailandroid/AppSession.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/android/app/src/main/java/com/example/ap_emailandroid/ui/InboxActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/android/app/src/main/java/com/example/ap_emailandroid/ui/InboxActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/android/app/src/main/res/layout/drawer_header.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/android/app/src/main/res/layout/drawer_header.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/android/app/src/main/java/com/example/ap_emailandroid/local/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/android/app/src/main/java/com/example/ap_emailandroid/local/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/android/app/src/main/java/com/example/ap_emailandroid/model/SignUpRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/android/app/src/main/java/com/example/ap_emailandroid/model/SignUpRequest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -159,7 +157,7 @@
     "ScreenshotViewer.SavePath": "C:/Users/gavze/AndroidStudioProjects/AP-Email/src/android",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "AE-214-add-user-button-functionality",
+    "git-widget-placeholder": "AE-218-picture-integration-bug-sign-up",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/gavze/AndroidStudioProjects/AP-Email/src/android/settings.gradle.kts",
@@ -463,7 +461,7 @@
     <MESSAGE value="some cosmetic changes + adding gradle files + connection should work" />
     <MESSAGE value="connection works for sign in but not sign up" />
     <MESSAGE value="user photo menu + profile picture added" />
-    <option name="LAST_COMMIT_MESSAGE" value="user photo menu + profile picture added" />
+    <option name="LAST_COMMIT_MESSAGE" value="" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">
