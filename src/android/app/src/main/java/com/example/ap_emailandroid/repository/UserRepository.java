@@ -1,5 +1,9 @@
 package com.example.ap_emailandroid.repository;
 
+import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.MediaStore;
 import com.example.ap_emailandroid.AppController;
 import com.example.ap_emailandroid.R;
 import com.example.ap_emailandroid.local.User;
@@ -9,7 +13,11 @@ import com.example.ap_emailandroid.model.SignInResponse;
 import com.example.ap_emailandroid.model.SignUpResponse;
 import com.example.ap_emailandroid.network.UserAPI;
 
+import java.io.File;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -52,8 +60,61 @@ public class UserRepository {
      * @param callback callback for handling response
      */
     public void createUser(User user, Callback<SignUpResponse> callback) {
-        Call<SignUpResponse> call = userAPI.createUser(user);
-        call.enqueue(callback);
+        try {
+            // Create RequestBody for each text field
+            RequestBody firstName = RequestBody.create(MediaType.parse("text/plain"), user.getFirstName());
+            RequestBody lastName = RequestBody.create(MediaType.parse("text/plain"), user.getLastName());
+            RequestBody email = RequestBody.create(MediaType.parse("text/plain"), user.getEmail());
+            RequestBody userName = RequestBody.create(MediaType.parse("text/plain"), user.getUserName());
+            RequestBody password = RequestBody.create(MediaType.parse("text/plain"), user.getPassword());
+            RequestBody birthday = RequestBody.create(MediaType.parse("text/plain"), user.getBirthday());
+            RequestBody gender = RequestBody.create(MediaType.parse("text/plain"), user.getGender());
+            RequestBody phoneNumber = RequestBody.create(MediaType.parse("text/plain"), 
+                user.getPhoneNumber() != null ? user.getPhoneNumber() : "");
+
+            // Create file part for picture
+            MultipartBody.Part picturePart = null;
+            if (user.getPicture() != null) {
+                File file = getFileFromUri(user.getPicture());
+                if (file != null && file.exists()) {
+                    RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), file);
+                    picturePart = MultipartBody.Part.createFormData("picture", file.getName(), requestFile);
+                }
+            }
+
+            if (picturePart == null) {
+                // Handle case where no picture is provided - this should not happen in normal flow
+                android.util.Log.e("UserRepository", "No picture file found, cannot create user");
+                return;
+            }
+
+            Call<SignUpResponse> call = userAPI.createUser(firstName, lastName, email, userName, 
+                password, birthday, gender, phoneNumber, picturePart);
+            call.enqueue(callback);
+        } catch (Exception e) {
+            android.util.Log.e("UserRepository", "Error creating multipart request", e);
+        }
+    }
+
+    /**
+     * Convert Uri to File
+     */
+    private File getFileFromUri(Uri uri) {
+        try {
+            Context context = AppController.context;
+            String[] projection = {MediaStore.Images.Media.DATA};
+            Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
+            if (cursor != null) {
+                int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                cursor.moveToFirst();
+                String filePath = cursor.getString(columnIndex);
+                cursor.close();
+                return new File(filePath);
+            }
+        } catch (Exception e) {
+            android.util.Log.e("UserRepository", "Error getting file from Uri", e);
+        }
+        return null;
     }
 
     /**
