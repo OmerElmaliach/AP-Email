@@ -26,19 +26,19 @@ public interface WebServiceAPI {
     @GET("/api/mails/")
     Call<List<Email>> getEmails();
 
-    @POST("/api/mails/") //TODO
+    @POST("/api/mails/") //works
     Call<Email> createEmail(@Body Email email);
 
-    @PATCH("/api/mails/{id}") //TODO
+    @PATCH("/api/mails/{id}") //works (with drafts)
     Call<Email> updateEmail(@Path("id") String mailId, @Body Email email);
 
-    @DELETE("/api/mails/{id}")
+    @DELETE("/api/mails/{id}")//works
     Call<Void> deleteEmail(@Path("id") String mailId);
 
-    @GET("/api/labels/")
+    @GET("/api/labels/") //works
     Call<List<Label>> getLabels();
 
-    @POST("/api/labels/") //TODO change backend
+    @POST("/api/labels/") //TODO change backend i dont remmeber what this is. ask omer
     Call<LabelResponse> createLabel(@Body Label label);
 
     @DELETE("/api/labels/{id}")
