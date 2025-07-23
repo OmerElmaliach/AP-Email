@@ -1,5 +1,6 @@
 package com.example.ap_emailandroid.network;
 
+import com.example.ap_emailandroid.local.BlacklistReq;
 import com.example.ap_emailandroid.local.Email;
 import com.example.ap_emailandroid.local.Label;
 import com.example.ap_emailandroid.local.LabelResponse;
@@ -44,6 +45,9 @@ public interface WebServiceAPI {
     @DELETE("/api/labels/{id}") //works
     Call<Void> deleteLabel(@Path("id") String id);
 
+    @POST("/api/blacklist")
+    Call<Void> blacklistUrl(@Body BlacklistReq request);
+  
     // User endpoints
     @POST("/api/users") // TODO we dont use?
 

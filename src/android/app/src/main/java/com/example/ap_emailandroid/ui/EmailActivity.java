@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class EmailActivity extends AppCompatActivity {
     static final List<String> defLabels = List.of("inbox", "sent", "draft", "trash");
@@ -92,7 +94,10 @@ public class EmailActivity extends AppCompatActivity {
         btn_back.setOnClickListener(view -> finish());
 
         ImageButton btn_spam = findViewById(R.id.btn_spam);
-        btn_spam.setOnClickListener(view -> addLabel(email, emailViewModel, "Spam"));
+        btn_spam.setOnClickListener(view -> {
+            reportSpam(emailViewModel, email);
+            addLabel(email, emailViewModel, "Spam");
+        });
 
         ImageButton btn_starred = findViewById(R.id.btn_starred);
         btn_starred.setOnClickListener(view -> addLabel(email, emailViewModel, "Starred"));
@@ -227,5 +232,29 @@ public class EmailActivity extends AppCompatActivity {
         }
 
         return null;
+    }
+
+    public void reportSpam(EmailViewModel emailViewModel, Email email) {
+        if (email.getLabel().contains("spam"))
+            return;
+
+        List<String> spamURLs = new ArrayList<>();
+        String regex = "(https?://)?(www\\.)?[a-zA-Z0-9\\-]+(\\.[a-zA-Z]{2,})+(/[\\w\\-._~:/?#\\[\\]@!$&'()*+,;=%]*)?";
+        Pattern pattern = Pattern.compile(regex);
+
+        Matcher subjectMatcher = pattern.matcher(email.getSubject());
+        Matcher bodyMatcher = pattern.matcher(email.getBody());
+
+        while (subjectMatcher.find()) {
+            spamURLs.add(subjectMatcher.group());
+        }
+
+        while (bodyMatcher.find()) {
+            spamURLs.add(bodyMatcher.group());
+        }
+
+        for (String url : spamURLs) {
+            emailViewModel.reportSpam(url);
+        }
     }
 }
