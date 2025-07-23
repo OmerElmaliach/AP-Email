@@ -7,10 +7,11 @@ import androidx.room.TypeConverters;
 import com.example.ap_emailandroid.db.Converters;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
-public class Email {
+public class Email implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     private int emailJaId;

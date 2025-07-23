@@ -24,10 +24,10 @@
         <activity
             android:name=".ui.signup.SignUpActivity"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
         </activity>
       
         <!-- signin activity (placeholder) -->
@@ -39,9 +39,20 @@
         <activity
             android:name=".ui.MainActivity"
             android:exported="false" />
-            
-        <activity android:name=".ui.InboxActivity" />
-        <activity android:name=".ui.signin.SignInActivity" />
+
+        <!-- email activity -->
+        <activity
+            android:name=".ui.EmailActivity"
+            android:exported="false" />
+
+        <activity android:name=".ui.InboxActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>
