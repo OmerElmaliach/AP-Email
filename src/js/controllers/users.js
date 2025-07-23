@@ -1,11 +1,10 @@
 
 const jwt = require('jsonwebtoken');
-const model = require('../models/users')
+const model = require('../services/users')
 const { SECRET_KEY } = require('../middleware/auth')
 
 //mandatory fields: id, name, Email, userName, password, birthday.
-// optional fields: phone, gender (W/M!), picture
-const createUser = (req, res) => {
+const createUser = async  (req, res) => {
     const {
         firstName,
         lastName,
@@ -28,14 +27,10 @@ const createUser = (req, res) => {
         return res.status(400).json({ error: 'Missing mandatory field' });
     }
     // check email address isnt taken 
-    if (model.getUser('email', email)) {
+    if (await model.getUser('email', email)) {
         return res.status(409).json({ error: 'That username is taken. Try another.' });
     }
 
-    // check usename address isnt taken 
-    if (model.getUser('userName', userName)) {
-        return res.status(409).json({ error: 'userName already in use' });
-    }
     //check password is valid- most be 8 chars and most include number and letters , with atleast one capital 
     const passwordError = validatePassword(password);
     if (passwordError) {
@@ -75,16 +70,16 @@ const createUser = (req, res) => {
         picture, //filename
         labels
     }
-    model.addUser(newUser)
+    await model.addUser(newUser)
 
     //get user token
-    const user = model.getUser('userName', userName)
+    const user = await model.getUser('userName', userName)
     //make sure user was indeed added
     if (!user || user.password !== password ) {
         return res.status(404).json({error: 'could not save user' })
     }
     //the token will hold in data userid and his email
-    const data = { id: user.id, email: user.email }
+    const data = { id: user._id.toString(), email: user.email }
     const token = jwt.sign(data, SECRET_KEY, { expiresIn: '1h' });
     
 
@@ -92,10 +87,9 @@ const createUser = (req, res) => {
 }
 
 
-//i chenged this to req.user.id; from param.id ,ake sure it still works
-const getUser = (req, res) => {
+const getUser = async (req, res) => {
     const id = req.user.id
-    const user = model.getUser('id', id)
+    const user = await model.getUser('id', id)
     if (!user) {
         return res.status(404).json({ error: 'User not found' })
     }
@@ -103,7 +97,8 @@ const getUser = (req, res) => {
     const { firstName, lastName, email, gender, picture, birthday } = user
     // taskes first and last and joins trings to one with space. if one is missing its  ok
     const fullName = [firstName, lastName].filter(Boolean).join(' ') 
-    return res.status(200).json({ fullName, email, gender, picture,birthday })
+        
+    return res.status(200).json({ fullName, email, gender, picture, birthday })
 }
 
 /* for DEBUGGING

@@ -3,6 +3,7 @@ package com.example.ap_emailandroid.ui;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -59,7 +60,6 @@ public class InboxActivity extends AppCompatActivity {
         userLabelMap.put("Spam", "spam");
         userLabelMap.put("Trash", "trash");
 
-        AppSession.userId = "1"; // TODO: INTEGRATE WITH GABI
 
         // Handle user authentication data passed from SignInActivity
         handleUserAuthentication();
@@ -82,6 +82,7 @@ public class InboxActivity extends AppCompatActivity {
             // Mock storage - in real app this would be properly secured
             // SharedPreferences prefs = getSharedPreferences("auth", MODE_PRIVATE);
             // prefs.edit().putString("token", userToken).putString("email", userEmail).apply();
+            Log.e("aaaaaaaaaaa","green means go");
         }
     }
 

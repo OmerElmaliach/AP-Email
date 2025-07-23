@@ -9,6 +9,7 @@ import com.example.ap_emailandroid.AppController;
 import com.example.ap_emailandroid.R;
 import com.example.ap_emailandroid.local.Label;
 import com.example.ap_emailandroid.local.LabelDao;
+import com.example.ap_emailandroid.local.LabelResponse;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -69,22 +70,22 @@ public class LabelAPI {
     }
 
     public void create(Label label, Consumer<Label> onSuccess) {
-        Call<Label> call = webServiceAPI.createLabel(label);
+        Call<LabelResponse> call = webServiceAPI.createLabel(label);
         call.enqueue(new Callback<>() {
             @Override
-            public void onResponse(@NonNull Call<Label> call, @NonNull Response<Label> res) {
+            public void onResponse(@NonNull Call<LabelResponse> call, @NonNull Response<LabelResponse> res) {
                 if (res.isSuccessful() && res.body() != null) {
-                    Label createdLabel = res.body();
+                    Label createdLabel = res.body().getLabel();
                     label.setId(createdLabel.getId());
                     Log.i("LabelAPI", "Label created: " + createdLabel.getId());
                     onSuccess.accept(createdLabel);
                 } else {
-                    Log.e("LabelAPI", "Failed to create label: " + res.code());
+                    Log.e("LabelAPI", "Failed to create label: " + res.message());
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<Label> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<LabelResponse> call, @NonNull Throwable t) {
                 Log.e("LabelAPI", "Create request failed", t);
             }
         });
@@ -98,7 +99,7 @@ public class LabelAPI {
                 if (res.isSuccessful()) {
                     Log.e("LabelAPI", "Label deleted successfully: " + res.code());
                 } else {
-                    Log.e("LabelAPI", "Deletion failed: " + res.code());
+                    Log.e("LabelAPI", "Deletion failed: " + res.message());
                 }
             }
 

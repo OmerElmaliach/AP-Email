@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
-    <uses-permission android:name="android.permission.INTERNET" />
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.ap_emailandroid"> <!-- i added this for clarity, maybe remove -->
 
-    <!-- permissions for image access -->
+    <!-- Permissions -->
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
@@ -19,39 +20,32 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.APEmailAndroid"
         tools:targetApi="31">
-        
-        <!-- signup activity -->
+
+        <!-- signup activity (launcher) -->
         <activity
             android:name=".ui.signup.SignUpActivity"
-            android:exported="true">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
-        </activity>
-      
-        <!-- signin activity (placeholder) -->
-        <activity
-            android:name=".ui.signin.SignInActivity"
-            android:exported="false" />
-            
-        <!-- main activity -->
-        <activity
-            android:name=".ui.MainActivity"
-            android:exported="false" />
-
-        <!-- email activity -->
-        <activity
-            android:name=".ui.EmailActivity"
-            android:exported="false" />
-
-        <activity android:name=".ui.InboxActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- signin activity -->
+        <activity android:name=".ui.signin.SignInActivity" android:exported="false" />
+
+        <!-- main activity -->
+        <activity android:name=".ui.MainActivity" android:exported="false" />
+
+        <!-- inbox activity -->
+        <activity android:name=".ui.InboxActivity" android:exported="true" />
+
+        <!-- email activity -->
+        <activity android:name=".ui.EmailActivity" android:exported="false" />
+
+        <!-- send mail activity -->
+        <activity android:name=".ui.sendMail.SendMailActivity"
+            android:exported="false" />
 
     </application>
 

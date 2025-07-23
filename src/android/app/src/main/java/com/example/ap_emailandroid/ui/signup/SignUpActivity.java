@@ -2,10 +2,12 @@ package com.example.ap_emailandroid.ui.signup;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.ap_emailandroid.R;
+import com.example.ap_emailandroid.ui.InboxActivity;
 import com.example.ap_emailandroid.ui.signin.SignInActivity;
 import com.example.ap_emailandroid.viewmodel.SignUpViewModel;
 
@@ -15,6 +17,7 @@ import com.example.ap_emailandroid.viewmodel.SignUpViewModel;
  */
 public class SignUpActivity extends AppCompatActivity implements SignUpNavigationListener {
     
+    private static final String TAG = "SignUpActivity";
     private SignUpViewModel signUpViewModel;
     private int currentStep = 1;
     private static final int TOTAL_STEPS = 4;
@@ -23,15 +26,21 @@ public class SignUpActivity extends AppCompatActivity implements SignUpNavigatio
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
-        
+        Log.d(TAG, "SignUpActivity created");
+
         // initialize viewmodel
         signUpViewModel = new ViewModelProvider(this).get(SignUpViewModel.class);
         
         // observe signup completion
         signUpViewModel.getSignUpSuccess().observe(this, success -> {
+            Log.d(TAG, "SignUpSuccess observed: " + success);
             if (success) {
-                // navigate to signin page after successful signup
-                Intent intent = new Intent(this, SignInActivity.class);
+                // navigate to inbox after successful signup
+                String token = signUpViewModel.getAuthToken().getValue();
+                Log.d(TAG, "Navigating to InboxActivity with token: " + (token != null ? "present" : "null"));
+                Intent intent = new Intent(this, InboxActivity.class);
+                intent.putExtra("user_token", token);
+                intent.putExtra("user_email", signUpViewModel.getEmail());
                 startActivity(intent);
                 finish();
             }
@@ -39,6 +48,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpNavigatio
         
         // observe error messages
         signUpViewModel.getErrorMessage().observe(this, error -> {
+            Log.d(TAG, "Error message observed: " + error);
             if (error != null && !error.isEmpty()) {
                 // show error message to user
                 // todo: implement proper error display
@@ -91,6 +101,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpNavigatio
     
     @Override
     public void onSignUpComplete() {
+        android.util.Log.e("SignUpActivity", "onSignUpComplete() called - submitting signup");
         signUpViewModel.submitSignUp();
     }
     

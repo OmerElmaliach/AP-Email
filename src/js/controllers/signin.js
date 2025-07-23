@@ -1,14 +1,14 @@
 
-const model = require('../models/users')
+const model = require('../services/users')
 const jwt = require('jsonwebtoken');
 const { SECRET_KEY } = require('../middleware/auth')
 
 
-const signin = (req,res) =>{
+const signin = async (req,res) =>{
     const { password , email } = req.body; 
     
     //not to self- username and email are the same exact thing. 
-    const user = model.getUser('email', email)
+    const user = await model.getUser('email', email)
     //check id exists and that password matches 
     if (!user || user.password !== password ) {
         return res.status(404).json({error: 'wrong email or password' })
