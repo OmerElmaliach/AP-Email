@@ -16,7 +16,8 @@ public class User {
     private String birthday;
     private String phoneNumber;
     private String gender;
-    private Uri picture;
+    private String picture; // Changed from Uri to String to match server response
+    private transient Uri profilePictureUri; // Keep Uri for local image selection, exclude from JSON
     private String fullName;
 
     // Default constructor
@@ -32,7 +33,7 @@ public class User {
         this.password = password;
         this.birthday = birthday;
         this.gender = gender;
-        this.picture = picture;
+        this.profilePictureUri = picture;
     }
 
     // Getters and setters
@@ -108,12 +109,20 @@ public class User {
         this.gender = gender;
     }
 
-    public Uri getPicture() {
+    public String getPicture() {
         return picture;
     }
 
-    public void setProfilePictureUri(Uri picture) {
+    public void setPicture(String picture) {
         this.picture = picture;
+    }
+
+    public Uri getProfilePictureUri() {
+        return profilePictureUri;
+    }
+
+    public void setProfilePictureUri(Uri profilePictureUri) {
+        this.profilePictureUri = profilePictureUri;
     }
 
     public String getFullName() {

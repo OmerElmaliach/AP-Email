@@ -99,7 +99,7 @@ public class InboxActivity extends AppCompatActivity {
                 public void onResponse(Call<User> call, Response<User> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         AppSession.userFullName = response.body().getFullName();
-                        AppSession.userPicture = response.body().getPicture();
+                        AppSession.userPicture = response.body().getProfilePictureUri();
                         // Update header UI with real user info and picture
                         runOnUiThread(() -> {
                             NavigationView navView = findViewById(R.id.nav_view);
