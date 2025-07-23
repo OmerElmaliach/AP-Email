@@ -28,9 +28,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ap_emailandroid.local.Label;
 import com.example.ap_emailandroid.ui.adapters.EmailAdapter;
-import com.example.ap_emailandroid.ui.signin.SignInActivity;
+import com.example.ap_emailandroid.ui.sendMail.SendMailActivity;
 import com.example.ap_emailandroid.viewmodel.EmailViewModel;
 import com.example.ap_emailandroid.viewmodel.LabelViewModel;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
@@ -44,7 +45,6 @@ public class InboxActivity extends AppCompatActivity {
     static final List<String> defLabels = List.of("Inbox", "Starred", "Sent", "Draft", "Spam", "Trash");
     private EmailAdapter adapter;
     private EmailViewModel emailViewModel;
-    private String currLabel = "inbox";
     private Map<String, String> userLabelMap;
 
     @Override
@@ -60,13 +60,23 @@ public class InboxActivity extends AppCompatActivity {
         userLabelMap.put("Spam", "spam");
         userLabelMap.put("Trash", "trash");
 
-
         // Handle user authentication data passed from SignInActivity
         handleUserAuthentication();
-        
+        // Initial Setup
         setupToolbar();
         setupEmails();
         setupHeader();
+    }
+
+    /**
+     * Reload from db and to room when resuming
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (emailViewModel != null) {
+            emailViewModel.reload();
+        }
     }
 
     /**
@@ -110,6 +120,8 @@ public class InboxActivity extends AppCompatActivity {
             int groupId = Menu.FIRST;
             menu.removeGroup(groupId);
             for (Label label : labels) {
+                if (defLabels.contains(label.getName()))
+                    continue;
                 MenuItem item = menu.add(groupId, View.generateViewId(), Menu.NONE, label.name);
                 item.setIcon(R.drawable.label_ic);
                 userLabelMap.put(label.getName(), label.getId());
@@ -178,7 +190,7 @@ public class InboxActivity extends AppCompatActivity {
             String labelName = Objects.requireNonNull(item.getTitle()).toString();
             emailViewModel.searchEmailsInLabel(userLabelMap.get(labelName), "").observe(this, emails -> {
                 adapter.setEmails(emails);
-                currLabel = userLabelMap.get(labelName);
+                AppSession.currentLabel = userLabelMap.get(labelName);
             });
             drawerLayout.closeDrawers();
             return true;
@@ -201,7 +213,13 @@ public class InboxActivity extends AppCompatActivity {
 
         emailList.setAdapter(adapter);
         emailViewModel = new ViewModelProvider(this).get(EmailViewModel.class);
-        emailViewModel.searchEmailsInLabel(currLabel, "").observe(this, adapter::setEmails);
+        emailViewModel.searchEmailsInLabel(AppSession.currentLabel, "").observe(this, adapter::setEmails);
+
+        FloatingActionButton composeButton = findViewById(R.id.compose);
+        composeButton.setOnClickListener(view -> {
+            Intent intent = new Intent(this, SendMailActivity.class);
+            startActivity(intent);
+        });
     }
 
     /**
@@ -212,13 +230,13 @@ public class InboxActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                emailViewModel.searchEmailsInLabel(currLabel, query).observe(InboxActivity.this, adapter::setEmails);
+                emailViewModel.searchEmailsInLabel(AppSession.currentLabel, query).observe(InboxActivity.this, adapter::setEmails);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newQuery) {
-                emailViewModel.searchEmailsInLabel(currLabel, newQuery).observe(InboxActivity.this, adapter::setEmails);
+                emailViewModel.searchEmailsInLabel(AppSession.currentLabel, newQuery).observe(InboxActivity.this, adapter::setEmails);
                 return true;
             }
         });
