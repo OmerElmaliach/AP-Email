@@ -45,7 +45,8 @@ public interface WebServiceAPI {
     Call<Void> deleteLabel(@Path("id") String id);
 
     // User endpoints
-    @POST("/api/users") //we dont use
+    @POST("/api/users") // TODO we dont use?
+
     Call<SignUpResponse> createUser(@Body User user);
 
     @GET("/api/users/me")
