@@ -21,7 +21,6 @@ public interface UserAPI {
      * Create a new user (sign up)
      * Corresponds to POST /api/users endpoint
      * Note: For now using JSON body instead of multipart form data
-     * Picture handling will be added in future version
      */
     @POST("/api/signup/")
     Call<SignUpResponse> createUser(@Body User user);

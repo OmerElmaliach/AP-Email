@@ -5,5 +5,6 @@ public class AppSession {
     public static String userToken;
     public static String userEmail;
     public static String userFullName;
-    public static String userPicture;
+    // GABI - ADDED CODE
+    public static Uri userPicture;
 }

@@ -99,27 +99,28 @@ public class UserRepository {
         call.enqueue(callback);
     }
 
-    /**
-     * Synchronous method for checking if email exists (for legacy support)
-     * @param email the email to check
-     * @return true if email exists, false otherwise
-     */
-    public boolean emailExists(String email) {
-        // This is a simplified synchronous version
-        // In a real implementation, you would use the async version above
-        return false;
-    }
+    // GABI - DELETED CODE
+    // /**
+    //  * Synchronous method for checking if email exists (for legacy support)
+    //  * @param email the email to check
+    //  * @return true if email exists, false otherwise
+    //  */
+    // public boolean emailExists(String email) {
+    //     // This is a simplified synchronous version
+    //     // In a real implementation, you would use the async version above
+    //     return false;
+    // }
 
-    /**
-     * Synchronous method for checking if username exists (for legacy support)
-     * @param userName the username to check
-     * @return true if username exists, false otherwise
-     */
-    public boolean userNameExists(String userName) {
-        // This is a simplified synchronous version
-        // In a real implementation, you would use the async version above
-        return false;
-    }
+    // /**
+    //  * Synchronous method for checking if username exists (for legacy support)
+    //  * @param userName the username to check
+    //  * @return true if username exists, false otherwise
+    //  */
+    // public boolean userNameExists(String userName) {
+    //     // This is a simplified synchronous version
+    //     // In a real implementation, you would use the async version above
+    //     return false;
+    // }
 
     /**
      * Legacy method for creating user (synchronous)
@@ -137,6 +138,8 @@ public class UserRepository {
         user.setBirthday(signUpRequest.getBirthday());
         user.setGender(signUpRequest.getGender());
         user.setPhoneNumber(signUpRequest.getPhoneNumber());
+        // GABI - ADDED CODE
+        user.setProfilePictureUri(signUpRequest.getProfilePictureUri());
         // Note: Picture handling will be implemented later with multipart uploads
         
         // For now, return true as placeholder

@@ -144,6 +144,8 @@ public class SignUpViewModel extends ViewModel {
         user.setBirthday(birthday);
         user.setGender(gender);
         user.setPhoneNumber(phoneNumber);
+        // GABI - ADDED CODE
+        user.setProfilePictureUri(profilePictureUri);
 
         Log.d(TAG, "Making API call to create user with email: " + email);
 
