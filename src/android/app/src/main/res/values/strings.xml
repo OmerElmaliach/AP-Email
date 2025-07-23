@@ -41,5 +41,7 @@
     <string name="recipient_textBox">To</string>
     <string name="subject_textBox">Subject</string>
     <string name="mail_body_textBox">Compose email</string>
+    <string name="save_draft_btn">Save to Draft</string>
+    <string name="edit_email">Edit Email</string>
 
 </resources>
