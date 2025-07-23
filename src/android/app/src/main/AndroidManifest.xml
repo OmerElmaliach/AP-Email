@@ -30,10 +30,10 @@
 <!--            </intent-filter>-->
         </activity>
       
-        <!-- signin activity (placeholder) -->
+        <!-- signin activity -->
         <activity
             android:name=".ui.signin.SignInActivity"
-            android:exported="false" />
+            android:exported="true" />
             
         <!-- main activity -->
         <activity
