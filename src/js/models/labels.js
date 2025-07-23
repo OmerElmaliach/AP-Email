@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const labels = new mongoose.Schema({
   id: { type: String, required: true, unique: true },
-  name: { type: String },
+  name: { type: String, required: true },
   userId: { type: String, required: true },
   color: { type: String }
 
