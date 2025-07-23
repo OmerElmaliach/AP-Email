@@ -6,11 +6,14 @@ import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.ImageButton;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.ap_emailandroid.R;
 import com.example.ap_emailandroid.local.Email;
 import  com.example.ap_emailandroid.network.EmailAPI;
+import com.example.ap_emailandroid.viewmodel.EmailViewModel;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class SendMailActivity extends AppCompatActivity {
@@ -46,14 +49,17 @@ public class SendMailActivity extends AppCompatActivity {
 
     }
     private void sendEmail(){
-        //List<String> to = editTo.getText().toString().trim();
+        //setup 'to' field
+        String[] toArray = editTo.getText().toString().trim().split(",");
+        List<String> to = Arrays.asList(toArray);
+
         String subject = editSubject.getText().toString().trim();
         String body = editBody.getText().toString().trim();
 
-      //  if (to.isEmpty()) {
-      //      Toast.makeText(this, "missing recipient email", Toast.LENGTH_SHORT).show();
-      //      return;
-      //  }
+        if (to.isEmpty()) {
+            Toast.makeText(this, "missing recipient email", Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (subject.isEmpty()) {
             Toast.makeText(this, "missing email subject", Toast.LENGTH_SHORT).show();
             return;
@@ -65,9 +71,12 @@ public class SendMailActivity extends AppCompatActivity {
 
         Toast.makeText(this, "Sending mail...", Toast.LENGTH_SHORT).show();
 
-        //Email email = new Email(null,null,to,subject,body,null,null);
+        EmailViewModel viewModel = new ViewModelProvider(this).get(EmailViewModel.class);
+        Email email = new Email(null, null, to, subject, body, null, null);
+        viewModel.add(email);
+        Toast.makeText(this, "Mail sent", Toast.LENGTH_SHORT).show();
+        finish();
 
-        //TODO send email, probably implament a send mail api
 
 
     }
