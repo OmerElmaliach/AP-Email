@@ -1,5 +1,7 @@
 package com.example.ap_emailandroid.local;
 
+import android.net.Uri;
+
 /**
  * User data model representing a user in the system
  * Maps to the user structure used by the JS server
@@ -14,7 +16,7 @@ public class User {
     private String birthday;
     private String phoneNumber;
     private String gender;
-    private String picture;
+    private Uri picture;
     private String fullName;
 
     // Default constructor
@@ -22,7 +24,7 @@ public class User {
 
     // Constructor with all required fields
     public User(String firstName, String lastName, String email, String userName, 
-                String password, String birthday, String gender, String picture) {
+                String password, String birthday, String gender, Uri picture) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -106,11 +108,11 @@ public class User {
         this.gender = gender;
     }
 
-    public String getPicture() {
+    public Uri getPicture() {
         return picture;
     }
 
-    public void setPicture(String picture) {
+    public void setProfilePictureUri(Uri picture) {
         this.picture = picture;
     }
 

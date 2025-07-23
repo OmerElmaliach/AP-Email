@@ -1,4 +1,5 @@
 package com.example.ap_emailandroid;
+import android.net.Uri;
 
 public class AppSession {
     public static String userId;
