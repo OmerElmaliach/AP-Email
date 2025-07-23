@@ -1,0 +1,71 @@
+Index: src/android/app/src/main/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\">\r\n    <uses-permission android:name=\"android.permission.INTERNET\" />\r\n\r\n    <!-- permissions for image access -->\r\n    <uses-permission android:name=\"android.permission.READ_EXTERNAL_STORAGE\" />\r\n    <uses-permission android:name=\"android.permission.READ_MEDIA_IMAGES\" />\r\n\r\n    <application\r\n        android:name=\".AppController\"\r\n        android:networkSecurityConfig=\"@xml/network_security_config\"\r\n        android:allowBackup=\"true\"\r\n        android:dataExtractionRules=\"@xml/data_extraction_rules\"\r\n        android:fullBackupContent=\"@xml/backup_rules\"\r\n        android:icon=\"@drawable/favicon\"\r\n        android:label=\"@string/app_name\"\r\n        android:roundIcon=\"@drawable/favicon\"\r\n        android:supportsRtl=\"true\"\r\n        android:theme=\"@style/Theme.APEmailAndroid\"\r\n        tools:targetApi=\"31\">\r\n        \r\n        <!-- signup activity -->\r\n        <activity\r\n            android:name=\".ui.signup.SignUpActivity\"\r\n            android:exported=\"true\">\r\n            <intent-filter>\r\n                <action android:name=\"android.intent.action.MAIN\" />\r\n                <category android:name=\"android.intent.category.LAUNCHER\" />\r\n            </intent-filter>\r\n        </activity>\r\n      \r\n        <!-- signin activity (placeholder) -->\r\n        <activity\r\n            android:name=\".ui.signin.SignInActivity\"\r\n            android:exported=\"false\" />\r\n            \r\n        <!-- main activity -->\r\n        <activity\r\n            android:name=\".ui.MainActivity\"\r\n            android:exported=\"false\" />\r\n            \r\n        <activity android:name=\".ui.InboxActivity\" />\r\n        <activity android:name=\".ui.signin.SignInActivity\" />\r\n    </application>\r\n\r\n</manifest>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/android/app/src/main/AndroidManifest.xml b/src/android/app/src/main/AndroidManifest.xml
+--- a/src/android/app/src/main/AndroidManifest.xml	(revision 651155c03c571bc6e4db0b62da2f43876de08e3c)
++++ b/src/android/app/src/main/AndroidManifest.xml	(date 1753100586073)
+@@ -30,7 +30,7 @@
+             </intent-filter>
+         </activity>
+       
+-        <!-- signin activity (placeholder) -->
++        <!-- signin activity -->
+         <activity
+             android:name=".ui.signin.SignInActivity"
+             android:exported="false" />
+@@ -41,7 +41,6 @@
+             android:exported="false" />
+             
+         <activity android:name=".ui.InboxActivity" />
+-        <activity android:name=".ui.signin.SignInActivity" />
+     </application>
+ 
+ </manifest>
+\ No newline at end of file
+Index: src/android/settings.gradle.kts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>pluginManagement {\r\n    repositories {\r\n        google {\r\n            content {\r\n                includeGroupByRegex(\"com\\\\.android.*\")\r\n                includeGroupByRegex(\"com\\\\.google.*\")\r\n                includeGroupByRegex(\"androidx.*\")\r\n            }\r\n        }\r\n        mavenCentral()\r\n        gradlePluginPortal()\r\n    }\r\n}\r\ndependencyResolutionManagement {\r\n    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)\r\n    repositories {\r\n        google()\r\n        mavenCentral()\r\n    }\r\n}\r\n\r\nrootProject.name = \"AP-Email Android\"\r\ninclude(\":app\")\r\n 
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/android/settings.gradle.kts b/src/android/settings.gradle.kts
+--- a/src/android/settings.gradle.kts	(revision 651155c03c571bc6e4db0b62da2f43876de08e3c)
++++ b/src/android/settings.gradle.kts	(date 1753101262146)
+@@ -21,4 +21,3 @@
+ 
+ rootProject.name = "AP-Email Android"
+ include(":app")
+- 
+\ No newline at end of file
+Index: .idea/gradle.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"GradleMigrationSettings\" migrationVersion=\"1\" />\r\n  <component name=\"GradleSettings\">\r\n    <option name=\"linkedExternalProjectsSettings\">\r\n      <GradleProjectSettings>\r\n        <option name=\"testRunner\" value=\"CHOOSE_PER_TEST\" />\r\n        <option name=\"externalProjectPath\" value=\"$PROJECT_DIR$/src/android\" />\r\n        <option name=\"gradleJvm\" value=\"#GRADLE_LOCAL_JAVA_HOME\" />\r\n        <option name=\"modules\">\r\n          <set>\r\n            <option value=\"$PROJECT_DIR$/src/android\" />\r\n            <option value=\"$PROJECT_DIR$/src/android/app\" />\r\n          </set>\r\n        </option>\r\n      </GradleProjectSettings>\r\n    </option>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/gradle.xml b/.idea/gradle.xml
+--- a/.idea/gradle.xml	(revision 651155c03c571bc6e4db0b62da2f43876de08e3c)
++++ b/.idea/gradle.xml	(date 1753104317407)
+@@ -6,7 +6,7 @@
+       <GradleProjectSettings>
+         <option name="testRunner" value="CHOOSE_PER_TEST" />
+         <option name="externalProjectPath" value="$PROJECT_DIR$/src/android" />
+-        <option name="gradleJvm" value="#GRADLE_LOCAL_JAVA_HOME" />
++        <option name="gradleJvm" value="jbr-21" />
+         <option name="modules">
+           <set>
+             <option value="$PROJECT_DIR$/src/android" />
+diff --git a/src/android/app/src/main/res/layout/fragment_email_password_step_new.xml b/src/android/app/src/main/res/layout/fragment_email_password_step_new.xml
+deleted file mode 100644
+diff --git a/src/android/app/src/main/res/layout/fragment_birthday_step_new.xml b/src/android/app/src/main/res/layout/fragment_birthday_step_new.xml
+deleted file mode 100644
+diff --git a/src/android/app/src/main/res/layout/fragment_name_step_new.xml b/src/android/app/src/main/res/layout/fragment_name_step_new.xml
+deleted file mode 100644
+diff --git a/src/android/app/src/main/res/layout/fragment_picture_step_new.xml b/src/android/app/src/main/res/layout/fragment_picture_step_new.xml
+deleted file mode 100644

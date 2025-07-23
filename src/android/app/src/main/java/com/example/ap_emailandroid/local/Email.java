@@ -27,7 +27,8 @@ public class Email implements Serializable {
     public String from;
 
     @SerializedName("to")
-    public String to;
+    @TypeConverters(Converters.class)
+    public List<String> to;
 
     @SerializedName("subject")
     public String subject;
@@ -42,7 +43,7 @@ public class Email implements Serializable {
     @TypeConverters(Converters.class)
     public List<String> label;
 
-    public Email(String mail_id, String from, String to, String subject, String body, String date_sent, List<String> label) {
+    public Email(String mail_id, String from, List<String> to, String subject, String body, String date_sent, List<String> label) {
         this.mail_id = mail_id;
         this.from = from;
         this.to = to;
@@ -72,7 +73,7 @@ public class Email implements Serializable {
         return from;
     }
 
-    public String getTo() {
+    public List<String> getTo() {
         return to;
     }
 
@@ -100,7 +101,7 @@ public class Email implements Serializable {
         this.mail_id = content;
     }
 
-    public void setTo(String content) {
+    public void setTo(List<String> content) {
         this.to = content;
     }
 
