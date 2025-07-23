@@ -161,25 +161,47 @@ public class SignUpViewModel extends ViewModel {
                     SignUpResponse signUpResponse = response.body();
                     authToken.postValue(signUpResponse.getToken());
                     signUpSuccess.postValue(true);
+                    errorMessage.postValue("Account created successfully! Welcome to AP-Email!");
                 } else {
                     Log.e(TAG, "Signup failed with response code: " + response.code());
+                    String errorBody = "";
                     if (response.errorBody() != null) {
                         try {
-                            String errorBody = response.errorBody().string();
+                            errorBody = response.errorBody().string();
                             Log.e(TAG, "Error body: " + errorBody);
                         } catch (Exception e) {
                             Log.e(TAG, "Error reading error body", e);
                         }
                     }
 
-                    // Handle error response
-                    String error = "Sign up failed. Please try again.";
-                    if (response.code() == 409) {
-                        error = "Email or username already exists.";
-                    } else if (response.code() == 400) {
-                        error = "Invalid input. Please check your information.";
+                    // Handle specific error responses with user-friendly messages
+                    String error;
+                    switch (response.code()) {
+                        case 400:
+                            if (errorBody.toLowerCase().contains("image") || errorBody.toLowerCase().contains("file") || errorBody.toLowerCase().contains("size")) {
+                                error = "Image file is too large. Please select a smaller image (max 5MB).";
+                            } else {
+                                error = "Invalid information provided. Please check your details and try again.";
+                            }
+                            break;
+                        case 409:
+                            error = "This email address is already registered. Please use a different email or sign in.";
+                            break;
+                        case 413:
+                            error = "Image file is too large. Please select a smaller image.";
+                            break;
+                        case 500:
+                            error = "Server error occurred. Please try again later.";
+                            break;
+                        case 503:
+                            error = "Service temporarily unavailable. Please try again later.";
+                            break;
+                        default:
+                            error = "Sign up failed (Error " + response.code() + "). Please try again.";
+                            break;
                     }
                     errorMessage.postValue(error);
+                    signUpSuccess.postValue(false);
                 }
             }
             
@@ -187,7 +209,18 @@ public class SignUpViewModel extends ViewModel {
             public void onFailure(Call<SignUpResponse> call, Throwable t) {
                 Log.e(TAG, "API call failed", t);
                 isLoading.postValue(false);
-                errorMessage.postValue("Network error. Please check your connection and try again.");
+
+                // Provide specific error messages based on the type of failure
+                String error;
+                if (t instanceof java.net.ConnectException || t instanceof java.net.UnknownHostException) {
+                    error = "Cannot connect to server. Please check your internet connection and try again.";
+                } else if (t instanceof java.net.SocketTimeoutException) {
+                    error = "Request timed out. Please check your connection and try again.";
+                } else {
+                    error = "Network error occurred. Please check your connection and try again.";
+                }
+                errorMessage.postValue(error);
+                signUpSuccess.postValue(false);
             }
         });
     }

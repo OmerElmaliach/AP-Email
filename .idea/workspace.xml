@@ -71,12 +71,10 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c3396701-4484-40c4-8f4d-2af4a616e2c9" name="Changes" comment="amended Uri">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="c3396701-4484-40c4-8f4d-2af4a616e2c9" name="Changes" comment="managed to log in after sign up correctly :)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/android/app/src/main/java/com/example/ap_emailandroid/local/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/android/app/src/main/java/com/example/ap_emailandroid/local/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/android/app/src/main/java/com/example/ap_emailandroid/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/android/app/src/main/java/com/example/ap_emailandroid/repository/UserRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/android/app/src/main/java/com/example/ap_emailandroid/ui/InboxActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/android/app/src/main/java/com/example/ap_emailandroid/ui/InboxActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/android/app/src/main/res/layout/fragment_email_password_step.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/android/app/src/main/res/layout/fragment_email_password_step.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/android/app/src/main/res/layout/fragment_name_step.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/android/app/src/main/res/layout/fragment_name_step.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -437,7 +435,15 @@
       <option name="project" value="LOCAL" />
       <updated>1753278855122</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="managed to log in after sign up correctly :)">
+      <option name="closed" value="true" />
+      <created>1753287048666</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1753287048666</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -471,19 +477,20 @@
     <MESSAGE value="connection works for sign in but not sign up" />
     <MESSAGE value="user photo menu + profile picture added" />
     <MESSAGE value="amended Uri" />
-    <option name="LAST_COMMIT_MESSAGE" value="amended Uri" />
+    <MESSAGE value="managed to log in after sign up correctly :)" />
+    <option name="LAST_COMMIT_MESSAGE" value="managed to log in after sign up correctly :)" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">
       <map>
         <entry key="com.example.ap_emailandroid">
           <value>
-            <CheckInfo lastCheckTimestamp="1753121088546" />
+            <CheckInfo lastCheckTimestamp="1753287082803" />
           </value>
         </entry>
         <entry key="com.example.ap_emailandroid.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1753121088551" />
+            <CheckInfo lastCheckTimestamp="1753287082802" />
           </value>
         </entry>
       </map>
