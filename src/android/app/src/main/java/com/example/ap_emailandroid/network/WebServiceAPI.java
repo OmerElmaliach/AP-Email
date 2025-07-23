@@ -21,10 +21,9 @@ import retrofit2.http.Header;
 
 import java.util.List;
 
-// TODO: CHANGE TO JS SERVER URLS
 public interface WebServiceAPI {
     // Emails
-    @GET("/api/mails/") //works
+    @GET("/api/mails/")
     Call<List<Email>> getEmails();
 
     @POST("/api/mails/") //TODO
@@ -33,24 +32,23 @@ public interface WebServiceAPI {
     @PATCH("/api/mails/{id}") //TODO
     Call<Email> updateEmail(@Path("id") String mailId, @Body Email email);
 
-    @DELETE("/api/mails/{id}") //TODO
+    @DELETE("/api/mails/{id}")
     Call<Void> deleteEmail(@Path("id") String mailId);
 
-    @GET("/api/labels/") //TODO - remove degualt labels
+    @GET("/api/labels/")
     Call<List<Label>> getLabels();
 
     @POST("/api/labels/") //TODO change backend
     Call<LabelResponse> createLabel(@Body Label label);
 
-    @DELETE("/api/labels/{id}") //works
+    @DELETE("/api/labels/{id}")
     Call<Void> deleteLabel(@Path("id") String id);
 
     @POST("/api/blacklist")
     Call<Void> blacklistUrl(@Body BlacklistReq request);
   
     // User endpoints
-    @POST("/api/users") // TODO we dont use?
-
+    @POST("/api/users")
     Call<SignUpResponse> createUser(@Body User user);
 
     @GET("/api/users/me")
