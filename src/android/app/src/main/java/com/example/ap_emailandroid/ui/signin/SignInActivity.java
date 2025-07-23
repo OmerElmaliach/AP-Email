@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.ap_emailandroid.AppSession;
 import com.example.ap_emailandroid.R;
 import com.example.ap_emailandroid.ui.InboxActivity;
 import com.example.ap_emailandroid.ui.signup.SignUpActivity;
@@ -161,6 +163,7 @@ public class SignInActivity extends AppCompatActivity {
                 
                 if (response.isSuccessful() && response.body() != null) {
                     String token = response.body().getToken();
+                    AppSession.userId = token;
                     navigateToInbox(token, email);
                 } else {
                     String error = "Invalid email or password";
