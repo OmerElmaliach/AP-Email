@@ -11,6 +11,8 @@ const isLoggedIn = (req, res, next) => {
     const token = authHeader && authHeader.split(' ')[1]; 
         // no token send to signin
         if (!token) {
+        console.log("i dont have the token");
+        
         return res.redirect('http://localhost:3000/signin'); 
         }
         try {
