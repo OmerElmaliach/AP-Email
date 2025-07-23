@@ -76,6 +76,7 @@ public class UserRepository {
     public void getCurrentUser(String token, Callback<User> callback) {
         Call<User> call = userAPI.getCurrentUser("Bearer " + token);
         call.enqueue(callback);
+        //TODO GABI add call to /api/userPhoto to get photo and save this res (fullname, email, BD, gender) and photo res locally=> appsession
     }
 
     /**
