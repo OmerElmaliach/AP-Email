@@ -7,6 +7,8 @@ Follow these steps to create a new AP-Email account:
 3. Click **Create Account**.
 4. Check your email for a **verification link** and click it to activate your account.
 
+<img width="1920" height="1080" alt="example_asset_05" src="https://github.com/user-attachments/assets/1e4c7289-6407-423f-a146-8659d9e92030" />
+
 ### Profile Information
 - **Use your real name** for professional communication
 - **Complete optional fields** for better account security
@@ -19,20 +21,12 @@ Once your account is verified, you can:
 - **Sign in to your account**
 - **Access your inbox** (initially empty)
 - **Start sending emails**
-- **Customize your settings**
-
-### Welcome Email
-You'll receive a welcome email containing:
-- **Getting started tips**
-- **Feature highlights**
-- **Quick start guide**
 
 ### Account Features
 Your new account includes:
 - **Unlimited email storage**
 - **Custom labels and organization**
 - **Cross-platform access** (web and mobile)
-- **Secure email encryption**
 
 ## Troubleshooting Sign Up Issues
 
@@ -42,13 +36,6 @@ Your new account includes:
 - **Check if you already have an account**
 - **Try signing in instead**
 - **Use the password reset** if you forgot your password
-- **Contact support** if you believe this is an error
-
-#### Verification Email Not Received
-- **Wait a few minutes** for delivery
-- **Check spam/junk folders**
-- **Verify email address spelling**
-- **Request a new verification email**
 
 #### Password Not Accepted
 - **Check all password requirements**
@@ -67,21 +54,15 @@ Your new account includes:
 If you encounter any issues during sign up:
 
 1. **Check the FAQ section** for common solutions
-2. **Contact our support team** via email
-3. **Use the live chat feature** if available
-4. **Check our social media** for service updates
 
 ## Privacy and Security
 
 ### Your Information
-- **Personal data is encrypted** and securely stored
 - **Email content is private** and never shared
 - **We don't sell or share** your information with third parties
-- **You control your data** and can delete your account anytime
 
 ### Account Security
 - **Secure login protocols** prevent unauthorized access
-- **Account activity monitoring** alerts you to suspicious activity
 
 ## Next Steps
 
