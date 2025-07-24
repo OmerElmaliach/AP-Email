@@ -12,7 +12,7 @@ Access your AP-Email account through any web browser to manage your emails, comp
 
 ### Quick Start
 1. **Open your web browser**
-2. **Navigate to the AP-Email website**
+2. **Navigate to the AP-Email website (http://localhost:3000/SignIn)**
 3. **Sign up** for a new account or **Sign in** to existing account
 4. **Start managing your emails**
 
