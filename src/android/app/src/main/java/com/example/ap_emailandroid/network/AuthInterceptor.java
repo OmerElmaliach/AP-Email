@@ -21,7 +21,7 @@ public class AuthInterceptor implements Interceptor {
         Request original = chain.request();
         Request requestWithHeaders = original.newBuilder()
                 .header("Authorization", "Bearer " + userId)
-                .header("clientType", "app") //TODO backend if not rreact dont return a redirect
+                .header("clienttype", "app")
                 .build();
 
         return chain.proceed(requestWithHeaders);
