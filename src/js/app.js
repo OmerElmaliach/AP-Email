@@ -19,14 +19,22 @@ const labels = require('./routes/labels');
 const blacklist = require('./routes/blacklist');
 const userPhoto = require('./routes/userPhoto');
 
+const mongoUri = 'mongodb://mongodb:27017/AP-Email'
 //connect to database 
-mongoose.connect('mongodb://localhost:27017/AP-Email', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-}).then(() => console.log(' MongoDB connected'))
-  .catch((err) => console.error('MongoDB connection error:', err));
+async function connectWithRetry() {
+  try {
+    await mongoose.connect(mongoUri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log('MongoDB connected successfully');
+  } catch (err) {
+    console.error('MongoDB connection failed, retrying in 5 seconds...', err);
+    setTimeout(connectWithRetry, 5000); // retry after 5 seconds
+  }
+}
 
-
+connectWithRetry();
 
 const labelsBD = require('./services/labels');
 (async () => {
