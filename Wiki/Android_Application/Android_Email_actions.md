@@ -18,4 +18,7 @@ These icons allow users to perform common actions on draft and received emails. 
 
 ---
 
+
+<img width="407" height="822" alt="Screenshot (216)" src="https://github.com/user-attachments/assets/a1acc884-00a0-4cf3-ad9f-a3cccc5609c9" />
+
 > 📝 **Note:** This toolbar adapts based on the context (e.g., drafts vs. inbox) and may be extended in future versions.
