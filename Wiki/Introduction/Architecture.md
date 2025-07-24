@@ -29,6 +29,11 @@ AP-Email is a simple email service that you can use in two ways:
         │  │                 │    │
         │  └─────────────────┘    │
         │  ┌─────────────────┐    │
+        │  │    Blacklist    |    |
+        |  |     server      │    │
+        │  │     (C++)       │    │
+        │  └─────────────────┘    │
+        │  ┌─────────────────┐    │
         │  │  Local Storage  │    │
         │  │ (Room/Browser)  │    │
         │  └─────────────────┘    │
