@@ -6,4 +6,6 @@ public class AppSession {
     public static String userEmail;
     public static String userFullName;
     public static String userPicture;
+  
+    public static String currentLabel = "inbox"; //TODO delete this gabi?
 }

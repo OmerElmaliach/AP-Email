@@ -1,5 +1,6 @@
 package com.example.ap_emailandroid.network;
 
+import com.example.ap_emailandroid.local.BlacklistReq;
 import com.example.ap_emailandroid.local.Email;
 import com.example.ap_emailandroid.local.Label;
 import com.example.ap_emailandroid.local.LabelResponse;
@@ -20,32 +21,35 @@ import retrofit2.http.Header;
 
 import java.util.List;
 
-// TODO: CHANGE TO JS SERVER URLS
 public interface WebServiceAPI {
     // Emails
-    @GET("/api/mails/") //works
+    @GET("/api/mails/")
     Call<List<Email>> getEmails();
 
-    @POST("/api/mails/") //TODO ETL
+
+    @POST("/api/mails/") //works
     Call<Email> createEmail(@Body Email email);
 
-    @PATCH("/api/mails/{id}") //TODO ETL
+    @PATCH("/api/mails/{id}") //works (with drafts)
     Call<Email> updateEmail(@Path("id") String mailId, @Body Email email);
 
-    @DELETE("/api/mails/{id}") //works
+    @DELETE("/api/mails/{id}")//works
     Call<Void> deleteEmail(@Path("id") String mailId);
 
-    @GET("/api/labels/") //TODO - remove default labels - OMER
+    @GET("/api/labels/") //works
     Call<List<Label>> getLabels();
 
-    @POST("/api/labels/") //TODO change backend ETL
+    @POST("/api/labels/") //TODO change backend - i dont remmeber what this is. ask omer
     Call<LabelResponse> createLabel(@Body Label label);
 
-    @DELETE("/api/labels/{id}") //works
+    @DELETE("/api/labels/{id}")
     Call<Void> deleteLabel(@Path("id") String id);
 
+    @POST("/api/blacklist")
+    Call<Void> blacklistUrl(@Body BlacklistReq request);
+  
     // User endpoints
-    @POST("/api/users") //we dont use
+    @POST("/api/users")
     Call<SignUpResponse> createUser(@Body User user);
 
     @GET("/api/users/me")
