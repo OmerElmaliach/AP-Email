@@ -17,7 +17,7 @@ public class User {
     private String phoneNumber;
     private String gender;
     private String picture; // Changed from Uri to String to match server response
-    private transient Uri profilePictureUri; // Keep Uri for local image selection, exclude from JSON
+    private transient Uri profilePictureUri; // Keep Uri for local image selection
     private String fullName;
 
     // Default constructor

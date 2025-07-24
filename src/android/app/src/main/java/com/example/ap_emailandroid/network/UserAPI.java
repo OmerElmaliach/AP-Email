@@ -70,7 +70,7 @@ public interface UserAPI {
     Call<Void> checkUsernameExists(@Header("username") String username);
 
     // GABI - ADDED CODE TO CONTACT API FOR USER PHOTO
-     * Get user profile picture
+     /* Get user profile picture
      * Corresponds to GET /api/userPhoto/me endpoint
      * Uses Bearer token for authentication
      */
