@@ -21,6 +21,7 @@ Before starting, ensure you have the following installed on your system:
 ---
 
 ## Clone the Repository
+In your favourite terminal, enter:
 
 ```bash
 git clone https://github.com/OmerElmaliach/AP-Email.git
@@ -29,19 +30,22 @@ cd AP-Email
 ### Method 1: Using Docker Compose (Recommended)
 
 1. **Run the Complete System:**
+   Run the following in your terminal:
    ```bash
    sudo docker-compose up
    ```
+   Wait for the process to finish.
    
-2. **Access the Services:**
-   in order to use services most create an account.
-   in your local browser copy to your url
-    - to create an account go to Email SignUp : `http://localhost:3000/SignUp` 
-    - if you already have an account go to Email SignIn : `http://localhost:3000/SignIn` 
+3. **Access the Services:**
+   In order to use services you must create an account.
+   In your local browser enter the following URL - 
+    - to create an account go to Email SignUp : [http://localhost:3000/SignUp](http://localhost:3000/SignUp)
+    - if you already have an account go to Email SignIn : [http://localhost:3000/SignIn](http://localhost:3000/SignIn)
       
 Users may only interact with the React frontend. Any attempt to access the backend directly will redirect them to the sign-in page.
 
 3. **Stop the System:**
+   Run the following in your terminal:
    ```bash
    docker-compose down
    ```
@@ -102,15 +106,8 @@ Users may only interact with the React frontend. Any attempt to access the backe
 2. Click **File > Open**
 3. Navigate to the **AP-Email/src/android** folder and open the project
 
-### **Configure the API Connection**
-The Android application needs to connect to the backend server:
-
-#### **Update the Backend URL**
-1. Navigate to the Android app's network configuration
-2. Update the backend URL to `http://localhost:9000` (or your computer's IP if using a physical device)
-
 ### **Build and Run the Android Application**
-1. In **Android Studio**, click **Run > Run 'app'**
+1. Click **Run > Run 'app'** (or the green arrow at the top)
 2. Select your emulator or connected device
 3. The application should launch and connect to the backend server
 
@@ -130,13 +127,13 @@ touch local.properties
 
 # Add Android SDK path (adjust path for your system)
 # Windows
-echo "sdk.dir=C:\\Users\\YourName\\AppData\\Local\\Android\\Sdk" >> local.properties
+echo "sdk.dir=C:\\Users\\<YourName>\\AppData\\Local\\Android\\Sdk" >> local.properties
 
 # macOS
-echo "sdk.dir=/Users/YourName/Library/Android/sdk" >> local.properties
+echo "sdk.dir=/Users/<YourName>/Library/Android/sdk" >> local.properties
 
 # Linux
-echo "sdk.dir=/home/YourName/Android/Sdk" >> local.properties
+echo "sdk.dir=/home/<YourName>/Android/Sdk" >> local.properties
 ```
 
 ### 3. Sync and Build Project
@@ -167,10 +164,7 @@ adb devices
 
 ## Database Setup
 
-### Option 1: In-Memory Development (Current)
-No additional setup required. The application uses in-memory storage for development.
-
-### Option 2: MongoDB Setup (Planned)
+### Manual MongoDB Setup
 ```bash
 # Install MongoDB locally
 # Windows: Download from https://www.mongodb.com/try/download/community
@@ -205,6 +199,7 @@ sudo npm install -g npm@latest
 ```bash
 # Gradle sync failures
 ./gradlew clean build
+# or press the elephant symbol at the top of the toolbar to sync gradle
 
 # Android SDK issues
 # Update SDK through Android Studio SDK Manager
