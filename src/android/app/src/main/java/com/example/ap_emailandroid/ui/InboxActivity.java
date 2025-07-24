@@ -33,6 +33,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.ap_emailandroid.local.Label;
 import com.example.ap_emailandroid.ui.adapters.EmailAdapter;
 import com.example.ap_emailandroid.ui.sendMail.SendMailActivity;
+import com.example.ap_emailandroid.ui.signin.SignInActivity;
 import com.example.ap_emailandroid.viewmodel.EmailViewModel;
 import com.example.ap_emailandroid.viewmodel.LabelViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -112,32 +113,68 @@ public class InboxActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<User> call, Response<User> response) {
                     if (response.isSuccessful() && response.body() != null) {
-                        AppSession.userFullName = response.body().getFullName();
-                        AppSession.userPicture = response.body().getProfilePictureUri();
+                        User user = response.body();
+                        AppSession.userFullName = user.getFullName();
+                        AppSession.userBirthday = user.getBirthday();
+                        AppSession.userGender = user.getGender();
+
                         // Update header UI with real user info and picture
                         runOnUiThread(() -> {
                             NavigationView navView = findViewById(R.id.nav_view);
                             View header = navView.getHeaderView(0);
-                            TextView userEmailText = header.findViewById(R.id.user_email);
                             TextView userFullNameText = header.findViewById(R.id.user_full_name);
                             ImageButton pfpButton = header.findViewById(R.id.pfp);
-                            userEmailText.setText(AppSession.userEmail);
                             userFullNameText.setText(AppSession.userFullName);
-                            Picasso.get()
-                                   .load(AppSession.userPicture)
-                                   .placeholder(R.drawable.placeholder_pfp)
-                                   .into(pfpButton);
+
+                            // Load profile picture from server
+                            loadProfilePictureFromServer(pfpButton);
                         });
                     }
                 }
 
                 @Override
                 public void onFailure(Call<User> call, Throwable t) {
-                    // handle failure silently, use placeholder
-                    runOnUiThread(() -> updateHeaderUI());
+                    // handle failure silently
                 }
             });
         }
+    }
+
+    /**
+     * Load profile picture from server using the photo endpoint
+     */
+    private void loadProfilePictureFromServer(ImageButton imageButton) {
+        if (AppSession.userToken == null) {
+            imageButton.setImageResource(R.drawable.placeholder_pfp);
+            return;
+        }
+
+        UserRepository userRepo = new UserRepository();
+        userRepo.getUserPhoto(AppSession.userToken, new Callback<okhttp3.ResponseBody>() {
+            @Override
+            public void onResponse(Call<okhttp3.ResponseBody> call, Response<okhttp3.ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        byte[] bytes = response.body().bytes();
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        if (bitmap != null) {
+                            runOnUiThread(() -> imageButton.setImageBitmap(bitmap));
+                        } else {
+                            runOnUiThread(() -> imageButton.setImageResource(R.drawable.placeholder_pfp));
+                        }
+                    } catch (Exception e) {
+                        runOnUiThread(() -> imageButton.setImageResource(R.drawable.placeholder_pfp));
+                    }
+                } else {
+                    runOnUiThread(() -> imageButton.setImageResource(R.drawable.placeholder_pfp));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<okhttp3.ResponseBody> call, Throwable t) {
+                runOnUiThread(() -> imageButton.setImageResource(R.drawable.placeholder_pfp));
+            }
+        });
     }
 
     // GABI - ADDED CODE (UPDATE HEADER UI)
@@ -147,11 +184,9 @@ public class InboxActivity extends AppCompatActivity {
     private void updateHeaderUI() {
         NavigationView navView = findViewById(R.id.nav_view);
         View header = navView.getHeaderView(0);
-        TextView userEmailText = header.findViewById(R.id.user_email);
         TextView userFullNameText = header.findViewById(R.id.user_full_name);
         ImageButton pfpButton = header.findViewById(R.id.pfp);
         
-        userEmailText.setText(AppSession.userEmail);
         userFullNameText.setText(AppSession.userFullName != null ? AppSession.userFullName : "User");
         
         // Load profile picture with authentication
@@ -359,11 +394,9 @@ public class InboxActivity extends AppCompatActivity {
         NavigationView nav_view = findViewById(R.id.nav_view);
         View headerView = nav_view.getHeaderView(0);
         ImageButton pfpButton = headerView.findViewById(R.id.pfp);
-        TextView userEmailText = headerView.findViewById(R.id.user_email);
         TextView userFullNameText = headerView.findViewById(R.id.user_full_name);
         
         // Load user picture and details
-        userEmailText.setText(AppSession.userEmail);
         userFullNameText.setText(AppSession.userFullName != null ? AppSession.userFullName : "User");
         
         // Load profile picture with authentication
@@ -373,15 +406,15 @@ public class InboxActivity extends AppCompatActivity {
             PopupMenu popup = new PopupMenu(this, pfpButton, Gravity.END);
             popup.getMenuInflater().inflate(R.menu.pfp_menu, popup.getMenu());
             
-            // Update menu items with user data
-            MenuItem nameItem = popup.getMenu().findItem(R.id.menu_name);
-            nameItem.setTitle("Name: " + (AppSession.userFullName != null ? AppSession.userFullName : "Not available"));
-            nameItem.setEnabled(false);
-            
+            // Update menu items with current user data from AppSession
             MenuItem emailItem = popup.getMenu().findItem(R.id.menu_email);
             emailItem.setTitle("Email: " + (AppSession.userEmail != null ? AppSession.userEmail : "Not available"));
             emailItem.setEnabled(false);
-            
+
+            MenuItem nameItem = popup.getMenu().findItem(R.id.menu_name);
+            nameItem.setTitle("Name: " + (AppSession.userFullName != null ? AppSession.userFullName : "Not available"));
+            nameItem.setEnabled(false);
+
             MenuItem birthdayItem = popup.getMenu().findItem(R.id.menu_birthday);
             birthdayItem.setTitle("Birthday: " + (AppSession.userBirthday != null ? AppSession.userBirthday : "Not available"));
             birthdayItem.setEnabled(false);

@@ -21,18 +21,20 @@
         android:theme="@style/Theme.APEmailAndroid"
         tools:targetApi="31">
 
-        <!-- signup activity (launcher) -->
+        <!-- signup activity -->
         <activity
             android:name=".ui.signup.SignUpActivity"
+            android:exported="false" />
+
+        <!-- signin activity (launcher) -->
+        <activity
+            android:name=".ui.signin.SignInActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <!-- signin activity -->
-        <activity android:name=".ui.signin.SignInActivity" android:exported="false" />
 
         <!-- main activity -->
         <activity android:name=".ui.MainActivity" android:exported="false" />
