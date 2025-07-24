@@ -21,7 +21,7 @@ public class SignUpRequest {
     public SignUpRequest() {}
     
     public SignUpRequest(String firstName, String lastName, String email, String userName, 
-                        String password, String birthday, String gender) {
+                        String password, String birthday, String gender, Uri profilePictureUri) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -29,6 +29,7 @@ public class SignUpRequest {
         this.password = password;
         this.birthday = birthday;
         this.gender = gender;
+        this.profilePictureUri = profilePictureUri;
     }
     
     // getters and setters
@@ -95,6 +96,7 @@ public class SignUpRequest {
     public void setProfilePictureUri(Uri profilePictureUri) {
         this.profilePictureUri = profilePictureUri;
     }
+    // GABI - ADDED CODE
     //TODO save picture adress then in add it to http req in VM(?)
     public String getPhoneNumber() {
         return phoneNumber;

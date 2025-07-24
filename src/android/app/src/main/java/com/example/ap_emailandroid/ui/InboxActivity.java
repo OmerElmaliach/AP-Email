@@ -2,6 +2,8 @@ package com.example.ap_emailandroid.ui;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Menu;
@@ -49,6 +51,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import com.squareup.picasso.Picasso;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 
 public class InboxActivity extends AppCompatActivity {
     static final List<String> defLabels = List.of("Inbox", "Starred", "Sent", "Draft", "Spam", "Trash");
@@ -109,7 +113,7 @@ public class InboxActivity extends AppCompatActivity {
                 public void onResponse(Call<User> call, Response<User> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         AppSession.userFullName = response.body().getFullName();
-                        AppSession.userPicture = response.body().getPicture();
+                        AppSession.userPicture = response.body().getProfilePictureUri();
                         // Update header UI with real user info and picture
                         runOnUiThread(() -> {
                             NavigationView navView = findViewById(R.id.nav_view);
@@ -129,10 +133,68 @@ public class InboxActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<User> call, Throwable t) {
-                    // handle failure silently
+                    // handle failure silently, use placeholder
+                    runOnUiThread(() -> updateHeaderUI());
                 }
             });
         }
+    }
+
+    // GABI - ADDED CODE (UPDATE HEADER UI)
+    /**
+     * Update the navigation header UI with user info and picture
+     */
+    private void updateHeaderUI() {
+        NavigationView navView = findViewById(R.id.nav_view);
+        View header = navView.getHeaderView(0);
+        TextView userEmailText = header.findViewById(R.id.user_email);
+        TextView userFullNameText = header.findViewById(R.id.user_full_name);
+        ImageButton pfpButton = header.findViewById(R.id.pfp);
+        
+        userEmailText.setText(AppSession.userEmail);
+        userFullNameText.setText(AppSession.userFullName != null ? AppSession.userFullName : "User");
+        
+        // Load profile picture with authentication
+        loadProfilePictureWithAuth(pfpButton);
+    }
+
+    /**
+     * Load profile picture with authentication (placeholder implementation)
+     * This would require a custom Picasso interceptor or manual bitmap loading
+     */
+    private void loadProfilePictureWithAuth(ImageButton imageButton) {
+        if (AppSession.userToken == null) {
+            imageButton.setImageResource(R.drawable.placeholder_pfp);
+            return;
+        }
+
+        UserRepository userRepo = new UserRepository();
+        userRepo.getUserPhoto(AppSession.userToken, new Callback<okhttp3.ResponseBody>() {
+            @Override
+            public void onResponse(Call<okhttp3.ResponseBody> call, Response<okhttp3.ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        // Convert response body to bitmap
+                        byte[] bytes = response.body().bytes();
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        if (bitmap != null) {
+                            runOnUiThread(() -> imageButton.setImageBitmap(bitmap));
+                        } else {
+                            runOnUiThread(() -> imageButton.setImageResource(R.drawable.placeholder_pfp));
+                        }
+                    } catch (Exception e) {
+                        runOnUiThread(() -> imageButton.setImageResource(R.drawable.placeholder_pfp));
+                    }
+                } else {
+                    runOnUiThread(() -> imageButton.setImageResource(R.drawable.placeholder_pfp));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<okhttp3.ResponseBody> call, Throwable t) {
+                runOnUiThread(() -> imageButton.setImageResource(R.drawable.placeholder_pfp));
+            }
+        });
     }
 
     /**
@@ -299,24 +361,35 @@ public class InboxActivity extends AppCompatActivity {
         ImageButton pfpButton = headerView.findViewById(R.id.pfp);
         TextView userEmailText = headerView.findViewById(R.id.user_email);
         TextView userFullNameText = headerView.findViewById(R.id.user_full_name);
+        
         // Load user picture and details
         userEmailText.setText(AppSession.userEmail);
-        userFullNameText.setText(AppSession.userFullName);
-        if (AppSession.userPicture != null) {
-            Picasso.get()
-                   .load(AppSession.userPicture)
-                   .placeholder(R.drawable.placeholder_pfp)
-                   .into(pfpButton);
-        }
+        userFullNameText.setText(AppSession.userFullName != null ? AppSession.userFullName : "User");
+        
+        // Load profile picture with authentication
+        loadProfilePictureWithAuth(pfpButton);
+        
         pfpButton.setOnClickListener(v -> {
             PopupMenu popup = new PopupMenu(this, pfpButton, Gravity.END);
             popup.getMenuInflater().inflate(R.menu.pfp_menu, popup.getMenu());
-            MenuItem emailItem = popup.getMenu().findItem(R.id.menu_email);
-            emailItem.setTitle(AppSession.userEmail);
-            emailItem.setEnabled(false);
+            
+            // Update menu items with user data
             MenuItem nameItem = popup.getMenu().findItem(R.id.menu_name);
-            nameItem.setTitle(AppSession.userFullName);
+            nameItem.setTitle("Name: " + (AppSession.userFullName != null ? AppSession.userFullName : "Not available"));
             nameItem.setEnabled(false);
+            
+            MenuItem emailItem = popup.getMenu().findItem(R.id.menu_email);
+            emailItem.setTitle("Email: " + (AppSession.userEmail != null ? AppSession.userEmail : "Not available"));
+            emailItem.setEnabled(false);
+            
+            MenuItem birthdayItem = popup.getMenu().findItem(R.id.menu_birthday);
+            birthdayItem.setTitle("Birthday: " + (AppSession.userBirthday != null ? AppSession.userBirthday : "Not available"));
+            birthdayItem.setEnabled(false);
+            
+            MenuItem genderItem = popup.getMenu().findItem(R.id.menu_gender);
+            genderItem.setTitle("Gender: " + (AppSession.userGender != null ? AppSession.userGender : "Not available"));
+            genderItem.setEnabled(false);
+            
             popup.setOnMenuItemClickListener(item -> {
                 if (item.getItemId() == R.id.menu_sign_out) {
                     Intent intent = new Intent(this, SignInActivity.class);

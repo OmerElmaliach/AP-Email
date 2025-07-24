@@ -5,11 +5,15 @@ import com.example.ap_emailandroid.model.SignInRequest;
 import com.example.ap_emailandroid.model.SignInResponse;
 import com.example.ap_emailandroid.model.SignUpResponse;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 
 /**
  * User API interface for handling user-related operations
@@ -19,12 +23,22 @@ public interface UserAPI {
     
     /**
      * Create a new user (sign up)
-     * Corresponds to POST /api/users endpoint
-     * Note: For now using JSON body instead of multipart form data
-     * Picture handling will be added in future version
+     * Corresponds to POST /api/signup/ endpoint
+     * Uses multipart form data for file upload
      */
+    @Multipart
     @POST("/api/signup/")
-    Call<SignUpResponse> createUser(@Body User user);
+    Call<SignUpResponse> createUser(
+        @Part("firstName") RequestBody firstName,
+        @Part("lastName") RequestBody lastName,
+        @Part("email") RequestBody email,
+        @Part("userName") RequestBody userName,
+        @Part("password") RequestBody password,
+        @Part("birthday") RequestBody birthday,
+        @Part("gender") RequestBody gender,
+        @Part("phoneNumber") RequestBody phoneNumber,
+        @Part MultipartBody.Part picture
+    );
 
     /**
      * Get current user information
@@ -54,4 +68,12 @@ public interface UserAPI {
      */
     @GET("/api/users/check-username")
     Call<Void> checkUsernameExists(@Header("username") String username);
+
+    // GABI - ADDED CODE TO CONTACT API FOR USER PHOTO
+     /* Get user profile picture
+     * Corresponds to GET /api/userPhoto/me endpoint
+     * Uses Bearer token for authentication
+     */
+    @GET("/api/userPhoto/me")
+    Call<okhttp3.ResponseBody> getUserPhoto(@Header("Authorization") String token);
 }
