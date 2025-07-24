@@ -42,7 +42,7 @@ public interface UserAPI {
 
     /**
      * Get current user information
-     * Corresponds to GET /api/users/me endpoint
+     * Corresponds to GET /api/signup/me endpoint
      */
     @GET("/api/signup/me")
     Call<User> getCurrentUser(@Header("Authorization") String token);
