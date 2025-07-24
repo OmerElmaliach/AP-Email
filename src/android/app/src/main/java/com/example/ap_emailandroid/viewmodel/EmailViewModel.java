@@ -36,6 +36,10 @@ public class EmailViewModel extends ViewModel {
         repository.update(email);
     }
 
+    public void reportSpam(String url) {
+        repository.reportSpam(url);
+    }
+
     public void reload() {
         repository.reload();
     }
