@@ -3,13 +3,15 @@ package com.example.ap_emailandroid.ui;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatDelegate;
@@ -41,6 +43,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.example.ap_emailandroid.repository.UserRepository;
+import com.example.ap_emailandroid.local.User;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import com.squareup.picasso.Picasso;
+
 public class InboxActivity extends AppCompatActivity {
     static final List<String> defLabels = List.of("Inbox", "Starred", "Sent", "Draft", "Spam", "Trash");
     private EmailAdapter adapter;
@@ -66,6 +75,7 @@ public class InboxActivity extends AppCompatActivity {
         setupToolbar();
         setupEmails();
         setupHeader();
+        setupUserProfileMenu();
     }
 
     /**
@@ -89,10 +99,39 @@ public class InboxActivity extends AppCompatActivity {
         // Store authentication data for future API calls
         // In real implementation, you would store this in SharedPreferences or similar
         if (userToken != null && userEmail != null) {
-            // Mock storage - in real app this would be properly secured
-            // SharedPreferences prefs = getSharedPreferences("auth", MODE_PRIVATE);
-            // prefs.edit().putString("token", userToken).putString("email", userEmail).apply();
-            Log.e("aaaaaaaaaaa","green means go");
+            AppSession.userToken = userToken;
+            AppSession.userEmail = userEmail;
+
+            // fetch current user details
+            UserRepository userRepo = new UserRepository();
+            userRepo.getCurrentUser(AppSession.userToken, new Callback<User>() {
+                @Override
+                public void onResponse(Call<User> call, Response<User> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        AppSession.userFullName = response.body().getFullName();
+                        AppSession.userPicture = response.body().getPicture();
+                        // Update header UI with real user info and picture
+                        runOnUiThread(() -> {
+                            NavigationView navView = findViewById(R.id.nav_view);
+                            View header = navView.getHeaderView(0);
+                            TextView userEmailText = header.findViewById(R.id.user_email);
+                            TextView userFullNameText = header.findViewById(R.id.user_full_name);
+                            ImageButton pfpButton = header.findViewById(R.id.pfp);
+                            userEmailText.setText(AppSession.userEmail);
+                            userFullNameText.setText(AppSession.userFullName);
+                            Picasso.get()
+                                   .load(AppSession.userPicture)
+                                   .placeholder(R.drawable.placeholder_pfp)
+                                   .into(pfpButton);
+                        });
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<User> call, Throwable t) {
+                    // handle failure silently
+                }
+            });
         }
     }
 
@@ -248,6 +287,46 @@ public class InboxActivity extends AppCompatActivity {
             } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
             }
+        });
+    }
+
+    /**
+     * Setup user profile menu in the navigation drawer
+     */
+    private void setupUserProfileMenu() {
+        NavigationView nav_view = findViewById(R.id.nav_view);
+        View headerView = nav_view.getHeaderView(0);
+        ImageButton pfpButton = headerView.findViewById(R.id.pfp);
+        TextView userEmailText = headerView.findViewById(R.id.user_email);
+        TextView userFullNameText = headerView.findViewById(R.id.user_full_name);
+        // Load user picture and details
+        userEmailText.setText(AppSession.userEmail);
+        userFullNameText.setText(AppSession.userFullName);
+        if (AppSession.userPicture != null) {
+            Picasso.get()
+                   .load(AppSession.userPicture)
+                   .placeholder(R.drawable.placeholder_pfp)
+                   .into(pfpButton);
+        }
+        pfpButton.setOnClickListener(v -> {
+            PopupMenu popup = new PopupMenu(this, pfpButton, Gravity.END);
+            popup.getMenuInflater().inflate(R.menu.pfp_menu, popup.getMenu());
+            MenuItem emailItem = popup.getMenu().findItem(R.id.menu_email);
+            emailItem.setTitle(AppSession.userEmail);
+            emailItem.setEnabled(false);
+            MenuItem nameItem = popup.getMenu().findItem(R.id.menu_name);
+            nameItem.setTitle(AppSession.userFullName);
+            nameItem.setEnabled(false);
+            popup.setOnMenuItemClickListener(item -> {
+                if (item.getItemId() == R.id.menu_sign_out) {
+                    Intent intent = new Intent(this, SignInActivity.class);
+                    startActivity(intent);
+                    finish();
+                    return true;
+                }
+                return false;
+            });
+            popup.show();
         });
     }
 }

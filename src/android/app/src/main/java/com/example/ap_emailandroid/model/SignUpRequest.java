@@ -95,7 +95,7 @@ public class SignUpRequest {
     public void setProfilePictureUri(Uri profilePictureUri) {
         this.profilePictureUri = profilePictureUri;
     }
-    
+    //TODO save picture adress then in add it to http req in VM(?)
     public String getPhoneNumber() {
         return phoneNumber;
     }
