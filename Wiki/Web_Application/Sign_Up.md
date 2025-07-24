@@ -3,15 +3,14 @@
 Follow these steps to create a new AP-Email account:
 
 1. Navigate to the **Sign Up** page.
-2. Enter **First Name**, **Last Name**, **Email**, **Password**, and **Confirm Password**.
+2. Enter **First Name**, **Last Name**, **Profile Picture**, **Gender**, **Birthday**, **Email**, **Password**, and **Confirm Password**.
 3. Click **Create Account**.
-4. Check your email for a **verification link** and click it to activate your account.
 
 <img width="1920" height="1080" alt="example_asset_05" src="https://github.com/user-attachments/assets/1e4c7289-6407-423f-a146-8659d9e92030" />
 
 ### Profile Information
 - **Use your real name** for professional communication
-- **Complete optional fields** for better account security
+- **Complete all fields** for better account security
 - **Add a professional photo** if using for business
 
 ## What Happens After Sign Up?
@@ -35,7 +34,6 @@ Your new account includes:
 #### "Email Already Exists"
 - **Check if you already have an account**
 - **Try signing in instead**
-- **Use the password reset** if you forgot your password
 
 #### Password Not Accepted
 - **Check all password requirements**
@@ -53,7 +51,7 @@ Your new account includes:
 
 If you encounter any issues during sign up:
 
-1. **Check the FAQ section** for common solutions
+1. **Check the WIKI pages for common issues**
 
 ## Privacy and Security
 
