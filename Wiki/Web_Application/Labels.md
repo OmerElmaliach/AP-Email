@@ -125,8 +125,7 @@ Now that you understand labels, explore these related organizational features:
 
 1. **[Inbox management](Inbox.md)** - View and manage your emails
 2. **[Inbox management](Inbox.md)** - Use labels with inbox organization
-3. **[Email filters](Filters.md)** - Automatically apply labels
-4. **[Mobile organization](../Android_Application/README.md)** - Labels on your phone
-5. **[Compose emails](Compose_Email.md)** - Create and send new emails
+3. **[Mobile organization](../Android_Application/README.md)** - Labels on your phone
+4. **[Compose emails](Compose_Email.md)** - Create and send new emails
 
 Start organizing your emails with labels and experience the power of flexible, multi-dimensional email organization!
