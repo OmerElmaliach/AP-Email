@@ -6,6 +6,8 @@
 2. Enter your **email address** and **password**.
 3. Click **"Sign In"** to access your inbox.
 
+<img width="1920" height="1080" alt="example_asset_01" src="https://github.com/user-attachments/assets/c5a03050-e678-45f1-94a7-28c57bcf0507" />
+
 ## Forgot Password
 
 If you forget your password:
