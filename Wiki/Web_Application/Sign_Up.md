@@ -72,6 +72,5 @@ After creating your account:
 2. **[Explore your inbox](Inbox.md)** and familiarize yourself with the interface
 3. **[Send your first email](Compose_Email.md)** to test the system
 4. **[Set up labels](Labels.md)** to organize your emails
-5. **[Customize your profile](Profile_Settings.md)** and preferences
 
 Welcome to AP-Email! We're excited to help you manage your communications more effectively.
