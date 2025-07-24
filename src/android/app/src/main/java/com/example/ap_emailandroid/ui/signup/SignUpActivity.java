@@ -7,6 +7,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+
+import com.example.ap_emailandroid.AppSession;
 import com.example.ap_emailandroid.R;
 import com.example.ap_emailandroid.ui.InboxActivity;
 import com.example.ap_emailandroid.ui.signin.SignInActivity;
@@ -40,6 +42,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpNavigatio
                 String token = signUpViewModel.getAuthToken().getValue();
                 Log.d(TAG, "Navigating to InboxActivity with token: " + (token != null ? "present" : "null"));
                 Intent intent = new Intent(this, InboxActivity.class);
+                AppSession.userId = token; //TODO see if helps
                 intent.putExtra("user_token", token);
                 intent.putExtra("user_email", signUpViewModel.getEmail());
                 startActivity(intent);
