@@ -29,7 +29,6 @@ Access your AP-Email account through any web browser to manage your emails, comp
 - **Send and receive emails** - Full email communication
 - **Organize with labels** - Custom tags for email organization
 - **Search emails** - Find specific emails quickly
-- **Reply and forward** - Respond to received emails
 - **Delete emails** - Remove unwanted messages
 
 ## Browser Compatibility
