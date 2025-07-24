@@ -4,19 +4,18 @@
 
 AP-Email is an email management system with both web and Android interfaces for managing emails efficiently.
 
+## Getting Started
+
+- **If this is your first time using** the service, please use our developer's **installation guide** - [Installation Guide](../Getting_Started/Development_Setup.md)
+- **Web Application**: [Web User Guide](../Web_Application/README.md)
+- **Android App**: [Android User Guide](../Android_Application/README.md)
+
 ## Key Features
 
 - **Email Management**: Send, receive, and organize emails
 - **Cross-Platform**: Web browser and Android app access
 - **Label System**: Organize emails with custom labels
 - **User Authentication**: Secure sign-up and sign-in
-
-## Getting Started
-
-- **Web Application**: [Web User Guide](../Web_Application/README.md)
-- **Android App**: [Android User Guide](../Android_Application/README.md)
-
-## Key Features
 
 ### Core Email Functionality
 - **Email Management**: Create, read, delete emails
