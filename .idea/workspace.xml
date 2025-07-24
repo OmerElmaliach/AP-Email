@@ -5,6 +5,11 @@
       <config />
     </shared>
     <layouts>
+      <layout url="file://$PROJECT_DIR$/src/android/app/src/main/res/drawable/circle_background.xml">
+        <config>
+          <theme>@style/Theme.APEmailAndroid</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/src/android/app/src/main/res/drawable/ic_launcher_background.xml">
         <config>
           <theme>@style/Theme.APEmailAndroid</theme>
@@ -86,10 +91,9 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c3396701-4484-40c4-8f4d-2af4a616e2c9" name="Changes" comment="fixed typo">
+    <list default="true" id="c3396701-4484-40c4-8f4d-2af4a616e2c9" name="Changes" comment="menu UI sorted">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/android/app/src/main/java/com/example/ap_emailandroid/AppSession.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/android/app/src/main/java/com/example/ap_emailandroid/AppSession.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/android/app/src/main/java/com/example/ap_emailandroid/ui/InboxActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/android/app/src/main/java/com/example/ap_emailandroid/ui/InboxActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/android/app/src/main/java/com/example/ap_emailandroid/network/UserAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/android/app/src/main/java/com/example/ap_emailandroid/network/UserAPI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -474,7 +478,15 @@
       <option name="project" value="LOCAL" />
       <updated>1753339058088</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="menu UI sorted">
+      <option name="closed" value="true" />
+      <created>1753352201348</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1753352201348</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -511,7 +523,8 @@
     <MESSAGE value="managed to log in after sign up correctly :)" />
     <MESSAGE value="small UI fixes" />
     <MESSAGE value="fixed typo" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed typo" />
+    <MESSAGE value="menu UI sorted" />
+    <option name="LAST_COMMIT_MESSAGE" value="menu UI sorted" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">
