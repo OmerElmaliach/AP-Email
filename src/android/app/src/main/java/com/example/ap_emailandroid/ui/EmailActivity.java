@@ -1,7 +1,9 @@
 package com.example.ap_emailandroid.ui;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -13,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.ap_emailandroid.R;
 import com.example.ap_emailandroid.local.Email;
 import com.example.ap_emailandroid.local.Label;
+import com.example.ap_emailandroid.ui.sendMail.SendMailActivity;
 import com.example.ap_emailandroid.viewmodel.EmailViewModel;
 import com.example.ap_emailandroid.viewmodel.LabelViewModel;
 
@@ -144,6 +147,20 @@ public class EmailActivity extends AppCompatActivity {
             emailViewModel.delete(email);
             finish();
         });
+
+        ImageButton btn_edit_draft = findViewById(R.id.btn_edit);
+        //checks if mail is draft, if it is a edit btn will show
+        if (email.getLabel().contains("draft")) {
+            btn_edit_draft.setVisibility(View.VISIBLE);
+            btn_edit_draft.setOnClickListener(view -> {
+                Intent intent = new Intent(this, SendMailActivity.class);
+                intent.putExtra("email", email);
+                startActivity(intent);
+            });
+        } else {
+            btn_edit_draft.setVisibility(View.GONE);
+        }
+
     }
 
     private void updateInfo(Email email) {
