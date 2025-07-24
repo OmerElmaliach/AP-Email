@@ -106,35 +106,12 @@ AP-Email/
 - **Documentation**: Comprehensive project documentation
 - **Version Control**: Git-based development workflow
 
-## Security Features
-
 ### Authentication & Authorization
 - **Password Validation**: Strong password requirements
 - **JWT Tokens**: Secure token-based authentication
 - **Session Management**: Secure session handling
 - **Input Validation**: Client and server-side validation
 
-### Data Protection
-- **Encrypted Communication**: HTTPS/SSL protocols
-- **Secure Storage**: Encrypted data persistence
-- **Access Control**: Role-based permissions
-- **Privacy Protection**: User data anonymization
-
-## Future Enhancements
-
-### Planned Features
-- **MongoDB Integration**: Full database implementation
-- **Real-time Notifications**: Push notifications
-- **Email Templates**: Predefined email formats
-- **Advanced Search**: Full-text search capabilities
-- **Email Scheduling**: Delayed email sending
-- **Attachment Support**: File attachment handling
-
-### Scalability Improvements
-- **Microservices**: Service-oriented architecture
-- **Load Balancing**: High availability setup
-- **Caching**: Performance optimization
-- **CDN Integration**: Global content delivery
 
 ## Getting Started
 
@@ -142,17 +119,8 @@ To begin working with AP-Email, please refer to the [Getting Started](../Getting
 
 - **Installation Instructions**: Step-by-step setup guide
 - **Development Environment**: Required tools and configurations
-- **Quick Start Guide**: Rapid project initialization
 - **Troubleshooting**: Common issues and solutions
 
-## Contributing
-
-We welcome contributions to the AP-Email project. Please see our contribution guidelines for:
-
-- **Code Standards**: Development best practices
-- **Pull Request Process**: Code review workflow
-- **Issue Reporting**: Bug reports and feature requests
-- **Documentation**: Wiki and code documentation
 
 ## Contact & Support
 
@@ -160,7 +128,6 @@ For questions, issues, or contributions:
 - **Repository**: [GitHub Repository](https://github.com/OmerElmaliach/AP-Email)
 - **Issues**: Use GitHub Issues for bug reports
 - **Documentation**: Comprehensive wiki documentation
-- **Email**: Contact the development team
 
 ---
 
