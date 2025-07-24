@@ -33,6 +33,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.ap_emailandroid.local.Label;
 import com.example.ap_emailandroid.ui.adapters.EmailAdapter;
 import com.example.ap_emailandroid.ui.sendMail.SendMailActivity;
+import com.example.ap_emailandroid.ui.signin.SignInActivity;
 import com.example.ap_emailandroid.viewmodel.EmailViewModel;
 import com.example.ap_emailandroid.viewmodel.LabelViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -121,10 +122,8 @@ public class InboxActivity extends AppCompatActivity {
                         runOnUiThread(() -> {
                             NavigationView navView = findViewById(R.id.nav_view);
                             View header = navView.getHeaderView(0);
-                            TextView userEmailText = header.findViewById(R.id.user_email);
                             TextView userFullNameText = header.findViewById(R.id.user_full_name);
                             ImageButton pfpButton = header.findViewById(R.id.pfp);
-                            userEmailText.setText(AppSession.userEmail);
                             userFullNameText.setText(AppSession.userFullName);
 
                             // Load profile picture from server
@@ -185,11 +184,9 @@ public class InboxActivity extends AppCompatActivity {
     private void updateHeaderUI() {
         NavigationView navView = findViewById(R.id.nav_view);
         View header = navView.getHeaderView(0);
-        TextView userEmailText = header.findViewById(R.id.user_email);
         TextView userFullNameText = header.findViewById(R.id.user_full_name);
         ImageButton pfpButton = header.findViewById(R.id.pfp);
         
-        userEmailText.setText(AppSession.userEmail);
         userFullNameText.setText(AppSession.userFullName != null ? AppSession.userFullName : "User");
         
         // Load profile picture with authentication
@@ -397,11 +394,9 @@ public class InboxActivity extends AppCompatActivity {
         NavigationView nav_view = findViewById(R.id.nav_view);
         View headerView = nav_view.getHeaderView(0);
         ImageButton pfpButton = headerView.findViewById(R.id.pfp);
-        TextView userEmailText = headerView.findViewById(R.id.user_email);
         TextView userFullNameText = headerView.findViewById(R.id.user_full_name);
         
         // Load user picture and details
-        userEmailText.setText(AppSession.userEmail);
         userFullNameText.setText(AppSession.userFullName != null ? AppSession.userFullName : "User");
         
         // Load profile picture with authentication
@@ -411,15 +406,15 @@ public class InboxActivity extends AppCompatActivity {
             PopupMenu popup = new PopupMenu(this, pfpButton, Gravity.END);
             popup.getMenuInflater().inflate(R.menu.pfp_menu, popup.getMenu());
             
-            // Update menu items with user data
-            MenuItem nameItem = popup.getMenu().findItem(R.id.menu_name);
-            nameItem.setTitle("Name: " + (AppSession.userFullName != null ? AppSession.userFullName : "Not available"));
-            nameItem.setEnabled(false);
-            
+            // Update menu items with current user data from AppSession
             MenuItem emailItem = popup.getMenu().findItem(R.id.menu_email);
             emailItem.setTitle("Email: " + (AppSession.userEmail != null ? AppSession.userEmail : "Not available"));
             emailItem.setEnabled(false);
-            
+
+            MenuItem nameItem = popup.getMenu().findItem(R.id.menu_name);
+            nameItem.setTitle("Name: " + (AppSession.userFullName != null ? AppSession.userFullName : "Not available"));
+            nameItem.setEnabled(false);
+
             MenuItem birthdayItem = popup.getMenu().findItem(R.id.menu_birthday);
             birthdayItem.setTitle("Birthday: " + (AppSession.userBirthday != null ? AppSession.userBirthday : "Not available"));
             birthdayItem.setEnabled(false);

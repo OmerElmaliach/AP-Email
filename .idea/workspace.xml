@@ -87,11 +87,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c3396701-4484-40c4-8f4d-2af4a616e2c9" name="Changes" comment="fixed typo">
-      <change afterPath="$PROJECT_DIR$/src/android/app/src/main/java/com/example/ap_emailandroid/util/CircleTransform.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/android/app/src/main/res/drawable/circle_background.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/android/app/src/main/java/com/example/ap_emailandroid/AppSession.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/android/app/src/main/java/com/example/ap_emailandroid/AppSession.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/android/app/src/main/java/com/example/ap_emailandroid/ui/InboxActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/android/app/src/main/java/com/example/ap_emailandroid/ui/InboxActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/android/app/src/main/res/layout/drawer_header.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/android/app/src/main/res/layout/drawer_header.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
