@@ -16,6 +16,8 @@ Before starting, ensure you have the following installed on your system:
 - **Docker & Docker Compose** – [Install here](https://docs.docker.com/get-docker/)
 - **Android Studio** (for Android development) – [Download here](https://developer.android.com/studio)
 
+  **See our Prerequisites page for more details** - [Prerequisites](./Prerequisites.md)
+   
 ---
 
 ## Clone the Repository
