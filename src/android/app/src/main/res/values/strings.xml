@@ -35,4 +35,13 @@
     <string name="date_emailview">Date:</string>
     <string name="add_labels_to_email">Add labels to email</string>
     <string name="remove_label_from_email">Remove label from email</string>
+    <!-- sendMail strings -->
+    <string name="return_to_inbox">Back</string>
+    <string name="send_mail">Send</string>
+    <string name="recipient_textBox">To</string>
+    <string name="subject_textBox">Subject</string>
+    <string name="mail_body_textBox">Compose email</string>
+    <string name="save_draft_btn">Save to Draft</string>
+    <string name="edit_email">Edit Email</string>
+
 </resources>

@@ -1,7 +1,9 @@
 package com.example.ap_emailandroid.ui;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -13,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.ap_emailandroid.R;
 import com.example.ap_emailandroid.local.Email;
 import com.example.ap_emailandroid.local.Label;
+import com.example.ap_emailandroid.ui.sendMail.SendMailActivity;
 import com.example.ap_emailandroid.viewmodel.EmailViewModel;
 import com.example.ap_emailandroid.viewmodel.LabelViewModel;
 
@@ -20,9 +23,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class EmailActivity extends AppCompatActivity {
     static final List<String> defLabels = List.of("inbox", "sent", "draft", "trash");
+    static final List<String> defLabelsNames = List.of("Inbox", "Starred", "Sent", "Draft", "Spam", "Trash");
     private List<String> availableLabels;
     private List<String> availableRemLabels;
     private Map<String, String> userLabelMap;
@@ -67,7 +73,7 @@ public class EmailActivity extends AppCompatActivity {
                     userLabelMap.put(id, name);
 
                     String keyForName = findKeyByValue(name);
-                    if (email.getLabel() != null && !email.getLabel().contains(keyForName)) {
+                    if (email.getLabel() != null && !email.getLabel().contains(keyForName) && !defLabelsNames.contains(label.getName())) {
                         availableLabels.add(name);
                     }
                 }
@@ -92,7 +98,10 @@ public class EmailActivity extends AppCompatActivity {
         btn_back.setOnClickListener(view -> finish());
 
         ImageButton btn_spam = findViewById(R.id.btn_spam);
-        btn_spam.setOnClickListener(view -> addLabel(email, emailViewModel, "Spam"));
+        btn_spam.setOnClickListener(view -> {
+            reportSpam(emailViewModel, email);
+            addLabel(email, emailViewModel, "Spam");
+        });
 
         ImageButton btn_starred = findViewById(R.id.btn_starred);
         btn_starred.setOnClickListener(view -> addLabel(email, emailViewModel, "Starred"));
@@ -138,6 +147,20 @@ public class EmailActivity extends AppCompatActivity {
             emailViewModel.delete(email);
             finish();
         });
+
+        ImageButton btn_edit_draft = findViewById(R.id.btn_edit);
+        //checks if mail is draft, if it is a edit btn will show
+        if (email.getLabel().contains("draft")) {
+            btn_edit_draft.setVisibility(View.VISIBLE);
+            btn_edit_draft.setOnClickListener(view -> {
+                Intent intent = new Intent(this, SendMailActivity.class);
+                intent.putExtra("email", email);
+                startActivity(intent);
+            });
+        } else {
+            btn_edit_draft.setVisibility(View.GONE);
+        }
+
     }
 
     private void updateInfo(Email email) {
@@ -151,7 +174,7 @@ public class EmailActivity extends AppCompatActivity {
         fromView.append(" " + email.getFrom());
 
         TextView toView = findViewById(R.id.email_to);
-        toView.append(" " + email.getTo()); // TODO something. maybe
+        toView.append(" " + email.getTo());
 
         TextView dateView = findViewById(R.id.email_date);
         dateView.append(" " + email.getDateSent());
@@ -227,5 +250,29 @@ public class EmailActivity extends AppCompatActivity {
         }
 
         return null;
+    }
+
+    public void reportSpam(EmailViewModel emailViewModel, Email email) {
+        if (email.getLabel().contains("spam"))
+            return;
+
+        List<String> spamURLs = new ArrayList<>();
+        String regex = "(https?://)?(www\\.)?[a-zA-Z0-9\\-]+(\\.[a-zA-Z]{2,})+(/[\\w\\-._~:/?#\\[\\]@!$&'()*+,;=%]*)?";
+        Pattern pattern = Pattern.compile(regex);
+
+        Matcher subjectMatcher = pattern.matcher(email.getSubject());
+        Matcher bodyMatcher = pattern.matcher(email.getBody());
+
+        while (subjectMatcher.find()) {
+            spamURLs.add(subjectMatcher.group());
+        }
+
+        while (bodyMatcher.find()) {
+            spamURLs.add(bodyMatcher.group());
+        }
+
+        for (String url : spamURLs) {
+            emailViewModel.reportSpam(url);
+        }
     }
 }
