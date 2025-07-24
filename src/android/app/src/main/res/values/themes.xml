@@ -1,0 +1,7 @@
+<resources>
+    <style
+        name="Base.Theme.APEmailAndroid" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="navigationViewStyle">@style/CustomNavigationView</item>
+    </style>
+    <style name="Theme.APEmailAndroid" parent="Base.Theme.APEmailAndroid" />
+</resources>

@@ -1,0 +1,82 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+  <!-- Simple "Toolbar" -->
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/primary"
+      android:paddingTop="20dp"
+      android:paddingBottom="8dp"
+      android:paddingStart="4dp"
+      android:paddingEnd="4dp"
+      android:elevation="4dp">
+
+
+    <!-- Back Button -->
+    <ImageButton
+        android:id="@+id/btn_back"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/ic_emailsend_arrow_back"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/return_to_inbox"
+        android:scaleType="centerInside"
+        android:padding="4dp"
+        android:layout_alignParentStart="true" />
+    <!-- save draft Button  -->
+    <ImageButton
+        android:id="@+id/btn_draft"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="8dp"
+        android:layout_toStartOf="@id/btn_send"
+        android:background="@android:color/transparent"
+        android:contentDescription= "@string/save_draft_btn"
+        android:padding="4dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_emailsend_save_draft" />
+
+
+    <!-- Send Button -->
+    <ImageButton
+        android:id="@+id/btn_send"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="9dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/send_mail"
+        android:padding="4dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_emailsend_send_button" />
+  </RelativeLayout>
+
+
+  <!-- Rest of the screen (email form) -->
+  <EditText
+      android:id="@+id/edit_to"
+      android:layout_width="match_parent"
+      android:layout_height="70dp"
+      android:hint="@string/recipient_textBox"
+      android:padding="10dp" />
+
+  <EditText
+      android:id="@+id/edit_subject"
+      android:layout_width="match_parent"
+      android:layout_height="70dp"
+      android:hint="@string/subject_textBox"
+      android:padding="10dp" />
+
+  <EditText
+      android:id="@+id/edit_body"
+      android:hint="@string/mail_body_textBox"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      android:gravity="top"
+      android:padding="10dp"
+      android:inputType="textMultiLine"/>
+</LinearLayout>

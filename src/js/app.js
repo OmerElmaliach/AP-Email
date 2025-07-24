@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');  
 const { isLoggedIn } = require('./middleware/auth');
+const mongoose = require('mongoose');
 
 const app = express();
 
@@ -18,10 +19,27 @@ const labels = require('./routes/labels');
 const blacklist = require('./routes/blacklist');
 const userPhoto = require('./routes/userPhoto');
 
-const model = require('./models/labels'); 
-model.initializeDefaultLabels(); 
+const mongoUri = 'mongodb://mongodb:27017/AP-Email'
+//connect to database 
+async function connectWithRetry() {
+  try {
+    await mongoose.connect(mongoUri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log('MongoDB connected successfully');
+  } catch (err) {
+    console.error('MongoDB connection failed, retrying in 5 seconds...', err);
+    setTimeout(connectWithRetry, 5000); // retry after 5 seconds
+  }
+}
 
+connectWithRetry();
 
+const labelsBD = require('./services/labels');
+(async () => {
+  await labelsBD.initializeDefaultLabels();
+})();
 
 app.use(express.json())
 //these dont need token

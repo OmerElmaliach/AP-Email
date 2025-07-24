@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_email"
+        android:title="Email"
+        android:enabled="false" />
+    <item
+        android:id="@+id/menu_name"
+        android:title="Name"
+        android:enabled="false" />
+    <item
+        android:id="@+id/menu_birthday"
+        android:title="Birthday"
+        android:enabled="false" />
+    <item
+        android:id="@+id/menu_gender"
+        android:title="Gender"
+        android:enabled="false" />
+    <item
+        android:id="@+id/menu_sign_out"
+        android:title="Sign Out" />
+</menu>
