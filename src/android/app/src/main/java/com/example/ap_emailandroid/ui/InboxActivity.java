@@ -102,8 +102,11 @@ public class InboxActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<User> call, Response<User> response) {
                     if (response.isSuccessful() && response.body() != null) {
-                        AppSession.userFullName = response.body().getFullName();
-                        AppSession.userPicture = response.body().getProfilePictureUri();
+                        User user = response.body();
+                        AppSession.userFullName = user.getFullName();
+                        AppSession.userBirthday = user.getBirthday();
+                        AppSession.userGender = user.getGender();
+
                         // Update header UI with real user info and picture
                         runOnUiThread(() -> {
                             NavigationView navView = findViewById(R.id.nav_view);
@@ -113,21 +116,56 @@ public class InboxActivity extends AppCompatActivity {
                             ImageButton pfpButton = header.findViewById(R.id.pfp);
                             userEmailText.setText(AppSession.userEmail);
                             userFullNameText.setText(AppSession.userFullName);
-                            Picasso.get()
-                                   .load(AppSession.userPicture)
-                                   .placeholder(R.drawable.placeholder_pfp)
-                                   .into(pfpButton);
+
+                            // Load profile picture from server
+                            loadProfilePictureFromServer(pfpButton);
                         });
                     }
                 }
 
                 @Override
                 public void onFailure(Call<User> call, Throwable t) {
-                    // handle failure silently, use placeholder
-                    runOnUiThread(() -> updateHeaderUI());
+                    // handle failure silently
                 }
             });
         }
+    }
+
+    /**
+     * Load profile picture from server using the photo endpoint
+     */
+    private void loadProfilePictureFromServer(ImageButton imageButton) {
+        if (AppSession.userToken == null) {
+            imageButton.setImageResource(R.drawable.placeholder_pfp);
+            return;
+        }
+
+        UserRepository userRepo = new UserRepository();
+        userRepo.getUserPhoto(AppSession.userToken, new Callback<okhttp3.ResponseBody>() {
+            @Override
+            public void onResponse(Call<okhttp3.ResponseBody> call, Response<okhttp3.ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        byte[] bytes = response.body().bytes();
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        if (bitmap != null) {
+                            runOnUiThread(() -> imageButton.setImageBitmap(bitmap));
+                        } else {
+                            runOnUiThread(() -> imageButton.setImageResource(R.drawable.placeholder_pfp));
+                        }
+                    } catch (Exception e) {
+                        runOnUiThread(() -> imageButton.setImageResource(R.drawable.placeholder_pfp));
+                    }
+                } else {
+                    runOnUiThread(() -> imageButton.setImageResource(R.drawable.placeholder_pfp));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<okhttp3.ResponseBody> call, Throwable t) {
+                runOnUiThread(() -> imageButton.setImageResource(R.drawable.placeholder_pfp));
+            }
+        });
     }
 
     // GABI - ADDED CODE (UPDATE HEADER UI)
