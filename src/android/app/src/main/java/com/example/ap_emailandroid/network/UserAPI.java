@@ -23,7 +23,7 @@ public interface UserAPI {
      * Note: For now using JSON body instead of multipart form data
      * Picture handling will be added in future version
      */
-    @POST("/api/users")
+    @POST("/api/signup/")
     Call<SignUpResponse> createUser(@Body User user);
 
     /**

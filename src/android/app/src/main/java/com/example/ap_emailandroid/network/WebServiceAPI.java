@@ -26,6 +26,7 @@ public interface WebServiceAPI {
     @GET("/api/mails/")
     Call<List<Email>> getEmails();
 
+
     @POST("/api/mails/") //works
     Call<Email> createEmail(@Body Email email);
 
@@ -38,7 +39,7 @@ public interface WebServiceAPI {
     @GET("/api/labels/") //works
     Call<List<Label>> getLabels();
 
-    @POST("/api/labels/") //TODO change backend i dont remmeber what this is. ask omer
+    @POST("/api/labels/") //TODO change backend - i dont remmeber what this is. ask omer
     Call<LabelResponse> createLabel(@Body Label label);
 
     @DELETE("/api/labels/{id}")

@@ -17,15 +17,16 @@ const createUser = async  (req, res) => {
     } = req.body
     const userName = email;
     //get picture from req.file added by multer
-    if (!req.file) {
+ 
+    //mandatory fields check:
+    if (!firstName || !lastName || !email || !userName || !password || !birthday || !gender) {
+        return res.status(400).json({ error: 'Missing mandatory field' });
+    }
+       if (!req.file) {
     return res.status(400).json({ error: 'Picture file is required' });
     }
     const picture = req.file.filename; // multer added the file name to here
 
-    //mandatory fields check:
-    if (!firstName || !lastName || !email || !userName || !password || !birthday || !gender || !picture) {
-        return res.status(400).json({ error: 'Missing mandatory field' });
-    }
     // check email address isnt taken 
     if (await model.getUser('email', email)) {
         return res.status(409).json({ error: 'That username is taken. Try another.' });
