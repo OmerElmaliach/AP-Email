@@ -127,6 +127,5 @@ Now that you understand your inbox, explore these related features:
 2. **[Using labels](Labels.md)** - Master email organization
 3. **[Email labels](Labels.md)** - Organize emails with custom categories
 4. **[Mobile app](../Android_Application/README.md)** - Access your inbox on the go
-5. **[Account settings](Profile_Settings.md)** - Customize your email experience
 
 Your inbox is now ready to help you stay organized and productive with your email communications!
