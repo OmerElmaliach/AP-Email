@@ -4,17 +4,7 @@
 
 This guide will walk you through setting up and using **AP-Email** for email management. The application consists of a **backend server** and **two client applications** (Web and Android).
 
----
 
-## Prerequisites
-
-Before starting, ensure you have:
-
-- **Modern web browser** (Chrome, Firefox, Safari, Edge) for web access
-- **Android device** with Android 7.0+ for mobile access
-- **Internet connection** (Wi-Fi or mobile data)
-
----
 
 ## 1. Getting Started
 
@@ -43,7 +33,7 @@ Choose your preferred platform to access AP-Email:
    - Last Name
    - Email Address (this becomes your login)
    - Password
-3. **Verify your email** - check your email for verification link
+3. **Add a profile picture** from your device
 4. **Complete setup** and start using AP-Email
 
 ### Signing In
@@ -62,7 +52,6 @@ Once signed in, you can:
 ### Basic Email Functions
 - **View emails** in your inbox
 - **Send new emails** using the compose feature
-- **Reply to emails** you receive
 - **Delete unwanted emails**
 
 ### Organization Features
@@ -86,14 +75,12 @@ For detailed instructions on each platform:
 ### Common Issues
 - **Can't sign in?** - Check your internet connection and verify credentials
 - **Emails not loading?** - Refresh the page/app or check network connection
-- **Forgot password?** - Use the "Forgot Password" link to reset
 - **App won't install?** - Ensure you have enough storage space on your device
 
 ### Tips for Best Experience
 - **Use the same account** on both web and mobile for synchronized access
 - **Keep your password secure** and don't share it with others
-- **Enable notifications** on mobile to get new email alerts
-- **Update the mobile app** regularly for latest features
+
 
 ---
 
