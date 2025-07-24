@@ -1,0 +1,259 @@
+package com.example.ap_emailandroid.viewmodel;
+
+import android.net.Uri;
+import android.util.Log;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
+import com.example.ap_emailandroid.local.User;
+import com.example.ap_emailandroid.model.SignUpRequest;
+import com.example.ap_emailandroid.model.SignUpResponse;
+import com.example.ap_emailandroid.repository.UserRepository;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+/**
+ * viewmodel for managing signup process data and state
+ * follows mvvm pattern and coordinates with repository for data operations
+ */
+public class SignUpViewModel extends ViewModel {
+    
+    private static final String TAG = "SignUpViewModel";
+    private UserRepository userRepository;
+    
+    // signup form data
+    private String firstName;
+    private String lastName;
+    private Uri profilePictureUri;
+    private String birthday;
+    private String gender;
+    private String email;
+    private String password;
+    private String phoneNumber;
+    
+    // observables for ui state
+    private MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
+    private MutableLiveData<Boolean> signUpSuccess = new MutableLiveData<>(false);
+    private MutableLiveData<String> errorMessage = new MutableLiveData<>("");
+    private MutableLiveData<String> authToken = new MutableLiveData<>("");
+    
+    public SignUpViewModel() {
+        userRepository = new UserRepository();
+    }
+    
+    // getters and setters for form data
+    public String getFirstName() {
+        return firstName;
+    }
+    
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+    
+    public String getLastName() {
+        return lastName;
+    }
+    
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+    
+    public Uri getProfilePictureUri() {
+        return profilePictureUri;
+    }
+    
+    public void setProfilePictureUri(Uri profilePictureUri) {
+        this.profilePictureUri = profilePictureUri;
+    }
+    
+    public String getBirthday() {
+        return birthday;
+    }
+    
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
+    
+    public String getGender() {
+        return gender;
+    }
+    
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+    
+    public String getEmail() {
+        return email;
+    }
+    
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    
+    public String getPassword() {
+        return password;
+    }
+    
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+    
+    // observables for ui
+    public LiveData<Boolean> getIsLoading() {
+        return isLoading;
+    }
+    
+    public LiveData<Boolean> getSignUpSuccess() {
+        return signUpSuccess;
+    }
+    
+    public LiveData<String> getErrorMessage() {
+        return errorMessage;
+    }
+
+    public LiveData<String> getAuthToken() {
+        return authToken;
+    }
+    
+    /**
+     * submits the signup request to the backend
+     * this method coordinates with the repository to save user data via API
+     */
+    public void submitSignUp() {
+        Log.d(TAG, "submitSignUp() called");
+        isLoading.setValue(true);
+        errorMessage.setValue("");
+        
+        // create user object
+        User user = new User();
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setEmail(email);
+        user.setUserName(email); // username = email as per web implementation
+        user.setPassword(password);
+        user.setBirthday(birthday);
+        user.setGender(gender);
+        user.setPhoneNumber(phoneNumber);
+        // GABI - ADDED CODE
+        user.setProfilePictureUri(profilePictureUri);
+
+        Log.d(TAG, "Making API call to create user with email: " + email);
+
+        // make API call to create user
+        userRepository.createUser(user, new Callback<SignUpResponse>() {
+            @Override
+            public void onResponse(Call<SignUpResponse> call, Response<SignUpResponse> response) {
+                Log.d(TAG, "API Response received. Code: " + response.code());
+                isLoading.postValue(false);
+                
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.d(TAG, "Signup successful!");
+                    SignUpResponse signUpResponse = response.body();
+                    authToken.postValue(signUpResponse.getToken());
+                    signUpSuccess.postValue(true);
+                    errorMessage.postValue("Account created successfully! Welcome to AP-Email!");
+                } else {
+                    Log.e(TAG, "Signup failed with response code: " + response.code());
+                    String errorBody = "";
+                    if (response.errorBody() != null) {
+                        try {
+                            errorBody = response.errorBody().string();
+                            Log.e(TAG, "Error body: " + errorBody);
+                        } catch (Exception e) {
+                            Log.e(TAG, "Error reading error body", e);
+                        }
+                    }
+
+                    // Handle specific error responses with user-friendly messages
+                    String error;
+                    switch (response.code()) {
+                        case 400:
+                            if (errorBody.toLowerCase().contains("image") || errorBody.toLowerCase().contains("file") || errorBody.toLowerCase().contains("size")) {
+                                error = "Image file is too large. Please select a smaller image (max 5MB).";
+                            } else {
+                                error = "Invalid information provided. Please check your details and try again.";
+                            }
+                            break;
+                        case 409:
+                            error = "This email address is already registered. Please use a different email or sign in.";
+                            break;
+                        case 413:
+                            error = "Image file is too large. Please select a smaller image.";
+                            break;
+                        case 500:
+                            error = "Server error occurred. Please try again later.";
+                            break;
+                        case 503:
+                            error = "Service temporarily unavailable. Please try again later.";
+                            break;
+                        default:
+                            error = "Sign up failed (Error " + response.code() + "). Please try again.";
+                            break;
+                    }
+                    errorMessage.postValue(error);
+                    signUpSuccess.postValue(false);
+                }
+            }
+            
+            @Override
+            public void onFailure(Call<SignUpResponse> call, Throwable t) {
+                Log.e(TAG, "API call failed", t);
+                isLoading.postValue(false);
+
+                // Provide specific error messages based on the type of failure
+                String error;
+                if (t instanceof java.net.ConnectException || t instanceof java.net.UnknownHostException) {
+                    error = "Cannot connect to server. Please check your internet connection and try again.";
+                } else if (t instanceof java.net.SocketTimeoutException) {
+                    error = "Request timed out. Please check your connection and try again.";
+                } else {
+                    error = "Network error occurred. Please check your connection and try again.";
+                }
+                errorMessage.postValue(error);
+                signUpSuccess.postValue(false);
+            }
+        });
+    }
+
+    /**
+     * Check if email is already in use
+     * @param email the email to check
+     * @param callback callback to handle result
+     */
+    public void checkEmailAvailability(String email, Callback<Void> callback) {
+        userRepository.checkEmailExists(email, callback);
+    }
+
+    /**
+     * Check if username is already in use
+     * @param userName the username to check
+     * @param callback callback to handle result
+     */
+    public void checkUsernameAvailability(String userName, Callback<Void> callback) {
+        userRepository.checkUsernameExists(userName, callback);
+    }
+    
+    /**
+     * clears all form data (useful for testing or if user wants to start over)
+     */
+    public void clearData() {
+        firstName = null;
+        lastName = null;
+        profilePictureUri = null;
+        birthday = null;
+        gender = null;
+        email = null;
+        password = null;
+        phoneNumber = null;
+    }
+}

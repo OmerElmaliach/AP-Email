@@ -1,0 +1,47 @@
+<resources>
+    <string name="app_name">AP-Email</string>
+    <string name="BaseUrl">http://10.0.2.2:9000/</string>
+    <string name="navigation_drawer_open">Open toolbar</string>
+    <string name="navigation_drawer_close">Close toolbar</string>
+    <string name="inbox">Inbox</string>
+    <string name="menu_inbox">Inbox</string>
+    <string name="menu_starred">Starred</string>
+    <string name="menu_draft">Draft</string>
+    <string name="menu_spam">Spam</string>
+    <string name="menu_sent">Sent</string>
+    <string name="menu_trash">Trash</string>
+    <string name="compose">Compose</string>
+    <string name="add_label">Add Label</string>
+    <string name="sign_in">Sign in</string>
+    <string name="sign_in_subtitle">to continue to AP-Email</string>
+    <string name="email_address">Email Address</string>
+    <string name="password">Password</string>
+    <string name="create_account">Create Account</string>
+    <string name="invalid_email">Please enter a valid email address</string>
+    <string name="invalid_password">Password cannot be empty</string>
+    <string name="signin_failed">Wrong email or password</string>
+    <string name="signin_error">Something went wrong. Please try again.</string>
+    <string name="enter_label_name">Enter label name</string>
+    <string name="theme_mode">Theme mode</string>
+    <string name="profile_picture">Profile picture</string>
+    <string name="delete_label">Delete label</string>
+    <string name="go_back">Go Back</string>
+    <string name="report_spam">Report Spam</string>
+    <string name="star">Star</string>
+    <string name="delete_email">Delete Email</string>
+    <string name="labels_emailview">Labels:</string>
+    <string name="from_emailview">From:</string>
+    <string name="to_emailview">To:</string>
+    <string name="date_emailview">Date:</string>
+    <string name="add_labels_to_email">Add labels to email</string>
+    <string name="remove_label_from_email">Remove label from email</string>
+    <!-- sendMail strings -->
+    <string name="return_to_inbox">Back</string>
+    <string name="send_mail">Send</string>
+    <string name="recipient_textBox">To</string>
+    <string name="subject_textBox">Subject</string>
+    <string name="mail_body_textBox">Compose email</string>
+    <string name="save_draft_btn">Save to Draft</string>
+    <string name="edit_email">Edit Email</string>
+
+</resources>
