@@ -1,7 +1,5 @@
 # AP-Email Overview
 
-# AP-Email Overview
-
 ## What is AP-Email?
 
 AP-Email is a simple email service that you can use in two ways:
