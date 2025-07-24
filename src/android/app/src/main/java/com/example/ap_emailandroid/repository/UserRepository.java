@@ -233,7 +233,6 @@ public class UserRepository {
     public void getCurrentUser(String token, Callback<User> callback) {
         Call<User> call = userAPI.getCurrentUser("Bearer " + token);
         call.enqueue(callback);
-        //TODO GABI add call to /api/userPhoto to get photo and save this res (fullname, email, BD, gender) and photo res locally=> appsession
     }
 
     /**
@@ -253,6 +252,17 @@ public class UserRepository {
      */
     public void checkUsernameExists(String userName, Callback<Void> callback) {
         Call<Void> call = userAPI.checkUsernameExists(userName);
+        call.enqueue(callback);
+    }
+
+    // GABI - ADDED CODE GET USER PHOTO
+    /**
+     * Get user profile picture
+     * @param token authentication token
+     * @param callback callback for handling response
+     */
+    public void getUserPhoto(String token, Callback<okhttp3.ResponseBody> callback) {
+        Call<okhttp3.ResponseBody> call = userAPI.getUserPhoto("Bearer " + token);
         call.enqueue(callback);
     }
 
