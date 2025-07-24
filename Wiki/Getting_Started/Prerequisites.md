@@ -7,8 +7,8 @@
 - Internet connection
 
 ### To Use AP-Email Android App
+- Android studio with emulator running Android 7.0 or higher
 - Android device running Android 7.0 or higher
-- Google Play Store access
 
 That's it! No additional software or setup required.
 
@@ -85,13 +85,9 @@ PORT=9000
 Ensure these ports are available:
 - **3000**: React development server
 - **9000**: Node.js API server
-- **27017**: MongoDB (when implemented)
+- **27017**: MongoDB
 - **8080**: Android emulator web access
 
-### Firewall Configuration
-- Allow inbound connections on development ports
-- Configure antivirus to exclude project directories
-- Ensure Docker has network access if using containers
 
 ## Verification Steps
 
@@ -160,12 +156,3 @@ chmod +x gradlew
 # Windows: restart Docker Desktop
 # Linux: sudo systemctl restart docker
 ```
-
-## Next Steps
-
-After completing these prerequisites:
-1. Navigate to [Development Setup](Development_Setup.md)
-2. Follow the [Quick Start Guide](Quick_Start.md)
-3. Review the [Environment Configuration](Environment_Configuration.md)
-
-For troubleshooting, see our [Common Issues](../Getting_Started/Common_Issues.md) guide.
