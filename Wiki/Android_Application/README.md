@@ -9,12 +9,12 @@ Download and use the AP-Email Android app to access your emails on your mobile d
 ### System Requirements
 - **Android 7.0 or higher**
 - **Internet connection** (Wi-Fi or mobile data)
-- **Google Play Store** access
+- **Android studio emulator** access
 
 ### Installation
-1. **Open Google Play Store** on your Android device
-2. **Search for "AP-Email"**
-3. **Tap "Install"** to download the app
+1. **Clone the git repository to your android studio** on your computer
+2. **Start your favourite emulator"** in android studio
+3. **Click on the green "Run" button** to build and install the app
 4. **Open the app** once installation is complete
 
 ### First Time Setup
@@ -38,9 +38,8 @@ Download and use the AP-Email Android app to access your emails on your mobile d
 ## Device Compatibility
 
 The AP-Email Android app works on:
+- **Android emulators** running Android 7.0+
 - **Android phones** running Android 7.0+
-- **Android tablets** running Android 7.0+
-- **Various screen sizes** - adapts to your device
 
 ## Getting Help
 
@@ -60,10 +59,9 @@ The AP-Email Android app works on:
 
 The app may request these permissions:
 - **Internet** - To access your emails
-- **Notifications** - To alert you of new emails
-- **Storage** - To save email attachments (optional)
+- **Notifications** - To alert you of new emails (optional)
+- **Storage** - To access photos for profile pictures
 
-All permissions are optional except internet access.
 
 ---
 
