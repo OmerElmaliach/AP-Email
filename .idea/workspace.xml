@@ -71,10 +71,10 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c3396701-4484-40c4-8f4d-2af4a616e2c9" name="Changes" comment="managed to log in after sign up correctly :)">
+    <list default="true" id="c3396701-4484-40c4-8f4d-2af4a616e2c9" name="Changes" comment="small UI fixes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/android/app/src/main/res/layout/fragment_email_password_step.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/android/app/src/main/res/layout/fragment_email_password_step.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/android/app/src/main/res/layout/fragment_name_step.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/android/app/src/main/res/layout/fragment_name_step.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/android/app/src/main/java/com/example/ap_emailandroid/local/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/android/app/src/main/java/com/example/ap_emailandroid/local/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/android/app/src/main/java/com/example/ap_emailandroid/ui/signup/SignUpActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/android/app/src/main/java/com/example/ap_emailandroid/ui/signup/SignUpActivity.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -443,7 +443,15 @@
       <option name="project" value="LOCAL" />
       <updated>1753287048666</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="small UI fixes">
+      <option name="closed" value="true" />
+      <created>1753288072321</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1753288072321</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -478,7 +486,8 @@
     <MESSAGE value="user photo menu + profile picture added" />
     <MESSAGE value="amended Uri" />
     <MESSAGE value="managed to log in after sign up correctly :)" />
-    <option name="LAST_COMMIT_MESSAGE" value="managed to log in after sign up correctly :)" />
+    <MESSAGE value="small UI fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="small UI fixes" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">

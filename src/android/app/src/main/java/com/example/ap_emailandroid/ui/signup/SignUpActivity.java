@@ -44,12 +44,6 @@ public class SignUpActivity extends AppCompatActivity implements SignUpNavigatio
                 intent.putExtra("user_email", signUpViewModel.getEmail());
                 startActivity(intent);
                 finish();
-            } else {
-                // show error message to user
-                String errorMessage = signUpViewModel.getErrorMessage().getValue();
-                if (errorMessage != null && !errorMessage.isEmpty()) {
-                    Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
-                }
             }
         });
         
@@ -58,7 +52,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpNavigatio
             Log.d(TAG, "Error message observed: " + error);
             if (error != null && !error.isEmpty()) {
                 // show error message to user
-                Toast.makeText(this, error, Toast.LENGTH_LONG).show();
+                // todo: implement proper error display
             }
         });
         
