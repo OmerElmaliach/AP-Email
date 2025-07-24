@@ -299,6 +299,8 @@
 - **Clean up long email chains** when forwarding
 - **Archive completed conversations** to keep inbox clean
 
+<img width="1920" height="1080" alt="example_asset_08_email_creation" src="https://github.com/user-attachments/assets/2366fffb-c44e-439a-bbd5-4e102e2dabd5" />
+
 ## Next Steps
 
 Now that you know how to compose emails, explore these related features:
