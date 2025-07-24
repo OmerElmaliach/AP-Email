@@ -68,4 +68,12 @@ public interface UserAPI {
      */
     @GET("/api/users/check-username")
     Call<Void> checkUsernameExists(@Header("username") String username);
+
+    // GABI - ADDED CODE TO CONTACT API FOR USER PHOTO
+     * Get user profile picture
+     * Corresponds to GET /api/userPhoto/me endpoint
+     * Uses Bearer token for authentication
+     */
+    @GET("/api/userPhoto/me")
+    Call<okhttp3.ResponseBody> getUserPhoto(@Header("Authorization") String token);
 }
