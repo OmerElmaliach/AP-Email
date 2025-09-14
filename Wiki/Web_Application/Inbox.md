@@ -126,6 +126,5 @@ Now that you understand your inbox, explore these related features:
 1. **[Composing emails](Compose_Email.md)** - Learn to create and send messages
 2. **[Using labels](Labels.md)** - Master email organization
 3. **[Email labels](Labels.md)** - Organize emails with custom categories
-4. **[Mobile app](../Android_Application/README.md)** - Access your inbox on the go
 
 Your inbox is now ready to help you stay organized and productive with your email communications!
