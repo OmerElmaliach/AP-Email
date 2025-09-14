@@ -1,12 +1,17 @@
 # AP-Email
-link to repo - 
-https://github.com/OmerElmaliach/AP-Email
 
-link to Wiki -
-[https://github.com/OmerElmaliach/AP-Email/Wiki/Introduction/README.md
-](Wiki/Introduction)
+**AP-Email** is a modern email client designed for managing your emails efficiently. Inspired by Gmail, it offers a clean interface and essential features for sending, receiving, and organizing emails.
 
-link to jira -
-https://omerelmaliachprivate.atlassian.net/jira/software/projects/AE/summary
+## 📬 Features
 
-the flow process of our work and SCRUM meeting summaries can all be found under the user story "Manage project process"
+- Send and receive emails seamlessly
+- Organize emails with labels
+- Responsive and user-friendly interface
+
+## 📚 Documentation
+
+All detailed documentation for AP-Email is available in the [Wiki](https://github.com/OmerElmaliach/AP-Email/tree/main/Wiki/Getting_Started), including:
+
+- **Installation and Setup** – How to install AP-Email and configure your email accounts.
+- **Using AP-Email** – Step-by-step instructions for sending, receiving, and organizing emails.
+- **Features Overview** – Detailed explanation of labels and buttons.
