@@ -14,7 +14,6 @@ Before starting, ensure you have the following installed on your system:
 - **npm (Node Package Manager)** – Comes with Node.js
 - **MongoDB** – [Download here](https://www.mongodb.com/try/download/community)
 - **Docker & Docker Compose** – [Install here](https://docs.docker.com/get-docker/)
-- **Android Studio** (for Android development) – [Download here](https://developer.android.com/studio)
 
   **See our Prerequisites page for more details** - [Prerequisites](./Prerequisites.md)
    
@@ -36,7 +35,7 @@ cd AP-Email
    ```
    Wait for the process to finish.
    
-3. **Access the Services:**
+2. **Access the Services:**
    In order to use services you must create an account.
    In your local browser enter the following URL - 
     - to create an account go to Email SignUp : [http://localhost:3000/SignUp](http://localhost:3000/SignUp)
@@ -99,71 +98,6 @@ Users may only interact with the React frontend. Any attempt to access the backe
 
    The frontend will be accessible at `http://localhost:3000`
 
-## Setting Up the Android Application
-
-### **Open the Android Project in Android Studio**
-1. Open **Android Studio**
-2. Click **File > Open**
-3. Navigate to the **AP-Email/src/android** folder and open the project
-
-### **Build and Run the Android Application**
-1. Click **Run > Run 'app'** (or the green arrow at the top)
-2. Select your emulator or connected device
-3. The application should launch and connect to the backend server
-
-
-
-## Manual Android Application Setup
-
-### 1. Navigate to Android Directory
-```bash
-cd src/android
-```
-
-### 2. Configure Local Properties
-```bash
-# Create local.properties file
-touch local.properties
-
-# Add Android SDK path (adjust path for your system)
-# Windows
-echo "sdk.dir=C:\\Users\\<YourName>\\AppData\\Local\\Android\\Sdk" >> local.properties
-
-# macOS
-echo "sdk.dir=/Users/<YourName>/Library/Android/sdk" >> local.properties
-
-# Linux
-echo "sdk.dir=/home/<YourName>/Android/Sdk" >> local.properties
-```
-
-### 3. Sync and Build Project
-```bash
-# Make gradlew executable (macOS/Linux)
-chmod +x gradlew
-
-# Sync project dependencies
-./gradlew sync
-
-# Build the project
-./gradlew build
-
-# For debug build
-./gradlew assembleDebug
-```
-
-### 4. Run on Emulator or Device
-```bash
-# List available devices
-adb devices
-
-# Install and run on connected device/emulator
-./gradlew installDebug
-
-# Or use Android Studio to run the app
-```
-
-## Database Setup
-
 ### Manual MongoDB Setup
 ```bash
 # Install MongoDB locally
@@ -195,19 +129,6 @@ npm install
 sudo npm install -g npm@latest
 ```
 
-### Common Android Issues
-```bash
-# Gradle sync failures
-./gradlew clean build
-# or press the elephant symbol at the top of the toolbar to sync gradle
-
-# Android SDK issues
-# Update SDK through Android Studio SDK Manager
-
-# Emulator issues
-# Wipe emulator data and restart
-```
-
 ### Common React Issues
 ```bash
 # Clear React cache
@@ -236,18 +157,11 @@ curl -X POST http://localhost:9000/api/users -H "Content-Type: application/json"
 3. Test navigation between pages
 4. Check browser console for errors
 
-### 3. Android Verification
-1. App builds without errors
-2. App runs on emulator/device
-3. API calls work correctly
-4. Navigation flows work properly
-
 ## Additional Notes
 
 ### Common Issues
 - **Backend Not Connecting?** Ensure MongoDB is running and backend is accessible
 - **Web App Not Loading Data?** Check the `.env` file for correct API URL
-- **Android App Cannot Reach Backend?** Make sure your device is on the same network as your computer
 - **Port Conflicts?** Check if ports 3000 and 9000 are available
 
 ### Development Tips
