@@ -116,6 +116,5 @@ Now that you know how to compose emails, explore these related features:
 1. **[Managing your inbox](Inbox.md)** - Organize incoming emails effectively
 2. **[Using labels](Labels.md)** - Categorize and organize your communications
 3. **[Email labels](Labels.md)** - Organize your emails with custom categories
-4. **[Mobile email](../Android_Application/README.md)** - Compose on the go
 
 Start composing and enjoy seamless email communication with AP-Email!
