@@ -25,6 +25,3 @@
 ### Web Application -
 **Browser Access**: Use any web browser to access AP-Email
 
-### Android Application -
-**Mobile Interface**: Optimized for Android devices
-
