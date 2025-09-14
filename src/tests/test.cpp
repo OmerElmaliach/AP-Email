@@ -6,11 +6,6 @@
 #include <MyHash.h>
 #include <BloomFilter.h>
 
-
-
-
-
-
 TEST(CommandTests, AddAndCheckURL) {
 
     bloomFilterStorage storage;
